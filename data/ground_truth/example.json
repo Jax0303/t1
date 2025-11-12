@@ -1,0 +1,18 @@
+{
+  "document_id": "example_doc",
+  "tables": [
+    {
+      "table_id": "table_1",
+      "data": [
+        ["항목", "값1", "값2"],
+        ["A", "10", "20"],
+        ["B", "30", "40"]
+      ],
+      "metadata": {
+        "row_count": 3,
+        "column_count": 3
+      }
+    }
+  ]
+}
+
