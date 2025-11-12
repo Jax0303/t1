@@ -33,6 +33,11 @@ results.json
 results_*.json
 *.log
 
+# 테스트 데이터 (큰 파일)
+test_data/**/*.json
+test_data/**/*.html
+test_data/**/*.jpg
+
 # 설정 파일 (API 키 포함)
 config.yaml
 

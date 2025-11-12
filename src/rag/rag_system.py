@@ -17,16 +17,19 @@ from chromadb.config import Settings
 class TableRAGSystem:
     """표 기반 RAG 시스템"""
     
-    def __init__(self, api_key: str, model_name: str = "gpt-4o-mini", provider: str = "openai"):
+    def __init__(self, api_key: str, model_name: str = "gpt-4o-mini", provider: str = "openai", 
+                 ollama_base_url: str = "http://localhost:11434"):
         """
         Args:
-            api_key: API 키 (OpenAI 또는 Gemini)
+            api_key: API 키 (OpenAI, Gemini 또는 Ollama)
             model_name: 사용할 모델명
-            provider: "openai" 또는 "gemini"
+            provider: "openai", "gemini" 또는 "ollama"
+            ollama_base_url: Ollama API 기본 URL (provider가 ollama인 경우)
         """
         self.api_key = api_key
         self.model_name = model_name
         self.provider = provider.lower()
+        self.ollama_base_url = ollama_base_url
         
         # 임베딩 모델 초기화
         try:
@@ -36,13 +39,29 @@ class TableRAGSystem:
                     openai_api_key=api_key,
                     model="text-embedding-3-small"
                 )
-            else:
+            elif self.provider == "gemini":
                 # Gemini 임베딩
                 from langchain_google_genai import GoogleGenerativeAIEmbeddings
                 self.embeddings = GoogleGenerativeAIEmbeddings(
                     model="models/text-embedding-004",
                     google_api_key=api_key
                 )
+            elif self.provider == "ollama":
+                # Ollama 임베딩 (로컬 모델)
+                try:
+                    from langchain_community.embeddings import OllamaEmbeddings
+                    self.embeddings = OllamaEmbeddings(
+                        model=model_name,
+                        base_url=ollama_base_url
+                    )
+                except ImportError:
+                    # Ollama 임베딩이 없으면 FakeEmbeddings 사용
+                    from langchain_core.embeddings import FakeEmbeddings
+                    self.embeddings = FakeEmbeddings(size=384)
+            else:
+                # 기본: FakeEmbeddings
+                from langchain_core.embeddings import FakeEmbeddings
+                self.embeddings = FakeEmbeddings(size=384)
         except Exception as e:
             print(f"경고: {self.provider} 임베딩 사용 불가 ({str(e)[:100]}). 간단한 임베딩 방식 사용.")
             # 간단한 임베딩 (FakeEmbeddings - 빠른 테스트용)
@@ -64,7 +83,7 @@ class TableRAGSystem:
                     max_retries=3,
                     timeout=60
                 )
-            else:
+            elif self.provider == "gemini":
                 # Gemini LLM
                 from langchain_google_genai import ChatGoogleGenerativeAI
                 self.llm = ChatGoogleGenerativeAI(
@@ -74,8 +93,41 @@ class TableRAGSystem:
                     max_retries=3,
                     timeout=60
                 )
+            elif self.provider == "ollama":
+                # Ollama LLM (로컬 모델)
+                try:
+                    from langchain_community.llms import Ollama
+                    self.llm = Ollama(
+                        model=model_name,
+                        base_url=ollama_base_url,
+                        temperature=0.0
+                    )
+                except ImportError:
+                    # langchain_community가 없으면 langchain_ollama 사용
+                    try:
+                        from langchain_ollama import ChatOllama
+                        self.llm = ChatOllama(
+                            model=model_name,
+                            base_url=ollama_base_url,
+                            temperature=0.0
+                        )
+                    except ImportError:
+                        raise ValueError("Ollama 지원을 위해 langchain-community 또는 langchain-ollama가 필요합니다.")
+            else:
+                raise ValueError(f"지원하지 않는 provider: {self.provider}")
         except Exception as e:
-            raise ValueError(f"LLM 초기화 실패 ({self.provider}): {str(e)}")
+            # API 키 오류나 한도 초과 시 ollama로 폴백
+            if "quota" in str(e).lower() or "limit" in str(e).lower() or "403" in str(e) or "429" in str(e):
+                print(f"경고: {self.provider} API 한도 초과 또는 오류. Ollama로 전환 시도...")
+                try:
+                    from langchain_community.llms import Ollama
+                    self.llm = Ollama(model="llama3.2", base_url="http://localhost:11434", temperature=0.0)
+                    self.provider = "ollama"
+                    print("Ollama로 전환 성공")
+                except:
+                    raise ValueError(f"LLM 초기화 실패 ({self.provider}): {str(e)}")
+            else:
+                raise ValueError(f"LLM 초기화 실패 ({self.provider}): {str(e)}")
         
         # 벡터 스토어 초기화
         self.vector_store = None

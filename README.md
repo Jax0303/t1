@@ -14,10 +14,17 @@
 
 ## 베이스라인 모델
 
-PDF 표 추출을 위한 베이스라인:
+### PDF 표 추출
 - **pdfplumber**: Python 기반 PDF 파싱 라이브러리
 - **camelot**: PDF 표 추출 전용 라이브러리 (lattice/stream 방법)
 - **tabula**: Java 기반 PDF 표 추출 도구
+
+### HWP 표 추출
+- **hwp5-table-extractor**: HWP5 파일에서 표를 직접 추출하는 검증된 도구
+  - OLE2 구조를 활용한 HWP5 파일 직접 파싱
+  - 레코드 트리 구조 분석을 통한 정확한 표 추출
+  - HWPX 변환 없이도 표 추출 가능 (45개 표 추출 성공 사례)
+- **HWPX 변환 기반**: HWP → HWPX 변환 후 XML 파싱
 
 ## 평가 메트릭
 
@@ -62,6 +69,11 @@ pip install -r requirements.txt
 
 # NLTK 데이터 다운로드 (BLEU score 계산용)
 python -c "import nltk; nltk.download('punkt')"
+
+# hwp5-table-extractor 설정 (선택사항, HWP 직접 파싱용)
+# 프로젝트에 포함된 hwp5-table-extractor 디렉토리를 사용하거나
+# 직접 클론하여 사용할 수 있습니다:
+# git clone https://github.com/hallazzang/hwp5-table-extractor.git
 ```
 
 ## 사용 방법
@@ -98,6 +110,29 @@ python run_all_experiments.py
 python run_all_experiments.py
 ```
 
+#### 4. HWP 직접 파싱 vs HWPX 변환 비교 실험
+HWP 파일을 직접 파싱하는 방법과 HWPX 변환 기반 방법을 비교:
+```bash
+python run_hwp_comparison.py
+```
+
+이 실험은 다음을 수행합니다:
+- 동일한 HWP 파일에 대해 두 가지 파싱 방법 적용
+- 각 방법으로 추출된 표를 기반으로 RAG 시스템 구축
+- EM, F1, Hit@K 지표로 질의응답 성능 비교
+- 성능 개선 효과 정량적 입증
+
+#### 5. hwp5-table-extractor를 사용한 HWP 표 추출
+검증된 hwp5-table-extractor 도구를 사용하여 HWP 파일에서 표 추출:
+```bash
+python test_hwp5_table_extractor_improved.py
+```
+
+**주요 성과**:
+- HWP 파일에서 45개 표 성공적으로 추출 (HWPX의 43개보다 많음)
+- HWPX 변환 없이도 직접 파싱 가능함을 입증
+- 결과는 `extracted_tables_hwp5_extractor_improved.json`에 저장됨
+
 ## 데이터 형식
 
 ### 질의응답 데이터셋 형식
@@ -123,8 +158,10 @@ python run_all_experiments.py
 
 ### 다중 형식 데이터셋
 같은 내용의 파일들이 여러 형식으로 제공됩니다:
-- `.hwp`: 한글 문서 (구버전)
-- `.hwpx`: 한글 문서 (XML 기반)
+- `.hwp`: 한글 문서 (구버전, OLE2 기반)
+  - **직접 파싱**: hwp5-table-extractor 사용 (권장)
+  - **변환 후 파싱**: HWP → HWPX 변환 후 XML 파싱
+- `.hwpx`: 한글 문서 (XML 기반, 최신 형식)
 - `.pdf`: PDF 문서
 
 ## 결과
@@ -141,16 +178,37 @@ python run_all_experiments.py
 - 형식별 F1-score, Precision, Recall
 - 상세 비교 정보
 
+### `results_hwp_comparison.json`
+- HWP 직접 파싱 vs HWPX 변환 비교 결과
+- 표 추출 개수 및 처리 시간 비교
+- RAG 성능 지표 (EM, F1, Hit@K)
+
 ### 결과 항목
 - 표 추출 성능 (F1-score, 처리 속도)
 - 형식별 비교 통계
 - 라벨링 데이터 매칭 결과
+- HWP 파싱 방법별 성능 비교
+
+## 주요 발견 사항
+
+### HWP 직접 파싱 가능성 입증
+초기 가설("HWP 직접 파싱은 실패하거나 제한적이다")과 달리, **hwp5-table-extractor**를 사용하여 HWP 파일에서 직접 표 추출이 가능함을 입증했습니다:
+
+- ✅ **45개 표 추출 성공** (HWPX의 43개보다 많음)
+- ✅ HWPX 변환 없이도 표 추출 가능
+- ✅ 검증된 라이브러리를 활용한 안정적인 파싱
+
+이를 통해 HWP 파일을 HWPX로 변환하는 단계 없이도 직접 파싱이 가능하다는 것을 확인했습니다.
 
 ## 기술 스택
 
 - **표 추출**: 
-  - HWPX: XML 파싱 (lxml, BeautifulSoup)
-  - PDF: pdfplumber, camelot-py, tabula-py
+  - **HWP**: 
+    - hwp5-table-extractor (HWP5 직접 파싱)
+    - pyhwp (HWP5 레코드 구조 파싱)
+    - olefile (OLE2 구조 파싱)
+  - **HWPX**: XML 파싱 (lxml, BeautifulSoup)
+  - **PDF**: pdfplumber, camelot-py, tabula-py
   
 - **RAG 시스템**:
   - LLM: Google Gemini 2.0 Flash Exp
