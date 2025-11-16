@@ -53,13 +53,21 @@ t1/
 │   │   └── pdf_extractor.py
 │   ├── rag/                     # 기본 RAG 시스템
 │   │   └── rag_system.py
-│   └── utils/                   # 공통 유틸리티
+│   └── utils/                 # 공통 유틸리티
 │       ├── table_converter.py
 │       └── config_loader.py
+├── scripts/                     # 유틸리티 스크립트
+│   ├── test_single_pdf_extraction.py  # 단일 PDF 다중 파서 테스트
+│   ├── compare_pdf_extractors.py      # 파서 비교 실험
+│   └── analyze_korean_pdf_issues.py   # 한국어 PDF 문제 분석
+├── analysis/                     # 실험 결과 분석 데이터
+│   ├── parser_comparison.json   # 파서 비교 결과
+│   └── kg_*.json                # 지식 그래프 통계
 ├── hwp5-table-extractor/        # HWP5 표 추출 도구
 └── docs/
     ├── KG_RAG_SETUP.md          # 상세 설치 가이드
-    └── QUICKSTART_KG_RAG.md     # 빠른 시작 가이드
+    ├── QUICKSTART_KG_RAG.md     # 빠른 시작 가이드
+    └── DMS_KG_PDF_Report.md     # 다중 파서 KG 구축 보고서
 ```
 
 ## 사용 방법
@@ -149,12 +157,27 @@ python scripts/download_dart_reports.py
 
 자세한 내용은 [DART 다운로드 가이드](docs/DART_DOWNLOAD_GUIDE.md)를 참조하세요.
 
+## 최근 실험 결과
+
+### 다중 파서 비교 및 지식 그래프 구축 실험
+
+DMS_[기재정정]사업보고서(308페이지, 표 544개)를 대상으로 pdfplumber, PyMuPDF, Camelot 세 파서를 비교하고 지식 그래프로 변환한 실험 결과:
+
+**주요 결과**:
+- **pdfplumber/PyMuPDF**: 표 544개 전수 추출, None 비율 30% 이상 표 18개
+- **Camelot**: 표 504개 추출, None 비율 30% 이상 표 0개 (병합 손실 최소화)
+- **지식 그래프**: 세 파서 모두 4.5만~4.8만 노드 규모의 KG 생성 성공
+- None 비율이 높은 표에서도 평균 228개 이상의 노드 보존 (구조 정보 유지)
+
+자세한 내용은 [다중 파서 KG 구축 보고서](docs/DMS_KG_PDF_Report.md)를 참조하세요.
+
 ## 문서
 
 - [상세 설치 가이드](docs/KG_RAG_SETUP.md)
 - [빠른 시작 가이드](docs/QUICKSTART_KG_RAG.md)
 - [DART 다운로드 가이드](docs/DART_DOWNLOAD_GUIDE.md)
 - [PDF 표 추출 조사 보고서](docs/PDF_TABLE_EXTRACTION_RESEARCH.md)
+- [다중 파서 KG 구축 보고서](docs/DMS_KG_PDF_Report.md) ⭐ 최신
 
 ## PDF 표 추출 실험
 
@@ -169,8 +192,17 @@ python3 scripts/compare_pdf_extractors.py --max-files 5
 # 특정 파서만 비교
 python3 scripts/compare_pdf_extractors.py --max-files 5 --methods pdfplumber camelot
 
-# 단일 파일 테스트
-python3 scripts/compare_pdf_extractors.py --single-file "data/dart_pdfs/your_file.pdf"
+# 단일 파일 테스트 (다중 파서 비교)
+python3 scripts/test_single_pdf_extraction.py "data/dart_pdfs/your_file.pdf"
+```
+
+### 지식 그래프 변환
+
+추출된 표 데이터를 지식 그래프로 변환:
+
+```bash
+# 표 데이터를 KG로 변환
+python3 test_kg_conversion.py
 ```
 
 ### 한국어 문서 문제점 분석
