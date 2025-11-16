@@ -1,227 +1,187 @@
-# HWPX vs PDF Table Extraction RAG 실험
+# 지식 그래프 기반 RAG 파이프라인
 
-본 실험은 HWP/HWPX 문서에서 표를 추출하고 이를 기반으로 RAG 시스템을 구성하는 것이 핵심입니다. 구조적으로 명시적 표 정보를 갖는 HWPX의 장점을 활용하여 PDF보다 빠르고 정확한 표 추출이 가능하며, 이를 통해 RAG 성능을 향상시킬 수 있는지 검증합니다.
+복잡한 한국어 문서(특히 표가 많은 문서)에서 표 데이터를 정확히 추출하고, 지식 그래프로 구축한 뒤, QA가 가능한 RAG 파이프라인입니다.
 
-## 실험 목표
+## 주요 기능
 
-### 표 추출 성능
-- **F1-score**: PDF 대비 15% 이상 향상
-- **처리 속도**: PDF 대비 30% 이상 향상
+1. **복잡한 표 추출**: 병합셀, 중첩헤더, 계층 구조를 가진 표 처리
+2. **지식 그래프 구축**: 표 데이터를 엔티티-관계 그래프로 변환
+3. **한국어 최적화**: 한국어 임베딩 모델 사용 (ko-sroberta-multitask)
+4. **QA 시스템**: 지식 그래프와 벡터 검색을 결합한 질의응답
 
-### RAG 성능
-- **EM Score**: PDF 기반 RAG 대비 10% 이상 향상
-- **Hit@K**: Hit@1 ≥ 0.70, Hit@3 ≥ 0.85, Hit@5 ≥ 0.90
+## 빠른 시작
 
-## 베이스라인 모델
+### 1. 설치
 
-### PDF 표 추출
-- **pdfplumber**: Python 기반 PDF 파싱 라이브러리
-- **camelot**: PDF 표 추출 전용 라이브러리 (lattice/stream 방법)
-- **tabula**: Java 기반 PDF 표 추출 도구
+```bash
+pip install -r requirements.txt
+```
 
-### HWP 표 추출
-- **hwp5-table-extractor**: HWP5 파일에서 표를 직접 추출하는 검증된 도구
-  - OLE2 구조를 활용한 HWP5 파일 직접 파싱
-  - 레코드 트리 구조 분석을 통한 정확한 표 추출
-  - HWPX 변환 없이도 표 추출 가능 (45개 표 추출 성공 사례)
-- **HWPX 변환 기반**: HWP → HWPX 변환 후 XML 파싱
+### 2. 설정
 
-## 평가 메트릭
+`config.yaml` 파일 생성:
 
-### 표 추출 메트릭
-- **F1-score**: 표 추출 정확도 (Precision과 Recall의 조화 평균)
-- **Precision**: 추출된 표 중 정확한 표의 비율
-- **Recall**: 실제 표 중 추출된 표의 비율
-- **처리 속도**: 문서당 평균 추출 시간
+```yaml
+api:
+  provider: ollama  # 또는 openai, gemini
+  model: llama3.2
+  api_key: dummy  # Ollama는 dummy, 다른 서비스는 실제 API 키
+```
 
-### RAG 메트릭
-- **EM Score (Exact Match)**: 정답과 완전히 일치하는 답변의 비율
-- **Hit@K**: 상위 K개 검색 결과 중 관련 문서가 포함된 비율
-- **BLEU Score**: 답변의 품질 평가 (n-gram 기반)
+### 3. 실행
+
+```bash
+python run_kg_rag_pipeline.py
+```
 
 ## 프로젝트 구조
 
 ```
 t1/
-├── config.yaml              # 실험 설정 파일
-├── requirements.txt         # Python 의존성
-├── run_experiment.py        # 실험 실행 스크립트
+├── run_kg_rag_pipeline.py      # 메인 실행 스크립트
+├── test_kg_conversion.py       # 지식 그래프 변환 테스트
+├── test_hwp5_table_extractor_improved.py  # 표 추출 테스트
+├── config.yaml                 # 설정 파일
+├── requirements.txt            # 필수 라이브러리
 ├── src/
-│   ├── extractors/          # 표 추출 모듈
+│   ├── kg/                     # 지식 그래프 모듈
+│   │   ├── table_to_kg.py      # 표를 지식 그래프로 변환
+│   │   └── kg_rag_system.py    # 지식 그래프 기반 RAG 시스템
+│   ├── extractors/              # 표 추출 모듈
+│   │   ├── hwp_extractor.py
 │   │   ├── hwpx_extractor.py
 │   │   └── pdf_extractor.py
-│   ├── rag/                 # RAG 시스템
+│   ├── rag/                     # 기본 RAG 시스템
 │   │   └── rag_system.py
-│   └── evaluation/          # 평가 메트릭
-│       └── metrics.py
-└── data/                    # 데이터셋 (사용자 제공 예정)
-    ├── hwpx/               # HWPX 문서
-    ├── pdf/                # PDF 문서
-    ├── ground_truth/       # 정답 데이터
-    └── questions.json      # 평가용 질문
-```
-
-## 설치
-
-```bash
-# 의존성 설치
-pip install -r requirements.txt
-
-# NLTK 데이터 다운로드 (BLEU score 계산용)
-python -c "import nltk; nltk.download('punkt')"
-
-# hwp5-table-extractor 설정 (선택사항, HWP 직접 파싱용)
-# 프로젝트에 포함된 hwp5-table-extractor 디렉토리를 사용하거나
-# 직접 클론하여 사용할 수 있습니다:
-# git clone https://github.com/hallazzang/hwp5-table-extractor.git
+│   └── utils/                   # 공통 유틸리티
+│       ├── table_converter.py
+│       └── config_loader.py
+├── hwp5-table-extractor/        # HWP5 표 추출 도구
+└── docs/
+    ├── KG_RAG_SETUP.md          # 상세 설치 가이드
+    └── QUICKSTART_KG_RAG.md     # 빠른 시작 가이드
 ```
 
 ## 사용 방법
 
-### 데이터셋 준비
+### 프로그래밍 방식
 
-프로젝트에는 두 가지 데이터셋이 사용됩니다:
+```python
+from src.kg.kg_rag_system import KnowledgeGraphRAGSystem
+from src.utils import convert_hwp5_extractor_json_to_rag_format
 
-1. **149.표 정보 질의 응답 데이터** (`data/raw/dataset1/`)
-   - Training/Validation 원천데이터 및 라벨링데이터
-   - JSON 형식의 질문-답변 쌍 및 표 라벨
+# 표 데이터 로드 및 변환
+tables = convert_hwp5_extractor_json_to_rag_format(
+    'extracted_tables_hwp5_extractor_improved.json'
+)
 
-2. **개정 표준취업규칙** (`data/raw/dataset2/`)
-   - 같은 내용의 여러 형식 파일 (HWP, HWPX, PDF)
-   - 형식별 추출 결과 비교용
+# RAG 시스템 초기화
+rag = KnowledgeGraphRAGSystem(
+    api_key='dummy',
+    model_name='llama3.2',
+    provider='ollama',
+    use_korean_embedding=True
+)
 
-### 실험 실행
+# 지식 베이스 구축
+rag.build_knowledge_base(tables)
 
-#### 1. 다중 형식 비교 실험
-같은 내용의 여러 형식 파일들을 파싱하여 결과 비교:
+# 질의응답
+result = rag.query_with_kg("취업규칙의 목적은 무엇인가요?")
+print(result['answer'])
+```
+
+## LLM 설정
+
+### Ollama (로컬, 추천)
+
 ```bash
-python run_multi_format_experiment.py
+ollama pull llama3.2
 ```
 
-#### 2. 라벨링 데이터 비교 실험
-JSON 라벨링 데이터와 추출 결과 비교:
+### OpenAI
+
+```yaml
+api:
+  provider: openai
+  model: gpt-4o-mini
+  api_key: your-openai-api-key
+```
+
+### Google Gemini
+
+```yaml
+api:
+  provider: gemini
+  model: gemini-2.0-flash-exp
+  api_key: your-gemini-api-key
+```
+
+## 지식 그래프 구조
+
+표 데이터는 다음과 같은 엔티티 타입으로 변환됩니다:
+
+- **Table**: 표 전체
+- **Row**: 행
+- **Column**: 열
+- **Header**: 헤더 (계층 구조 지원)
+- **Cell**: 셀
+- **Value**: 값
+
+관계 타입:
+- `has_row`, `has_column`: 표 구조 관계
+- `has_header`: 헤더 관계
+- `contains`: 포함 관계
+- `has_value`: 값 관계
+- `belongs_to`: 소속 관계
+- `related_to`: 관련 관계
+
+## 데이터 수집
+
+### DART 공시 문서 다운로드
+
+재무·공시 PDF 파일을 자동으로 다운로드:
+
 ```bash
-python run_all_experiments.py
+export DART_API_KEY='your-api-key'
+python scripts/download_dart_reports.py
 ```
 
-#### 3. 전체 실험 (권장)
-모든 실험을 순차적으로 실행:
+자세한 내용은 [DART 다운로드 가이드](docs/DART_DOWNLOAD_GUIDE.md)를 참조하세요.
+
+## 문서
+
+- [상세 설치 가이드](docs/KG_RAG_SETUP.md)
+- [빠른 시작 가이드](docs/QUICKSTART_KG_RAG.md)
+- [DART 다운로드 가이드](docs/DART_DOWNLOAD_GUIDE.md)
+- [PDF 표 추출 조사 보고서](docs/PDF_TABLE_EXTRACTION_RESEARCH.md)
+
+## PDF 표 추출 실험
+
+보고서에서 언급한 여러 PDF 파서를 비교 실험할 수 있습니다.
+
+### 파서 비교 실험
+
 ```bash
-python run_all_experiments.py
+# 모든 파서 비교 (5개 파일)
+python3 scripts/compare_pdf_extractors.py --max-files 5
+
+# 특정 파서만 비교
+python3 scripts/compare_pdf_extractors.py --max-files 5 --methods pdfplumber camelot
+
+# 단일 파일 테스트
+python3 scripts/compare_pdf_extractors.py --single-file "data/dart_pdfs/your_file.pdf"
 ```
 
-#### 4. HWP 직접 파싱 vs HWPX 변환 비교 실험
-HWP 파일을 직접 파싱하는 방법과 HWPX 변환 기반 방법을 비교:
+### 한국어 문서 문제점 분석
+
 ```bash
-python run_hwp_comparison.py
+# 병합 셀, 다중 페이지, 한글 폰트 문제 분석
+python3 scripts/analyze_korean_pdf_issues.py --input "data/dart_pdfs/your_file.pdf"
 ```
 
-이 실험은 다음을 수행합니다:
-- 동일한 HWP 파일에 대해 두 가지 파싱 방법 적용
-- 각 방법으로 추출된 표를 기반으로 RAG 시스템 구축
-- EM, F1, Hit@K 지표로 질의응답 성능 비교
-- 성능 개선 효과 정량적 입증
+자세한 내용은 [PDF 비교 실험 가이드](scripts/README_PDF_COMPARISON.md)를 참조하세요.
 
-#### 5. hwp5-table-extractor를 사용한 HWP 표 추출
-검증된 hwp5-table-extractor 도구를 사용하여 HWP 파일에서 표 추출:
-```bash
-python test_hwp5_table_extractor_improved.py
-```
+## 라이선스
 
-**주요 성과**:
-- HWP 파일에서 45개 표 성공적으로 추출 (HWPX의 43개보다 많음)
-- HWPX 변환 없이도 직접 파싱 가능함을 입증
-- 결과는 `extracted_tables_hwp5_extractor_improved.json`에 저장됨
-
-## 데이터 형식
-
-### 질의응답 데이터셋 형식
-```json
-{
-  "Dataset": "...",
-  "data": [
-    {
-      "doc_id": "21002084",
-      "doc_title": "...",
-      "paragraphs": [...],
-      "tables": [...]
-    }
-  ]
-}
-```
-
-### 라벨링 데이터 형식
-표 정보는 다양한 형식으로 저장될 수 있습니다:
-- `data`: 2D 배열 형식
-- `rows`: 행 단위 데이터
-- `cells`: 셀 단위 데이터 (row, col, value)
-
-### 다중 형식 데이터셋
-같은 내용의 파일들이 여러 형식으로 제공됩니다:
-- `.hwp`: 한글 문서 (구버전, OLE2 기반)
-  - **직접 파싱**: hwp5-table-extractor 사용 (권장)
-  - **변환 후 파싱**: HWP → HWPX 변환 후 XML 파싱
-- `.hwpx`: 한글 문서 (XML 기반, 최신 형식)
-- `.pdf`: PDF 문서
-
-## 결과
-
-실험 결과는 다음 파일들에 저장됩니다:
-
-### `results_multi_format.json`
-- 형식별 표 추출 결과
-- 파일 그룹별 비교
-- 처리 시간 통계
-
-### `results_label_comparison.json`
-- 라벨링 데이터와의 비교 결과
-- 형식별 F1-score, Precision, Recall
-- 상세 비교 정보
-
-### `results_hwp_comparison.json`
-- HWP 직접 파싱 vs HWPX 변환 비교 결과
-- 표 추출 개수 및 처리 시간 비교
-- RAG 성능 지표 (EM, F1, Hit@K)
-
-### 결과 항목
-- 표 추출 성능 (F1-score, 처리 속도)
-- 형식별 비교 통계
-- 라벨링 데이터 매칭 결과
-- HWP 파싱 방법별 성능 비교
-
-## 주요 발견 사항
-
-### HWP 직접 파싱 가능성 입증
-초기 가설("HWP 직접 파싱은 실패하거나 제한적이다")과 달리, **hwp5-table-extractor**를 사용하여 HWP 파일에서 직접 표 추출이 가능함을 입증했습니다:
-
-- ✅ **45개 표 추출 성공** (HWPX의 43개보다 많음)
-- ✅ HWPX 변환 없이도 표 추출 가능
-- ✅ 검증된 라이브러리를 활용한 안정적인 파싱
-
-이를 통해 HWP 파일을 HWPX로 변환하는 단계 없이도 직접 파싱이 가능하다는 것을 확인했습니다.
-
-## 기술 스택
-
-- **표 추출**: 
-  - **HWP**: 
-    - hwp5-table-extractor (HWP5 직접 파싱)
-    - pyhwp (HWP5 레코드 구조 파싱)
-    - olefile (OLE2 구조 파싱)
-  - **HWPX**: XML 파싱 (lxml, BeautifulSoup)
-  - **PDF**: pdfplumber, camelot-py, tabula-py
-  
-- **RAG 시스템**:
-  - LLM: Google Gemini 2.0 Flash Exp
-  - 임베딩: Google text-embedding-004
-  - 벡터 DB: ChromaDB
-  - 프레임워크: LangChain
-
-- **평가**:
-  - scikit-learn (Precision, Recall, F1)
-  - NLTK (BLEU Score)
-
-## 참고 문헌
-
-- TableRAG: SQL 기반 표 RAG 접근법
-- HD-RAG: 계층적 행-열 수준 표 요약
-- PDF 표 추출 연구들
+MIT License

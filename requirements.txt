@@ -7,6 +7,12 @@ chromadb>=0.4.0
 pdfplumber>=0.10.0
 camelot-py[cv]>=0.11.0
 tabula-py>=2.8.0
+pymupdf>=1.23.0  # PyMuPDF (Fitz) - 빠른 속도
+pypdf>=3.0.0  # pypdf - 가장 단순한 텍스트 베이스라인
+# RAG/GenAI 지향 추출기
+docling-core>=1.0.0  # Docling - IBM 오픈소스, 멀티 포맷 + 레이아웃
+unstructured[pdf]>=0.10.0  # unstructured - Element 기반 청킹
+marker-pdf>=0.2.0  # Marker - 로컬 Markdown/JSON 변환
 lxml>=5.0.0
 beautifulsoup4>=4.12.0
 pandas>=2.0.0
@@ -16,6 +22,17 @@ nltk>=3.8.0
 tqdm>=4.66.0
 pyyaml>=6.0.0
 openpyxl>=3.1.0
+# 지식 그래프 구축을 위한 라이브러리
+networkx>=3.2.0
+rdflib>=7.0.0
+# 한국어 NLP 및 임베딩
+sentence-transformers>=2.2.0
+transformers>=4.30.0
+torch>=2.0.0
+# 한국어 형태소 분석 (선택사항)
+# konlpy>=0.6.0  # Java 필요 (설치: pip install konlpy)
+# DART 공시 문서 다운로드
+OpenDartReader>=0.1.5
 # HWP 파일 파싱을 위한 선택적 의존성
 # pyhwp>=0.1b12  # HWP5 파일 파싱 (설치: pip install pyhwp)
 # olefile>=0.46  # OLE2 파일 파싱 (설치: pip install olefile)
