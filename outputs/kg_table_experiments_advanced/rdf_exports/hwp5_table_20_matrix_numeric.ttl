@@ -1,0 +1,201 @@
+@prefix ns1: <http://example.org/kg/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:Table_0 a ns1:Table ;
+    ns1:contains ns1:Cell_16,
+        ns1:Cell_18,
+        ns1:Cell_20,
+        ns1:Cell_22,
+        ns1:Cell_24,
+        ns1:Cell_26,
+        ns1:Cell_28,
+        ns1:Cell_30 ;
+    ns1:entity_subtype "table" ;
+    ns1:has_column ns1:Column_10,
+        ns1:Column_11,
+        ns1:Column_12 ;
+    ns1:has_row ns1:Row_1,
+        ns1:Row_2,
+        ns1:Row_3,
+        ns1:Row_4,
+        ns1:Row_5,
+        ns1:Row_6,
+        ns1:Row_7,
+        ns1:Row_8,
+        ns1:Row_9 ;
+    ns1:name "hwp5_table_20" .
+
+ns1:Cell_16 a ns1:Cell ;
+    ns1:col 0 ;
+    ns1:has_value ns1:Value_17 ;
+    ns1:name "cell_3_0" ;
+    ns1:row 3 ;
+    ns1:value "① 소  속" .
+
+ns1:Cell_18 a ns1:Cell ;
+    ns1:col 1 ;
+    ns1:has_value ns1:Value_19 ;
+    ns1:name "cell_3_1" ;
+    ns1:row 3 ;
+    ns1:value "② 직  위(급)" .
+
+ns1:Cell_20 a ns1:Cell ;
+    ns1:col 2 ;
+    ns1:has_value ns1:Value_21 ;
+    ns1:name "cell_3_2" ;
+    ns1:row 3 ;
+    ns1:value "③ 성  명" .
+
+ns1:Cell_22 a ns1:Cell ;
+    ns1:col 0 ;
+    ns1:has_value ns1:Value_23 ;
+    ns1:name "cell_5_0" ;
+    ns1:row 5 ;
+    ns1:value "④ 주  문" .
+
+ns1:Cell_24 a ns1:Cell ;
+    ns1:col 0 ;
+    ns1:has_value ns1:Value_25 ;
+    ns1:name "cell_6_0" ;
+    ns1:row 6 ;
+    ns1:value "⑤ 이  유" .
+
+ns1:Cell_26 a ns1:Cell ;
+    ns1:col 1 ;
+    ns1:has_value ns1:Value_27 ;
+    ns1:name "cell_6_1" ;
+    ns1:row 6 ;
+    ns1:value "별첨 징계의결서 사본과 같음" .
+
+ns1:Cell_28 a ns1:Cell ;
+    ns1:col 0 ;
+    ns1:has_value ns1:Value_29 ;
+    ns1:name "cell_7_0" ;
+    ns1:row 7 ;
+    ns1:value """위와 같이 처분하였음을 통지합니다.
+년       월       일
+처분권자 (처분제청권자)                 (직인)
+귀 하""" .
+
+ns1:Cell_30 a ns1:Cell ;
+    ns1:col 0 ;
+    ns1:has_value ns1:Value_31 ;
+    ns1:name "cell_8_0" ;
+    ns1:row 8 ;
+    ns1:value "참 고：이 처분에 대한 불복이 있을 때에는 취업규칙 제69조에 의하여 이 설명서를 받은 날로부터 7일 이내에 인사위원회에 재심을 청구할 수 있습니다." .
+
+ns1:Column_10 a ns1:Column ;
+    ns1:has_header ns1:Header_13 ;
+    ns1:header "징 계 처 분 사 유 설 명 서" ;
+    ns1:index 0 ;
+    ns1:name "col_0" .
+
+ns1:Column_11 a ns1:Column ;
+    ns1:has_header ns1:Header_14 ;
+    ns1:header "징 계 처 분 사 유 설 명 서" ;
+    ns1:index 1 ;
+    ns1:name "col_1" .
+
+ns1:Column_12 a ns1:Column ;
+    ns1:has_header ns1:Header_15 ;
+    ns1:header "징 계 처 분 사 유 설 명 서" ;
+    ns1:index 2 ;
+    ns1:name "col_2" .
+
+ns1:Header_14 a ns1:Header ;
+    ns1:column 1 ;
+    ns1:level 0 ;
+    ns1:name "징 계 처 분 사 유 설 명 서" .
+
+ns1:Header_15 a ns1:Header ;
+    ns1:column 2 ;
+    ns1:level 0 ;
+    ns1:name "징 계 처 분 사 유 설 명 서" .
+
+ns1:Row_1 a ns1:Row ;
+    ns1:index 0 ;
+    ns1:name "row_0" .
+
+ns1:Row_2 a ns1:Row ;
+    ns1:index 1 ;
+    ns1:name "row_1" .
+
+ns1:Row_3 a ns1:Row ;
+    ns1:index 2 ;
+    ns1:name "row_2" .
+
+ns1:Row_4 a ns1:Row ;
+    ns1:index 3 ;
+    ns1:name "row_3" .
+
+ns1:Row_5 a ns1:Row ;
+    ns1:index 4 ;
+    ns1:name "row_4" .
+
+ns1:Row_6 a ns1:Row ;
+    ns1:index 5 ;
+    ns1:name "row_5" .
+
+ns1:Row_7 a ns1:Row ;
+    ns1:index 6 ;
+    ns1:name "row_6" .
+
+ns1:Row_8 a ns1:Row ;
+    ns1:index 7 ;
+    ns1:name "row_7" .
+
+ns1:Row_9 a ns1:Row ;
+    ns1:index 8 ;
+    ns1:name "row_8" .
+
+ns1:Value_17 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name "① 소  속" ;
+    ns1:text "① 소  속" .
+
+ns1:Value_19 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name "② 직  위(급)" ;
+    ns1:text "② 직  위(급)" .
+
+ns1:Value_21 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name "③ 성  명" ;
+    ns1:text "③ 성  명" .
+
+ns1:Value_23 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name "④ 주  문" ;
+    ns1:text "④ 주  문" .
+
+ns1:Value_25 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name "⑤ 이  유" ;
+    ns1:text "⑤ 이  유" .
+
+ns1:Value_27 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name "별첨 징계의결서 사본과 같음" ;
+    ns1:text "별첨 징계의결서 사본과 같음" .
+
+ns1:Value_29 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name """위와 같이 처분하였음을 통지합니다.
+년       월       일
+처분권자 (처분제청권자)                 (직인)
+귀 하""" ;
+    ns1:text """위와 같이 처분하였음을 통지합니다.
+년       월       일
+처분권자 (처분제청권자)                 (직인)
+귀 하""" .
+
+ns1:Value_31 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name "참 고：이 처분에 대한 불복이 있을 때에는 취업규칙 제69조에 의하여 이 설명서를 받은 날로부터 7일 이내에 인사위원회에 재심을 청구할 수 있습니다." ;
+    ns1:text "참 고：이 처분에 대한 불복이 있을 때에는 취업규칙 제69조에 의하여 이 설명서를 받은 날로부터 7일 이내에 인사위원회에 재심을 청구할 수 있습니다." .
+
+ns1:Header_13 a ns1:Header ;
+    ns1:column 0 ;
+    ns1:level 0 ;
+    ns1:name "징 계 처 분 사 유 설 명 서" .
+

@@ -25,6 +25,10 @@ openpyxl>=3.1.0
 # 지식 그래프 구축을 위한 라이브러리
 networkx>=3.2.0
 rdflib>=7.0.0
+# 최신 KG 라이브러리
+pykeen>=2.0.0  # Knowledge Graph Embeddings
+ampligraph>=2.0.0  # Knowledge Graph Embeddings (선택사항)
+sparqlwrapper>=1.8.5  # SPARQL 쿼리 지원
 # 한국어 NLP 및 임베딩
 sentence-transformers>=2.2.0
 transformers>=4.30.0

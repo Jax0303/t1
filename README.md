@@ -177,6 +177,8 @@ DMS_[기재정정]사업보고서(308페이지, 표 544개)를 대상으로 pdfp
 
 `extracted_tables_hwp5_extractor_improved.json`에 포함된 45개 표를 8개 유형(단일 셀 안내, 2열 요약, 2열 목차, 3~4열 숫자 매트릭스, 다열 숫자/양식/텍스트 매트릭스, 기타)으로 자동 분류한 뒤 각 유형별 대표 표를 KG로 변환했습니다.
 
+#### 기본 실험 (NetworkX + RDFLib)
+
 ```bash
 # 유형별 샘플 수를 2개로 늘려서 실행
 python scripts/run_table_kg_experiments.py \
@@ -189,10 +191,64 @@ python scripts/run_table_kg_experiments.py \
 - `outputs/kg_table_experiments/kg_table_experiments.json`: 유형 분포, 표별 메트릭, `Table -> Column -> Row -> Value` 체인 샘플 등 세부 리포트
 - `outputs/kg_table_experiments/rdf_exports/*.ttl`: 각 표를 RDF(Turtle)로 직렬화한 파일. 외부 그래프 DB나 SPARQL 툴에 바로 적재 가능
 
-핵심 관찰:
-- 단일 셀 안내형 표는 구조 노드만 존재해 길고 복잡한 문단도 Table/Row/Column 레벨에서 관리 가능
-- 다열 숫자 매트릭스(hwp5_table_7)는 헤더 2단, 값 56개를 모두 Value 노드로 승격해 수치 비교 질의를 쉽게 지원
-- 양식 템플릿 표(hwp5_table_18, hwp5_table_20)는 병합 셀 구조를 Column/Row/Value 링크로 기록해 필드-값 대응 체인을 명확히 추적
+#### 확장 실험 (최신 KG 라이브러리 통합)
+
+최신 KG 구축 라이브러리들을 사용한 확장 실험:
+
+```bash
+# 유형별 3개 샘플로 확장 실험 실행
+python scripts/run_advanced_kg_experiments.py \
+  --input extracted_tables_hwp5_extractor_improved.json \
+  --samples-per-type 3 \
+  --output-dir outputs/kg_table_experiments_advanced
+```
+
+**사용된 라이브러리:**
+- **NetworkX**: 그래프 구조 표현 및 분석
+- **RDFLib**: RDF/Turtle 형식으로 직렬화
+- **PyKEEN**: Knowledge Graph Embeddings (선택사항)
+- **SPARQL**: 구조화된 쿼리 지원
+
+**생성물:**
+- `outputs/kg_table_experiments_advanced/advanced_kg_experiments.json`: 상세 매핑 분석 리포트
+- `outputs/kg_table_experiments_advanced/rdf_exports/*.ttl`: RDF/Turtle 형식 KG
+- `outputs/kg_table_experiments_advanced/pykeen_exports/*.json`: PyKEEN 형식 트리플 데이터
+
+**표 데이터 → KG 매핑 분석 결과:**
+
+각 표 유형별로 데이터가 KG의 어떤 부분으로 매핑되는지 상세 분석:
+
+1. **구조 엔티티 (Structure Entities)**:
+   - `Table`: 표 전체를 나타내는 루트 엔티티
+   - `Row`: 각 행을 나타내는 엔티티 (행 인덱스 포함)
+   - `Column`: 각 열을 나타내는 엔티티 (열 인덱스 및 헤더 정보 포함)
+   - `Cell`: 개별 셀을 나타내는 엔티티 (행/열 위치 정보 포함)
+
+2. **내용 엔티티 (Content Entities)**:
+   - `Header`: 헤더 텍스트를 나타내는 엔티티 (계층 구조 지원, level 속성으로 깊이 표현)
+   - `Value`: 의미 있는 값(숫자, 텍스트)을 나타내는 엔티티
+
+3. **관계 (Relations)**:
+   - `has_row`, `has_column`: 표 구조 관계
+   - `has_header`: 헤더 관계 (계층 구조 지원)
+   - `contains`: 포함 관계 (Table → Cell)
+   - `has_value`: 값 관계 (Cell → Value)
+   - `belongs_to`: 소속 관계 (Value → Header)
+
+**유형별 매핑 특징:**
+
+- **단일 셀 안내형 표**: 구조 노드(Table/Row/Column)만 존재, 길고 복잡한 문단도 Table/Row/Column 레벨에서 관리
+- **다열 숫자 매트릭스**: 헤더 2단 계층, 값들을 모두 Value 노드로 승격해 수치 비교 질의 지원
+- **양식 템플릿 표**: 병합 셀 구조를 Column/Row/Value 링크로 기록해 필드-값 대응 체인 명확히 추적
+- **2열 목차형 표**: 120행 규모의 대용량 표도 효율적으로 변환 (263 노드, 331 엣지)
+- **다열 텍스트 매트릭스**: 헤더 계층 깊이 3단까지 지원하여 복잡한 중첩 구조 처리
+
+**실험 통계 (45개 표, 유형별 3개 샘플):**
+- 총 19개 표 실험 완료
+- 평균 노드 수: 80.2개
+- 평균 엣지 수: 100.3개
+- 헤더 계층 깊이: 0~3단
+- RDF 내보내기 성공률: 100%
 
 ## 문서
 
