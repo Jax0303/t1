@@ -67,10 +67,16 @@ class TableToKnowledgeGraph:
         entity_id = f"{entity_type}_{self.entity_counter}"
         self.entity_counter += 1
         
+        extra_attrs = {}
+        if attributes:
+            extra_attrs = {k: v for k, v in attributes.items() if k != 'type'}
+            if 'type' in attributes:
+                extra_attrs['entity_subtype'] = attributes['type']
+        
         attrs = {
             'name': name,
             'type': entity_type,
-            **(attributes or {})
+            **extra_attrs
         }
         
         self.graph.add_node(entity_id, **attrs)
@@ -256,7 +262,7 @@ class TableToKnowledgeGraph:
                 if not text:
                     continue
                 
-                # 셀 엔티티 생성
+                # 위치 정보와 값을 그대로 보존한 Row/Col 수준 셀 엔티티 생성
                 cell_entity = self._create_entity('Cell', f"cell_{row_pos}_{col_pos}", {
                     'row': row_pos,
                     'col': col_pos,
@@ -271,6 +277,7 @@ class TableToKnowledgeGraph:
                 
                 # 값 엔티티 생성 (텍스트가 의미있는 경우)
                 if self._is_meaningful_value(text):
+                    # 숫자/텍스트 등 의미 있는 값만 Value 엔티티로 별도 승격
                     value_entity = self._create_entity('Value', text, {'text': text})
                     self._create_relation(cell_entity, value_entity, 'has_value')
                     
@@ -284,6 +291,7 @@ class TableToKnowledgeGraph:
                             # 기존 헤더 엔티티 찾기
                             for node_id, attrs in self.graph.nodes(data=True):
                                 if attrs.get('type') == 'Header' and attrs.get('name') == header_text:
+                                    # 값이 속한 최하위 헤더에 belongs_to 관계 부여
                                     self._create_relation(value_entity, node_id, 'belongs_to')
                                     break
     
@@ -363,5 +371,3 @@ class TableToKnowledgeGraph:
                 for entity_type in ['Table', 'Row', 'Column', 'Cell', 'Header', 'Value']
             }
         }
-
-

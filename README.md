@@ -59,7 +59,9 @@ t1/
 ├── scripts/                     # 유틸리티 스크립트
 │   ├── test_single_pdf_extraction.py  # 단일 PDF 다중 파서 테스트
 │   ├── compare_pdf_extractors.py      # 파서 비교 실험
-│   └── analyze_korean_pdf_issues.py   # 한국어 PDF 문제 분석
+│   ├── analyze_korean_pdf_issues.py   # 한국어 PDF 문제 분석
+│   ├── run_table_kg_experiments.py    # 표 유형별 KG 매핑 & RDF 내보내기
+│   └── visualize_kg.py                # 단일 표 지식 그래프 시각화
 ├── analysis/                     # 실험 결과 분석 데이터
 │   ├── parser_comparison.json   # 파서 비교 결과
 │   └── kg_*.json                # 지식 그래프 통계
@@ -170,6 +172,27 @@ DMS_[기재정정]사업보고서(308페이지, 표 544개)를 대상으로 pdfp
 - None 비율이 높은 표에서도 평균 228개 이상의 노드 보존 (구조 정보 유지)
 
 자세한 내용은 [다중 파서 KG 구축 보고서](docs/DMS_KG_PDF_Report.md)를 참조하세요.
+
+### 표 유형별 지식 그래프 매핑 실험 (hwp5-table-extractor 샘플)
+
+`extracted_tables_hwp5_extractor_improved.json`에 포함된 45개 표를 8개 유형(단일 셀 안내, 2열 요약, 2열 목차, 3~4열 숫자 매트릭스, 다열 숫자/양식/텍스트 매트릭스, 기타)으로 자동 분류한 뒤 각 유형별 대표 표를 KG로 변환했습니다.
+
+```bash
+# 유형별 샘플 수를 2개로 늘려서 실행
+python scripts/run_table_kg_experiments.py \
+  --input extracted_tables_hwp5_extractor_improved.json \
+  --samples-per-type 2 \
+  --output-dir outputs/kg_table_experiments
+```
+
+생성물:
+- `outputs/kg_table_experiments/kg_table_experiments.json`: 유형 분포, 표별 메트릭, `Table -> Column -> Row -> Value` 체인 샘플 등 세부 리포트
+- `outputs/kg_table_experiments/rdf_exports/*.ttl`: 각 표를 RDF(Turtle)로 직렬화한 파일. 외부 그래프 DB나 SPARQL 툴에 바로 적재 가능
+
+핵심 관찰:
+- 단일 셀 안내형 표는 구조 노드만 존재해 길고 복잡한 문단도 Table/Row/Column 레벨에서 관리 가능
+- 다열 숫자 매트릭스(hwp5_table_7)는 헤더 2단, 값 56개를 모두 Value 노드로 승격해 수치 비교 질의를 쉽게 지원
+- 양식 템플릿 표(hwp5_table_18, hwp5_table_20)는 병합 셀 구조를 Column/Row/Value 링크로 기록해 필드-값 대응 체인을 명확히 추적
 
 ## 문서
 
