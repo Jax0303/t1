@@ -1,0 +1,10 @@
+{
+  "questions": [
+    {
+      "question": "표에서 특정 정보를 찾는 질문 예시입니다.",
+      "answer": "정답 예시",
+      "relevant_tables": ["table_1"]
+    }
+  ]
+}
+

@@ -1,0 +1,24 @@
+# HierTable-RAG Dependencies
+# Python 3.10+ required
+
+pdfplumber>=0.9.0        # PDF 테이블 추출
+
+img2table>=1.2.0         # 이미지 테이블 인식
+
+pandas>=2.0.0
+
+beautifulsoup4>=4.12.0   # HTML 파싱
+
+lxml>=4.9.0
+
+networkx>=3.1            # 그래프 구조
+
+langchain>=0.1.0         # LLM 프레임워크
+
+openai>=1.0.0
+
+faiss-cpu>=1.7.4         # 벡터 검색
+
+sentence-transformers>=2.2.0
+
+pytesseract>=0.3.10      # OCR (필요시)

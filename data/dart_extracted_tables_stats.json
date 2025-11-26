@@ -1,0 +1,24 @@
+{
+  "total_files": 2,
+  "processed_files": 2,
+  "failed_files": 0,
+  "total_tables": 652,
+  "total_pages": 233,
+  "extraction_method": "pdfplumber",
+  "file_stats": [
+    {
+      "filepath": "/home/user/t1-1/data/dart_pdfs/3S_반기보고서 (2024.09)_20241114002413.pdf",
+      "corp_name": "3S",
+      "report_nm": "반기보고서",
+      "tables_extracted": 334,
+      "status": "success"
+    },
+    {
+      "filepath": "/home/user/t1-1/data/dart_pdfs/3S_분기보고서 (2024.12)_20250214002307.pdf",
+      "corp_name": "3S",
+      "report_nm": "분기보고서",
+      "tables_extracted": 318,
+      "status": "success"
+    }
+  ]
+}

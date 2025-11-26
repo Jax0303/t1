@@ -1,0 +1,14 @@
+[
+  {
+    "type": "hitab_download",
+    "method": "git_clone",
+    "error": "404 Client Error: Not Found for url: https://github.com/Yale-LILY/HiTab/archive/refs/heads/main.zip",
+    "timestamp": 1764146107.5045774
+  },
+  {
+    "type": "realhitbench_download",
+    "method": "git_clone",
+    "error": "404 Client Error: Not Found for url: https://github.com/RealHiTBench/RealHiTBench/archive/refs/heads/main.zip",
+    "timestamp": 1764146107.7853346
+  }
+]

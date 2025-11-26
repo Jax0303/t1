@@ -1,0 +1,174 @@
+[
+  {
+    "pdf": "3S_반기보고서 (2024.09)_20241114002413.pdf",
+    "table_id": "3S_반기보고서 (2024.09)_20241114002413_table0",
+    "classification": "hierarchical_header",
+    "diagnostics": {
+      "row_count": 5,
+      "col_count": 6,
+      "merged_cells": 0,
+      "empty_cells": 0,
+      "total_cells": 30,
+      "blank_ratio": 0.0,
+      "header_long": false,
+      "header_multiline": true,
+      "empty_header_slots": 0,
+      "numeric_ratio": 0.2,
+      "mixed_content": true,
+      "large_structure": false
+    },
+    "kg_stats": {
+      "num_nodes": 44,
+      "num_edges": 45,
+      "entity_types": {
+        "Table": 1,
+        "Row": 5,
+        "Column": 6,
+        "Cell": 12,
+        "Header": 18,
+        "Value": 2
+      }
+    },
+    "embedding": {
+      "status": "skipped",
+      "reason": "pykeen_disabled"
+    },
+    "metadata": {
+      "corp_name": "3S",
+      "report_name": "반기보고서 (2024.09)",
+      "rcept_no": "20241114002413",
+      "basename": "3S_반기보고서 (2024.09)_20241114002413.pdf",
+      "page_number": 5,
+      "extraction_method": "pdfplumber"
+    }
+  },
+  {
+    "pdf": "3S_반기보고서 (2024.09)_20241114002413.pdf",
+    "table_id": "3S_반기보고서 (2024.09)_20241114002413_table1",
+    "classification": "simple_grid",
+    "diagnostics": {
+      "row_count": 5,
+      "col_count": 3,
+      "merged_cells": 0,
+      "empty_cells": 0,
+      "total_cells": 15,
+      "blank_ratio": 0.0,
+      "header_long": false,
+      "header_multiline": false,
+      "empty_header_slots": 0,
+      "numeric_ratio": 0.0,
+      "mixed_content": false,
+      "large_structure": false
+    },
+    "kg_stats": {
+      "num_nodes": 26,
+      "num_edges": 27,
+      "entity_types": {
+        "Table": 1,
+        "Row": 5,
+        "Column": 3,
+        "Cell": 6,
+        "Header": 9,
+        "Value": 2
+      }
+    },
+    "embedding": {
+      "status": "skipped",
+      "reason": "pykeen_disabled"
+    },
+    "metadata": {
+      "corp_name": "3S",
+      "report_name": "반기보고서 (2024.09)",
+      "rcept_no": "20241114002413",
+      "basename": "3S_반기보고서 (2024.09)_20241114002413.pdf",
+      "page_number": 5,
+      "extraction_method": "pdfplumber"
+    }
+  },
+  {
+    "pdf": "3S_반기보고서 (2025.09)_20251114003135.pdf",
+    "table_id": "3S_반기보고서 (2025.09)_20251114003135_table0",
+    "classification": "hierarchical_header",
+    "diagnostics": {
+      "row_count": 5,
+      "col_count": 6,
+      "merged_cells": 0,
+      "empty_cells": 0,
+      "total_cells": 30,
+      "blank_ratio": 0.0,
+      "header_long": false,
+      "header_multiline": true,
+      "empty_header_slots": 0,
+      "numeric_ratio": 0.2,
+      "mixed_content": true,
+      "large_structure": false
+    },
+    "kg_stats": {
+      "num_nodes": 44,
+      "num_edges": 45,
+      "entity_types": {
+        "Table": 1,
+        "Row": 5,
+        "Column": 6,
+        "Cell": 12,
+        "Header": 18,
+        "Value": 2
+      }
+    },
+    "embedding": {
+      "status": "skipped",
+      "reason": "pykeen_disabled"
+    },
+    "metadata": {
+      "corp_name": "3S",
+      "report_name": "반기보고서 (2025.09)",
+      "rcept_no": "20251114003135",
+      "basename": "3S_반기보고서 (2025.09)_20251114003135.pdf",
+      "page_number": 5,
+      "extraction_method": "pdfplumber"
+    }
+  },
+  {
+    "pdf": "3S_반기보고서 (2025.09)_20251114003135.pdf",
+    "table_id": "3S_반기보고서 (2025.09)_20251114003135_table1",
+    "classification": "simple_grid",
+    "diagnostics": {
+      "row_count": 5,
+      "col_count": 3,
+      "merged_cells": 0,
+      "empty_cells": 0,
+      "total_cells": 15,
+      "blank_ratio": 0.0,
+      "header_long": false,
+      "header_multiline": false,
+      "empty_header_slots": 0,
+      "numeric_ratio": 0.0,
+      "mixed_content": false,
+      "large_structure": false
+    },
+    "kg_stats": {
+      "num_nodes": 26,
+      "num_edges": 27,
+      "entity_types": {
+        "Table": 1,
+        "Row": 5,
+        "Column": 3,
+        "Cell": 6,
+        "Header": 9,
+        "Value": 2
+      }
+    },
+    "embedding": {
+      "status": "skipped",
+      "reason": "pykeen_disabled"
+    },
+    "metadata": {
+      "corp_name": "3S",
+      "report_name": "반기보고서 (2025.09)",
+      "rcept_no": "20251114003135",
+      "basename": "3S_반기보고서 (2025.09)_20251114003135.pdf",
+      "page_number": 5,
+      "extraction_method": "pdfplumber"
+    }
+  }
+]

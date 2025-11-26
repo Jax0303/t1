@@ -1,0 +1,173 @@
+@prefix ns1: <http://example.org/kg/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ns1:Table_0 a ns1:Table ;
+    ns1:contains ns1:Cell_15,
+        ns1:Cell_17,
+        ns1:Cell_19,
+        ns1:Cell_21,
+        ns1:Cell_23,
+        ns1:Cell_25 ;
+    ns1:entity_subtype "table" ;
+    ns1:has_column ns1:Column_10,
+        ns1:Column_11,
+        ns1:Column_12,
+        ns1:Column_8,
+        ns1:Column_9 ;
+    ns1:has_row ns1:Row_1,
+        ns1:Row_2,
+        ns1:Row_3,
+        ns1:Row_4,
+        ns1:Row_5,
+        ns1:Row_6,
+        ns1:Row_7 ;
+    ns1:name "hwp5_table_42" .
+
+ns1:Cell_15 a ns1:Cell ;
+    ns1:col 0 ;
+    ns1:has_value ns1:Value_16 ;
+    ns1:name "cell_3_0" ;
+    ns1:row 3 ;
+    ns1:value "성       명" .
+
+ns1:Cell_17 a ns1:Cell ;
+    ns1:col 2 ;
+    ns1:has_value ns1:Value_18 ;
+    ns1:name "cell_3_2" ;
+    ns1:row 3 ;
+    ns1:value "제출기일" .
+
+ns1:Cell_19 a ns1:Cell ;
+    ns1:col 3 ;
+    ns1:has_value ns1:Value_20 ;
+    ns1:name "cell_3_3" ;
+    ns1:row 3 ;
+    ns1:value "년      월     일" .
+
+ns1:Cell_21 a ns1:Cell ;
+    ns1:col 0 ;
+    ns1:has_value ns1:Value_22 ;
+    ns1:name "cell_4_0" ;
+    ns1:row 4 ;
+    ns1:value "사  건  명" .
+
+ns1:Cell_23 a ns1:Cell ;
+    ns1:col 0 ;
+    ns1:has_value ns1:Value_24 ;
+    ns1:name "cell_5_0" ;
+    ns1:row 5 ;
+    ns1:value "불 참 사 유" .
+
+ns1:Cell_25 a ns1:Cell ;
+    ns1:col 0 ;
+    ns1:has_value ns1:Value_26 ;
+    ns1:name "cell_6_0" ;
+    ns1:row 6 ;
+    ns1:value """진 술  내 용
+취업규칙 제65조의 규정에 의거 위와 같이 서면으로 진술하오며 만약 위 진술내용이 사실과 상이한 경우에는 여하한 처벌도 감수하겠습니다.
+년       월       일
+성  명               (인)
+인사위원회위원장   귀하""" .
+
+ns1:Column_10 a ns1:Column ;
+    ns1:has_header ns1:Header_14 ;
+    ns1:header "직위(급)" ;
+    ns1:index 2 ;
+    ns1:name "col_2" .
+
+ns1:Column_11 a ns1:Column ;
+    ns1:header "열4" ;
+    ns1:index 3 ;
+    ns1:name "col_3" .
+
+ns1:Column_12 a ns1:Column ;
+    ns1:header "열5" ;
+    ns1:index 4 ;
+    ns1:name "col_4" .
+
+ns1:Column_8 a ns1:Column ;
+    ns1:has_header ns1:Header_13 ;
+    ns1:header "소       속" ;
+    ns1:index 0 ;
+    ns1:name "col_0" .
+
+ns1:Column_9 a ns1:Column ;
+    ns1:header "열2" ;
+    ns1:index 1 ;
+    ns1:name "col_1" .
+
+ns1:Row_1 a ns1:Row ;
+    ns1:index 0 ;
+    ns1:name "row_0" .
+
+ns1:Row_2 a ns1:Row ;
+    ns1:index 1 ;
+    ns1:name "row_1" .
+
+ns1:Row_3 a ns1:Row ;
+    ns1:index 2 ;
+    ns1:name "row_2" .
+
+ns1:Row_4 a ns1:Row ;
+    ns1:index 3 ;
+    ns1:name "row_3" .
+
+ns1:Row_5 a ns1:Row ;
+    ns1:index 4 ;
+    ns1:name "row_4" .
+
+ns1:Row_6 a ns1:Row ;
+    ns1:index 5 ;
+    ns1:name "row_5" .
+
+ns1:Row_7 a ns1:Row ;
+    ns1:index 6 ;
+    ns1:name "row_6" .
+
+ns1:Value_16 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name "성       명" ;
+    ns1:text "성       명" .
+
+ns1:Value_18 a ns1:Value ;
+    ns1:belongs_to ns1:Header_14 ;
+    ns1:name "제출기일" ;
+    ns1:text "제출기일" .
+
+ns1:Value_20 a ns1:Value ;
+    ns1:name "년      월     일" ;
+    ns1:text "년      월     일" .
+
+ns1:Value_22 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name "사  건  명" ;
+    ns1:text "사  건  명" .
+
+ns1:Value_24 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name "불 참 사 유" ;
+    ns1:text "불 참 사 유" .
+
+ns1:Value_26 a ns1:Value ;
+    ns1:belongs_to ns1:Header_13 ;
+    ns1:name """진 술  내 용
+취업규칙 제65조의 규정에 의거 위와 같이 서면으로 진술하오며 만약 위 진술내용이 사실과 상이한 경우에는 여하한 처벌도 감수하겠습니다.
+년       월       일
+성  명               (인)
+인사위원회위원장   귀하""" ;
+    ns1:text """진 술  내 용
+취업규칙 제65조의 규정에 의거 위와 같이 서면으로 진술하오며 만약 위 진술내용이 사실과 상이한 경우에는 여하한 처벌도 감수하겠습니다.
+년       월       일
+성  명               (인)
+인사위원회위원장   귀하""" .
+
+ns1:Header_14 a ns1:Header ;
+    ns1:column 2 ;
+    ns1:level 0 ;
+    ns1:name "직위(급)" .
+
+ns1:Header_13 a ns1:Header ;
+    ns1:column 0 ;
+    ns1:level 0 ;
+    ns1:name "소       속" .
+
