@@ -1,0 +1,63 @@
+{
+  "systems": {
+    "HierTable-RAG": {
+      "exact_match": 0.85,
+      "f1": 0.85,
+      "structure_recall": 0.45,
+      "hierarchy_preservation": 0.0,
+      "citation_precision": 0.0,
+      "citation_recall": 0.0,
+      "hallucination_rate": 0.0,
+      "useful_cell_ratio": 0.0,
+      "token_efficiency": 0.0
+    },
+    "FlatRAG": {
+      "exact_match": 0.65,
+      "f1": 0.65,
+      "structure_recall": 0.45,
+      "hierarchy_preservation": 0.0,
+      "citation_precision": 0.0,
+      "citation_recall": 0.0,
+      "hallucination_rate": 0.0,
+      "useful_cell_ratio": 0.0,
+      "token_efficiency": 0.0
+    },
+    "TableRAG": {
+      "exact_match": 0.7,
+      "f1": 0.7,
+      "structure_recall": 0.45,
+      "hierarchy_preservation": 0.0,
+      "citation_precision": 0.0,
+      "citation_recall": 0.0,
+      "hallucination_rate": 0.0,
+      "useful_cell_ratio": 0.0,
+      "token_efficiency": 0.0
+    },
+    "DirectLLM": {
+      "exact_match": 0.6,
+      "f1": 0.6,
+      "structure_recall": 0.45,
+      "hierarchy_preservation": 0.0,
+      "citation_precision": 0.0,
+      "citation_recall": 0.0,
+      "hallucination_rate": 0.0,
+      "useful_cell_ratio": 0.0,
+      "token_efficiency": 0.0
+    }
+  },
+  "dataset_size": 20,
+  "comparison": {
+    "FlatRAG": {
+      "em_improvement": 0.19999999999999996,
+      "f1_improvement": 0.19999999999999996
+    },
+    "TableRAG": {
+      "em_improvement": 0.15000000000000002,
+      "f1_improvement": 0.15000000000000002
+    },
+    "DirectLLM": {
+      "em_improvement": 0.25,
+      "f1_improvement": 0.25
+    }
+  }
+}

@@ -79,8 +79,8 @@ data/external/
 *.docx
 *.xlsx
 
-# Model files and indices
-models/
+# Model files and indices (trained weights, not source code)
+trained_models/
 indices/
 *.index
 *.faiss
