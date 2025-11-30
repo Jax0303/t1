@@ -92,6 +92,10 @@ class E2EConfig:
     cell_loss_weight: float = 1.0
     hierarchy_loss_weight: float = 1.0
     content_loss_weight: float = 0.5
+    content_loss_weight: float = 0.5
+    use_retrieval_loss: bool = False
+    retrieval_loss_weight: float = 1.0
+    retrieval_temperature: float = 0.07
     image_size: Tuple[int, int] = (768, 768)
     
     def to_dict(self) -> Dict[str, Any]:
@@ -110,6 +114,9 @@ class E2EConfig:
             "cell_loss_weight": self.cell_loss_weight,
             "hierarchy_loss_weight": self.hierarchy_loss_weight,
             "content_loss_weight": self.content_loss_weight,
+            "use_retrieval_loss": self.use_retrieval_loss,
+            "retrieval_loss_weight": self.retrieval_loss_weight,
+            "retrieval_temperature": self.retrieval_temperature,
             "image_size": self.image_size,
         }
     
@@ -135,6 +142,7 @@ class E2EOutput:
     header_tree: Optional[HeaderTree] = None
     cell_embeddings: Optional[Any] = None  # torch.Tensor
     hierarchy_logits: Optional[Any] = None  # torch.Tensor
+    attentions: Optional[List[Any]] = None  # List[torch.Tensor]
     confidence_scores: Dict[str, float] = field(default_factory=dict)
     
     def to_dict(self) -> Dict[str, Any]:
@@ -210,6 +218,159 @@ class PositionalEncoding2D(nn.Module if TORCH_AVAILABLE else object):
         return x + pos_emb
 
 
+class TableFormerAttention(nn.Module if TORCH_AVAILABLE else object):
+    """
+    Multi-head attention with structural bias support.
+    """
+    
+    def __init__(self, embed_dim: int, num_heads: int, dropout: float = 0.0):
+        super().__init__()
+        self.embed_dim = embed_dim
+        self.num_heads = num_heads
+        self.head_dim = embed_dim // num_heads
+        assert self.head_dim * num_heads == embed_dim, "embed_dim must be divisible by num_heads"
+        
+        self.q_proj = nn.Linear(embed_dim, embed_dim)
+        self.k_proj = nn.Linear(embed_dim, embed_dim)
+        self.v_proj = nn.Linear(embed_dim, embed_dim)
+        self.out_proj = nn.Linear(embed_dim, embed_dim)
+        
+        self.dropout = nn.Dropout(dropout)
+        
+    def forward(
+        self,
+        query: "torch.Tensor",
+        key: "torch.Tensor",
+        value: "torch.Tensor",
+        attn_bias: Optional["torch.Tensor"] = None,
+        key_padding_mask: Optional["torch.Tensor"] = None,
+    ) -> Tuple["torch.Tensor", Optional["torch.Tensor"]]:
+        """
+        Args:
+            query: (B, L, D)
+            key: (B, S, D)
+            value: (B, S, D)
+            attn_bias: (B, L, S) or (B*num_heads, L, S)
+            key_padding_mask: (B, S)
+        """
+        B, L, _ = query.shape
+        S = key.shape[1]
+        
+        # Project and reshape
+        q = self.q_proj(query).view(B, L, self.num_heads, self.head_dim).transpose(1, 2)
+        k = self.k_proj(key).view(B, S, self.num_heads, self.head_dim).transpose(1, 2)
+        v = self.v_proj(value).view(B, S, self.num_heads, self.head_dim).transpose(1, 2)
+        
+        # Compute scores
+        # (B, H, L, D) x (B, H, D, S) -> (B, H, L, S)
+        scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(self.head_dim)
+        
+        # Add bias
+        if attn_bias is not None:
+            # attn_bias shape: (B, L, S) or (B, 1, L, S) or (B, H, L, S)
+            if attn_bias.dim() == 3:
+                attn_bias = attn_bias.unsqueeze(1)
+            scores = scores + attn_bias
+            
+        # Apply mask
+        if key_padding_mask is not None:
+            mask = key_padding_mask.unsqueeze(1).unsqueeze(2)  # (B, 1, 1, S)
+            scores = scores.masked_fill(mask, float('-inf'))
+            
+        attn_probs = F.softmax(scores, dim=-1)
+        attn_probs = self.dropout(attn_probs)
+        
+        # (B, H, L, S) x (B, H, S, D) -> (B, H, L, D)
+        output = torch.matmul(attn_probs, v)
+        
+        # Reshape and project out
+        output = output.transpose(1, 2).contiguous().view(B, L, self.embed_dim)
+        output = self.out_proj(output)
+        
+        return output, attn_probs
+
+
+class TableFormerEncoderLayer(nn.Module if TORCH_AVAILABLE else object):
+    """
+    Transformer encoder layer with structural bias support.
+    """
+    
+    def __init__(self, config: E2EConfig):
+        super().__init__()
+        self.self_attn = TableFormerAttention(
+            config.hidden_dim, 
+            config.num_heads, 
+            dropout=config.dropout
+        )
+        self.linear1 = nn.Linear(config.hidden_dim, config.hidden_dim * 4)
+        self.dropout = nn.Dropout(config.dropout)
+        self.linear2 = nn.Linear(config.hidden_dim * 4, config.hidden_dim)
+        
+        self.norm1 = nn.LayerNorm(config.hidden_dim)
+        self.norm2 = nn.LayerNorm(config.hidden_dim)
+        self.dropout1 = nn.Dropout(config.dropout)
+        self.dropout2 = nn.Dropout(config.dropout)
+        
+    def forward(
+        self, 
+        src: "torch.Tensor", 
+        src_mask: Optional["torch.Tensor"] = None,
+        src_key_padding_mask: Optional["torch.Tensor"] = None,
+        attn_bias: Optional["torch.Tensor"] = None,
+        output_attentions: bool = False,
+    ) -> Tuple["torch.Tensor", Optional["torch.Tensor"]]:
+        src2, attn_weights = self.self_attn(
+            src, src, src, 
+            attn_bias=attn_bias,
+            key_padding_mask=src_key_padding_mask
+        )
+        src = src + self.dropout1(src2)
+        src = self.norm1(src)
+        
+        src2 = self.linear2(self.dropout(F.relu(self.linear1(src))))
+        src = src + self.dropout2(src2)
+        src = self.norm2(src)
+        if output_attentions:
+            return src, attn_weights
+        return src, None
+
+
+class TableFormerEncoder(nn.Module if TORCH_AVAILABLE else object):
+    """
+    Transformer encoder stack with structural bias support.
+    """
+    
+    def __init__(self, config: E2EConfig):
+        super().__init__()
+        self.layers = nn.ModuleList([
+            TableFormerEncoderLayer(config) for _ in range(config.num_encoder_layers)
+        ])
+        
+    def forward(
+        self, 
+        src: "torch.Tensor", 
+        mask: Optional["torch.Tensor"] = None, 
+        src_key_padding_mask: Optional["torch.Tensor"] = None,
+        attn_bias: Optional["torch.Tensor"] = None,
+        output_attentions: bool = False,
+    ) -> Tuple["torch.Tensor", Optional[List["torch.Tensor"]]]:
+        output = src
+        all_attentions = [] if output_attentions else None
+        
+        for layer in self.layers:
+            output, attn = layer(
+                output, 
+                src_mask=mask, 
+                src_key_padding_mask=src_key_padding_mask,
+                attn_bias=attn_bias,
+                output_attentions=output_attentions
+            )
+            if output_attentions:
+                all_attentions.append(attn)
+                
+        return output, all_attentions
+
+
 class VisionTableEncoder(nn.Module if TORCH_AVAILABLE else object):
     """
     Vision encoder for table images.
@@ -262,17 +423,11 @@ class VisionTableEncoder(nn.Module if TORCH_AVAILABLE else object):
         self.pos_encoding = PositionalEncoding2D(config.hidden_dim)
         
         # Transformer encoder
-        encoder_layer = nn.TransformerEncoderLayer(
-            d_model=config.hidden_dim,
-            nhead=config.num_heads,
-            dim_feedforward=config.hidden_dim * 4,
-            dropout=config.dropout,
-            batch_first=True,
-        )
-        self.transformer_encoder = nn.TransformerEncoder(
-            encoder_layer,
-            num_layers=config.num_encoder_layers,
-        )
+        self.transformer_encoder = TableFormerEncoder(config)
+        
+        # Learnable structural biases
+        self.row_bias = nn.Parameter(torch.tensor(0.0))
+        self.col_bias = nn.Parameter(torch.tensor(0.0))
         
         logger.info(f"VisionTableEncoder initialized (hidden_dim={config.hidden_dim})")
     
@@ -327,7 +482,11 @@ class VisionTableEncoder(nn.Module if TORCH_AVAILABLE else object):
         
         return ResBlock(in_channels, out_channels, stride)
     
-    def forward(self, images: "torch.Tensor") -> "torch.Tensor":
+    def forward(
+        self, 
+        images: "torch.Tensor",
+        output_attentions: bool = False,
+    ) -> Tuple["torch.Tensor", Optional[List["torch.Tensor"]]]:
         """
         Encode table images.
         
@@ -346,14 +505,39 @@ class VisionTableEncoder(nn.Module if TORCH_AVAILABLE else object):
         # Add positional encoding
         features = self.pos_encoding(features)
         
-        # Flatten spatial dimensions
         B, C, H, W = features.shape
+        L = H * W
+        
+        # Compute structural bias
+        # Create grid of coordinates
+        rows = torch.arange(H, device=images.device).unsqueeze(1).expand(H, W).flatten()
+        cols = torch.arange(W, device=images.device).unsqueeze(0).expand(H, W).flatten()
+        
+        # (L, 1) - (1, L) -> (L, L)
+        row_diff = rows.unsqueeze(1) - rows.unsqueeze(0)
+        col_diff = cols.unsqueeze(1) - cols.unsqueeze(0)
+        
+        # Same row: row_diff == 0
+        # Same col: col_diff == 0
+        
+        attn_bias = torch.zeros(L, L, device=images.device)
+        attn_bias = attn_bias.masked_fill(row_diff == 0, self.row_bias)
+        attn_bias = attn_bias.masked_fill(col_diff == 0, self.col_bias)
+        
+        # Expand for batch: (B, L, L)
+        attn_bias = attn_bias.unsqueeze(0).expand(B, -1, -1)
+        
+        # Flatten spatial dimensions
         features = features.flatten(2).permute(0, 2, 1)  # (B, H'*W', hidden_dim)
         
         # Apply transformer encoder
-        encoded = self.transformer_encoder(features)
+        encoded, attentions = self.transformer_encoder(
+            features, 
+            attn_bias=attn_bias,
+            output_attentions=output_attentions
+        )
         
-        return encoded
+        return encoded, attentions
 
 
 class HierarchicalHeaderPredictor(nn.Module if TORCH_AVAILABLE else object):
@@ -655,6 +839,106 @@ class TableStructureDecoder(nn.Module if TORCH_AVAILABLE else object):
         }
 
 
+class RetrievalAwareLoss(nn.Module if TORCH_AVAILABLE else object):
+    """
+    Computes retrieval-aware loss for table parsing.
+    
+    Optimizes the table structure to maximize similarity between 
+    queries and their corresponding target cells (contextualized by hierarchy).
+    """
+    
+    def __init__(self, config: E2EConfig):
+        super().__init__()
+        self.config = config
+        
+    def forward(
+        self,
+        query_embeddings: "torch.Tensor",
+        cell_embeddings: "torch.Tensor",
+        parent_scores: "torch.Tensor",
+        target_mapping: "torch.Tensor",
+    ) -> "torch.Tensor":
+        """
+        Compute retrieval loss.
+        
+        Args:
+            query_embeddings: (B, num_queries, hidden_dim)
+            cell_embeddings: (B, num_cells, hidden_dim)
+            parent_scores: (B, num_cells, num_cells) - Parent probability matrix (logits)
+            target_mapping: (B, num_queries, num_cells) - 1 if cell is target for query
+            
+        Returns:
+            Loss value
+        """
+        if not TORCH_AVAILABLE:
+            return 0.0
+            
+        B, num_queries, hidden_dim = query_embeddings.shape
+        _, num_cells, _ = cell_embeddings.shape
+        
+        # 1. Compute Contextualized Cell Embeddings
+        # We want to aggregate information from ancestors.
+        # Approximation: Use parent_scores as adjacency matrix to propagate features.
+        # For simplicity in this iteration, we'll do a single hop aggregation:
+        # Context = Cell + sum(P(parent) * Parent)
+        
+        # Normalize parent scores to probabilities
+        # Mask self-loops or handle them? For now, standard softmax over all potential parents
+        parent_probs = F.softmax(parent_scores, dim=-1)  # (B, N, N)
+        
+        # Aggregate parent features
+        # (B, N, N) x (B, N, D) -> (B, N, D)
+        context_features = torch.bmm(parent_probs, cell_embeddings)
+        
+        # Combine cell and context
+        contextualized_cells = cell_embeddings + context_features
+        contextualized_cells = F.normalize(contextualized_cells, p=2, dim=-1)
+        
+        # Normalize queries
+        query_embeddings = F.normalize(query_embeddings, p=2, dim=-1)
+        
+        # 2. Compute Similarity Matrix
+        # (B, Q, D) x (B, N, D)^T -> (B, Q, N)
+        sim_matrix = torch.bmm(query_embeddings, contextualized_cells.transpose(1, 2))
+        sim_matrix = sim_matrix / self.config.retrieval_temperature
+        
+        # 3. Compute Contrastive Loss (InfoNCE)
+        # For each query, positive samples are the target cells.
+        
+        total_loss = 0.0
+        valid_queries = 0
+        
+        for b in range(B):
+            sim = sim_matrix[b]  # (Q, N)
+            targets = target_mapping[b]  # (Q, N)
+            
+            # Mask for queries that have at least one target
+            has_target = targets.sum(dim=1) > 0
+            if not has_target.any():
+                continue
+                
+            sim = sim[has_target]
+            targets = targets[has_target]
+            
+            # LogSumExp of all scores (denominator)
+            log_sum_exp_all = torch.logsumexp(sim, dim=1)
+            
+            # LogSumExp of positive scores (numerator)
+            sim_pos = sim.clone()
+            sim_pos[targets == 0] = float('-inf')
+            log_sum_exp_pos = torch.logsumexp(sim_pos, dim=1)
+            
+            loss = -(log_sum_exp_pos - log_sum_exp_all).mean()
+            total_loss += loss
+            valid_queries += 1
+            
+        if valid_queries > 0:
+            return total_loss / valid_queries
+            
+        # Return zero loss with grad if no valid queries
+        return torch.tensor(0.0, device=query_embeddings.device, requires_grad=True)
+
+
 class E2EHierarchicalTableModel(nn.Module if TORCH_AVAILABLE else object):
     """
     End-to-End Hierarchical Table Understanding Model.
@@ -696,12 +980,18 @@ class E2EHierarchicalTableModel(nn.Module if TORCH_AVAILABLE else object):
         self.structure_decoder = TableStructureDecoder(self.config)
         self.hierarchy_predictor = HierarchicalHeaderPredictor(self.config)
         
+        if self.config.use_retrieval_loss:
+            self.retrieval_loss_fn = RetrievalAwareLoss(self.config)
+        
         logger.info("E2EHierarchicalTableModel initialized")
     
     def forward(
         self,
         images: "torch.Tensor",
         targets: Optional[Dict[str, Any]] = None,
+        queries: Optional["torch.Tensor"] = None,
+        query_targets: Optional["torch.Tensor"] = None,
+        output_attentions: bool = False,
     ) -> Tuple[E2EOutput, Optional[Dict[str, "torch.Tensor"]]]:
         """
         Forward pass.
@@ -717,7 +1007,10 @@ class E2EHierarchicalTableModel(nn.Module if TORCH_AVAILABLE else object):
             return E2EOutput(), None
         
         # 1. Encode images
-        encoded_features = self.vision_encoder(images)
+        encoded_features, attentions = self.vision_encoder(
+            images, 
+            output_attentions=output_attentions
+        )
         
         # 2. Decode structure
         structure_output = self.structure_decoder(encoded_features)
@@ -733,6 +1026,7 @@ class E2EHierarchicalTableModel(nn.Module if TORCH_AVAILABLE else object):
         output = E2EOutput(
             cell_embeddings=cell_embeddings,
             hierarchy_logits=hierarchy_output["parent_scores"],
+            attentions=attentions if output_attentions else None,
         )
         
         # Compute losses if training
@@ -742,6 +1036,8 @@ class E2EHierarchicalTableModel(nn.Module if TORCH_AVAILABLE else object):
                 structure_output,
                 hierarchy_output,
                 targets,
+                queries=queries,
+                query_targets=query_targets,
             )
         
         return output, losses
@@ -751,6 +1047,8 @@ class E2EHierarchicalTableModel(nn.Module if TORCH_AVAILABLE else object):
         structure_output: Dict[str, "torch.Tensor"],
         hierarchy_output: Dict[str, "torch.Tensor"],
         targets: Dict[str, Any],
+        queries: Optional["torch.Tensor"] = None,
+        query_targets: Optional["torch.Tensor"] = None,
     ) -> Dict[str, "torch.Tensor"]:
         """
         Compute multi-task losses.
@@ -793,12 +1091,27 @@ class E2EHierarchicalTableModel(nn.Module if TORCH_AVAILABLE else object):
             losses["header_loss"] = header_loss * self.config.hierarchy_loss_weight
         
         # Level prediction loss
+        # Level prediction loss
         if "level_labels" in targets:
             level_loss = F.cross_entropy(
                 hierarchy_output["level_logits"].view(-1, self.config.max_hierarchy_depth),
                 targets["level_labels"].view(-1),
             )
             losses["level_loss"] = level_loss * self.config.hierarchy_loss_weight
+            
+        # Retrieval loss
+        if (
+            self.config.use_retrieval_loss 
+            and queries is not None 
+            and query_targets is not None
+        ):
+            retrieval_loss = self.retrieval_loss_fn(
+                query_embeddings=queries,
+                cell_embeddings=structure_output["cell_embeddings"],
+                parent_scores=hierarchy_output["parent_scores"],
+                target_mapping=query_targets,
+            )
+            losses["retrieval_loss"] = retrieval_loss * self.config.retrieval_loss_weight
         
         # Parent prediction loss
         if "parent_labels" in targets:
@@ -824,6 +1137,52 @@ class E2EHierarchicalTableModel(nn.Module if TORCH_AVAILABLE else object):
         losses["total_loss"] = sum(losses.values())
         
         return losses
+    
+    def extract_attention_graph(
+        self,
+        attentions: List["torch.Tensor"],
+        threshold: float = 0.1,
+    ) -> List[Tuple[int, int, float]]:
+        """
+        Extract graph edges from attention weights.
+        
+        Args:
+            attentions: List of attention maps (B, H, L, L)
+            threshold: Minimum attention score to consider an edge
+            
+        Returns:
+            List of (source_idx, target_idx, weight) tuples for the first batch item
+        """
+        if not attentions:
+            return []
+            
+        # Use the last layer's attention
+        # Shape: (B, NumHeads, SeqLen, SeqLen)
+        last_attn = attentions[-1]
+        
+        # Average over heads
+        # (B, SeqLen, SeqLen)
+        avg_attn = last_attn.mean(dim=1)
+        
+        # Get first batch item
+        attn_map = avg_attn[0]  # (SeqLen, SeqLen)
+        
+        edges = []
+        num_tokens = attn_map.shape[0]
+        
+        # Find strong connections
+        # We only care about edges with weight > threshold
+        indices = torch.nonzero(attn_map > threshold)
+        
+        for idx in indices:
+            src, tgt = idx[0].item(), idx[1].item()
+            weight = attn_map[src, tgt].item()
+            
+            # Filter self-loops if needed, but sometimes they are useful
+            if src != tgt:
+                edges.append((src, tgt, weight))
+                
+        return edges
     
     @torch.no_grad()
     def predict(self, images: "torch.Tensor") -> E2EOutput:

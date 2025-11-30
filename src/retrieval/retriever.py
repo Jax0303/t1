@@ -123,6 +123,7 @@ class StructureAwareRetriever:
         self.indexer = indexer
         self.graph_builder = graph_builder
         self.use_reranking = use_reranking
+        self.graph: Optional[Any] = None  # nx.DiGraph
         
         # Get embedding model from indexer
         if hasattr(indexer, "embedding_model"):
@@ -131,6 +132,25 @@ class StructureAwareRetriever:
             self.embedding_model = None
         
         logger.info("StructureAwareRetriever initialized")
+
+    def load_graph(self, path: str) -> None:
+        """
+        Load graph from file.
+        
+        Args:
+            path: Path to graph file (JSON format)
+        """
+        if self.graph_builder is None:
+            logger.warning("GraphBuilder not available, cannot load graph")
+            return
+            
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                json_str = f.read()
+            self.graph = self.graph_builder.from_json(json_str)
+            logger.info(f"Loaded graph with {self.graph.number_of_nodes()} nodes")
+        except Exception as e:
+            logger.error(f"Failed to load graph from {path}: {e}")
 
     def classify_query_type(self, query: str) -> QueryType:
         """
@@ -525,8 +545,11 @@ class StructureAwareRetriever:
         Returns:
             Expanded list of RetrievalResult objects
         """
-        if self.graph_builder is None:
-            logger.warning("GraphBuilder not available, skipping expansion")
+        if self.graph_builder is None or self.graph is None:
+            if self.graph_builder is None:
+                logger.warning("GraphBuilder not available, skipping expansion")
+            else:
+                logger.warning("Graph not loaded, skipping expansion")
             return initial_results
         
         logger.info(f"Expanding context with {hops} hops")
@@ -534,10 +557,75 @@ class StructureAwareRetriever:
         expanded_results = list(initial_results)
         expanded_ids = {r.item_id for r in initial_results}
         
-        # For each result, find neighbors in graph
-        # Note: This requires graph to be built and stored
-        # For now, return initial results
-        # Full implementation would use graph_builder.get_cell_context
+        # Map graph nodes to metadata for reconstruction
+        # This is a bit inefficient; in production, graph nodes should store metadata ID
+        # For now, we'll try to match by coordinates/content if possible,
+        # or just create simplified results from graph data
+        
+        for result in initial_results:
+            # Find corresponding node in graph
+            # We need a way to map RetrievalResult to graph node ID
+            # Assuming metadata contains coordinates which map to graph node IDs
+            
+            if result.granularity != "cell":
+                continue
+                
+            # Construct graph node ID from metadata coordinates
+            # Format: data_{row}_{col}
+            (row_start, _), (col_start, _) = result.metadata.coordinates
+            node_id = f"data_{row_start}_{col_start}"
+            
+            if not self.graph.has_node(node_id):
+                continue
+                
+            # Get context subgraph
+            context_subgraph = self.graph_builder.get_cell_context(
+                self.graph, node_id, hops=hops
+            )
+            
+            # Convert subgraph nodes back to RetrievalResults
+            for neighbor_id, attrs in context_subgraph.nodes(data=True):
+                if attrs.get("type") != "data":
+                    continue
+                    
+                # Skip if already in results (approximate check by content/coords)
+                # Ideally we'd have the item_id in the graph
+                
+                # Create a new result for this neighbor
+                # Note: We don't have the full metadata (like item_id) here
+                # unless we stored it in the graph.
+                # For this prototype, we'll create a transient result
+                
+                row, col = attrs.get("coordinates", (0, 0))
+                
+                # Check if we already have this cell
+                is_new = True
+                for r in expanded_results:
+                    if r.metadata.coordinates == ((row, row + 1), (col, col + 1)):
+                        is_new = False
+                        break
+                
+                if is_new:
+                    # Create simplified metadata
+                    neighbor_meta = IndexMetadata(
+                        item_id=f"graph_exp_{neighbor_id}",
+                        source_table_id=result.metadata.source_table_id,
+                        granularity="cell",
+                        hierarchy_path=f"Graph Expansion > ({row}, {col})",
+                        coordinates=((row, row + 1), (col, col + 1)),
+                        text=attrs.get("text", ""),
+                    )
+                    
+                    neighbor_result = RetrievalResult(
+                        item_id=neighbor_meta.item_id,
+                        metadata=neighbor_meta,
+                        score=result.score * 0.8,  # Decay score for expanded nodes
+                        granularity="cell",
+                        content=attrs.get("text", ""),
+                        hierarchy_path=neighbor_meta.hierarchy_path,
+                    )
+                    
+                    expanded_results.append(neighbor_result)
         
         return expanded_results
 

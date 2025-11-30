@@ -56,8 +56,10 @@ HierTable-RAG는 **계층적 테이블 구조**를 인식하고 이를 활용하
 
 ### 2. End-to-End Hierarchical Table Understanding (NEW!)
 - **Vision + Semantic 통합 모델**
+- **Structural Attention Bias**: 행/열 관계 기반 학습 가능한 Attention 편향
+- **Retrieval-Aware Parsing**: 검색 최적화 구조 학습 (Contrastive Loss)
+- **Attention-to-Edge KG**: Attention 가중치 기반 Soft KG Edge 추출
 - 이미지에서 직접 계층 구조 추출
-- Contrastive Learning으로 헤더 그룹핑
 
 ### 3. Multi-Granularity Retrieval
 - Table / Subtable / Row / Cell 레벨 인덱싱
