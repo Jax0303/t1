@@ -26,19 +26,19 @@ HierTable-RAG는 **계층적 테이블 구조**를 인식하고 이를 활용하
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌─────────────┐    ┌──────────────────┐    ┌───────────────┐  │
-│  │ Table Image │───▶│ E2E Hierarchical │───▶│  HeaderTree   │  │
-│  │   or HTML   │    │     Model        │    │    (JSON)     │  │
+│  │ Table Image │───▶│     GraphTSR     │───▶│ Hetero Graph  │  │
+│  │   or HTML   │    │ (Structure Rec.) │    │(Tab-Cell-Text)│  │
 │  └─────────────┘    └──────────────────┘    └───────┬───────┘  │
 │                                                     │          │
-│  ┌──────────────────────────────────────────────────┘          │
-│  │                                                              │
-│  ▼                                                              │
+│                                  ┌──────────────────┘          │
+│                                  │                             │
+│                                  ▼                             │
 │  ┌─────────────────┐    ┌──────────────────┐                   │
-│  │ HierarchicalIndex│───▶│ Structure-Aware  │                   │
-│  │ (Multi-Granular) │    │    Retriever     │                   │
+│  │ Adaptive Router │───▶│   GNN Indexer    │                   │
+│  │ (Query Classif.)│    │   (GraphSAGE)    │                   │
 │  └─────────────────┘    └────────┬─────────┘                   │
-│                                  │                              │
-│                                  ▼                              │
+│                                  │                             │
+│                                  ▼                             │
 │  ┌─────────────────┐    ┌──────────────────┐    ┌───────────┐  │
 │  │  ContextBundle  │───▶│ StructuredPrompt │───▶│  Answer   │  │
 │  │ (cells + paths) │    │    Builder       │    │ + Citations│  │
@@ -49,32 +49,30 @@ HierTable-RAG는 **계층적 테이블 구조**를 인식하고 이를 활용하
 
 ## ✨ 주요 기능
 
-### 1. 계층적 헤더 트리 추출 (Hierarchical Header Tree Extraction)
-- colspan/rowspan 기반 부모-자식 관계 자동 감지
-- HiTab/FinTabNet 스타일 다단계 헤더 지원
-- JSON-LD 형식 출력
+### 1. GraphTSR (Graph-based Table Structure Recognition)
+- **Cell Detection**: Faster R-CNN을 이용한 셀 영역 탐지
+- **Edge Classification**: 셀 간의 관계(Row/Col/Parent)를 GNN으로 분류
+- **Hierarchy Building**: Parent-Child 관계를 기반으로 계층 트리 구축
 
-### 2. End-to-End Hierarchical Table Understanding (NEW!)
+### 2. GNN-based Structure-Aware Indexing
+- **Heterogeneous Graph**: Table-Cell-Text 이종 그래프 구축
+- **GraphSAGE**: 이웃 셀 정보를 집계하여 구조 인식 임베딩 생성
+- **Hierarchy Bonus**: 검색 시 계층 구조(헤더-데이터)를 반영하여 정확도 향상
+
+### 3. Adaptive Query Routing
+- **Exact Value**: 특정 셀 값 조회 → Cell Level 검색
+- **Header Match**: 스키마/헤더 질문 → Text/Triple Level 검색
+- **Aggregation**: 집계/요약 질문 → Table Level 검색
+
+### 4. End-to-End Hierarchical Table Understanding
 - **Vision + Semantic 통합 모델**
 - **Structural Attention Bias**: 행/열 관계 기반 학습 가능한 Attention 편향
 - **Retrieval-Aware Parsing**: 검색 최적화 구조 학습 (Contrastive Loss)
-- **Attention-to-Edge KG**: Attention 가중치 기반 Soft KG Edge 추출
-- 이미지에서 직접 계층 구조 추출
 
-### 3. Multi-Granularity Retrieval
-- Table / Subtable / Row / Cell 레벨 인덱싱
-- 쿼리 유형별 적응형 검색 전략
-- 토큰 효율 30-50% 개선
-
-### 4. Structure-Aware RAG Pipeline
+### 5. Structure-Aware RAG Pipeline
 - 계층 경로 포함 프롬프트 생성
 - 셀 좌표 기반 인용 (Citation)
 - Chain-of-Thought 추론 지원
-
-### 5. Knowledge Graph Mapping
-- 테이블 → RDF 트리플 변환
-- 상위 헤더 → 속성 카테고리
-- 행 → 엔티티, 셀 값 → 관계
 
 ## 📊 실험 결과
 
@@ -107,26 +105,22 @@ pip install -r requirements.txt
 ### 기본 사용법
 
 ```python
-from src.parsing.extractor import TableExtractor
-from src.parsing.hierarchy import HierarchyExtractor
-from src.retrieval.retriever import StructureAwareRetriever
-from src.generation.prompting import StructuredPromptBuilder
+from src.hiertable_rag.core.rag import HierTableRAG
 
-# 1. 테이블 추출
-extractor = TableExtractor()
-table = extractor.extract_from_html(html_string)
+# 시스템 초기화
+rag = HierTableRAG()
 
-# 2. 계층 구조 감지
-hierarchy_extractor = HierarchyExtractor()
-header_tree = hierarchy_extractor.extract_header_tree(table)
+# 1. 테이블 추출 및 인덱싱
+tables = rag.extract_tables("report.pdf")
+processed_tables = rag.process_tables(tables)
+rag.build_index(processed_tables)
 
-# 3. 계층 구조 시각화
-print(header_tree.visualize_ascii())
-# TABLE_ROOT
-# ├── 2023년 (span=4)
-# │   ├── Q1 > 매출
-# │   └── Q1 > 비용
-# └── 2024년 (span=2)
+# 2. 질의 수행 (Adaptive Routing 자동 적용)
+result = rag.query("2023년 Q1 매출은 얼마인가요?")
+
+# 3. 응답 생성
+response = rag.generate_response("2023년 Q1 매출은 얼마인가요?", result)
+print(response)
 ```
 
 ### E2E 모델 사용 (Vision 기반)
@@ -155,35 +149,28 @@ print(result["answer"].answer_text)
 ```
 HierTable-RAG/
 ├── src/
-│   ├── parsing/           # 테이블 파싱 및 계층 추출
-│   │   ├── extractor.py   # PDF/HTML 테이블 추출
-│   │   ├── hierarchy.py   # 계층적 헤더 트리 추출
-│   │   └── cell_merger.py # 병합 셀 처리
+│   ├── hiertable_rag/     # Core RAG Logic
+│   │   └── core/
+│   │       ├── rag.py         # Main Pipeline
+│   │       ├── indexer.py     # Multi-Granularity Indexer
+│   │       ├── gnn_indexer.py # GNN-based Indexer
+│   │       ├── router.py      # Adaptive Router
+│   │       └── graph.py       # Knowledge Graph Builder
 │   │
-│   ├── encoding/          # 테이블 인코딩
-│   │   ├── tree_encoder.py    # 트리 → JSON/텍스트
-│   │   └── graph_builder.py   # 테이블 → 그래프
+│   ├── models/            # Deep Learning Models
+│   │   ├── vision_encoder.py  # Multi-res Vision Encoder
+│   │   ├── graph_tsr.py       # Graph-based TSR
+│   │   └── e2e_hierarchical.py # E2E Model
 │   │
-│   ├── retrieval/         # 검색 모듈
-│   │   ├── indexer.py     # Multi-Granularity 인덱싱
-│   │   └── retriever.py   # Structure-Aware 검색
-│   │
-│   ├── generation/        # 응답 생성
-│   │   └── prompting.py   # 구조화된 프롬프트 빌더
-│   │
-│   ├── models/            # E2E 모델 (NEW!)
-│   │   ├── e2e_hierarchical.py  # Vision + Hierarchy 모델
-│   │   ├── trainer.py           # 학습 유틸리티
-│   │   └── integration.py       # RAG 통합
-│   │
-│   └── evaluation/        # 평가 모듈
-│       ├── metrics.py     # QA 메트릭
-│       └── baselines.py   # 베이스라인 시스템
+│   ├── parsing/           # Legacy Parsing Utils
+│   ├── retrieval/         # Legacy Retrieval Utils
+│   ├── generation/        # Prompting & Generation
+│   └── evaluation/        # Metrics & Benchmarks
 │
-├── experiments/           # 실험 결과
-├── scripts/               # 실행 스크립트
-├── data/                  # 데이터셋
-└── outputs/               # 출력 파일 (KG, 그래프 등)
+├── experiments/           # Experiment Results
+├── scripts/               # Training & Running Scripts
+├── data/                  # Datasets
+└── outputs/               # Artifacts
 ```
 
 ## 🔬 핵심 알고리즘

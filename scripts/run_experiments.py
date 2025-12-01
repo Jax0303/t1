@@ -293,25 +293,40 @@ class ExperimentRunner:
         self, config: ExperimentConfig, llm_reasoner: LLMReasoner
     ) -> Any:
         """Create HierTable-RAG system."""
-        # This would create the actual HierTable-RAG system
-        # For now, return a wrapper that matches the interface
+        from src.hiertable_rag.core.rag import HierTableRAG
         
         class HierTableRAGWrapper:
             def __init__(self, config, llm_reasoner):
                 self.config = config
                 self.llm_reasoner = llm_reasoner
-                self.prompt_builder = StructuredPromptBuilder()
-                # Would initialize retriever here
+                self.rag = HierTableRAG()
                 
             def answer_question(
                 self, query: str, tables: List[TableObject]
             ) -> Tuple[Answer, Dict[str, Any]]:
                 """Answer question using HierTable-RAG."""
-                # Placeholder implementation
-                # Would use StructureAwareRetriever and prompt builder
-                prompt = f"Answer: {query}"
-                answer = self.llm_reasoner.generate_answer(prompt)
-                return answer, {}
+                # 1. Index the provided tables on-the-fly (Simulated)
+                # In a real scenario, we might check if they are already indexed
+                # Convert TableObject to dict for RAG
+                table_dicts = []
+                for t in tables:
+                    table_dicts.append({
+                        "id": "temp_id",
+                        "cells": [{"text": c.content} for row in t.cells for c in row],
+                        # ... other fields
+                    })
+                
+                processed = self.rag.process_tables(table_dicts)
+                self.rag.build_index(processed)
+                
+                # 2. Query
+                result = self.rag.query(query)
+                
+                # 3. Generate Answer
+                # We use the RAG's generate_response or the LLMReasoner
+                response_text = self.rag.generate_response(query, result)
+                
+                return Answer(answer_text=response_text), {"route": result["route"]}
         
         return HierTableRAGWrapper(config, llm_reasoner)
     

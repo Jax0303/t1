@@ -1,0 +1,93 @@
+2025-12-01 23:04:01,308 - __main__ - INFO - ============================================================
+2025-12-01 23:04:01,308 - __main__ - INFO - Starting E2E Hierarchical Table Model Experiment
+2025-12-01 23:04:01,308 - __main__ - INFO - ============================================================
+2025-12-01 23:04:01,308 - __main__ - INFO - PyTorch version: 2.9.1+cu128
+2025-12-01 23:04:01,371 - __main__ - INFO - CUDA available: True
+2025-12-01 23:04:01,371 - __main__ - INFO - Using device: cuda
+2025-12-01 23:04:01,372 - __main__ - INFO - Model config: {'vision_encoder': 'microsoft/table-transformer-detection', 'hidden_dim': 256, 'num_heads': 8, 'num_encoder_layers': 3, 'num_decoder_layers': 3, 'max_cells': 200, 'max_hierarchy_depth': 5, 'dropout': 0.1, 'use_contrastive_loss': True, 'contrastive_temperature': 0.07, 'cell_loss_weight': 1.0, 'hierarchy_loss_weight': 1.0, 'content_loss_weight': 0.5, 'use_retrieval_loss': False, 'retrieval_loss_weight': 1.0, 'retrieval_temperature': 0.07, 'image_size': (512, 512)}
+2025-12-01 23:04:01,372 - __main__ - INFO - Initializing model...
+2025-12-01 23:04:01,435 - src.models.e2e_hierarchical - INFO - VisionTableEncoder initialized (hidden_dim=256)
+2025-12-01 23:04:01,472 - src.models.e2e_hierarchical - INFO - TableStructureDecoder initialized
+2025-12-01 23:04:01,477 - src.models.e2e_hierarchical - INFO - HierarchicalHeaderPredictor initialized
+2025-12-01 23:04:01,477 - src.models.e2e_hierarchical - INFO - E2EHierarchicalTableModel initialized
+2025-12-01 23:04:01,477 - __main__ - INFO - Training config: {'batch_size': 2, 'num_epochs': 2, 'learning_rate': 0.0001, 'weight_decay': 0.01, 'warmup_steps': 100, 'gradient_clip': 1.0, 'save_steps': 500, 'eval_steps': 250, 'log_steps': 50, 'output_dir': 'outputs/e2e_training', 'resume_from': None}
+2025-12-01 23:04:01,477 - __main__ - INFO - Loading training data from data/processed/synthetic_train.json
+2025-12-01 23:04:01,477 - __main__ - INFO - Loading validation data from data/processed/synthetic_val.json
+2025-12-01 23:04:01,501 - src.models.trainer - INFO - Loaded 100 annotations
+2025-12-01 23:04:01,503 - src.models.trainer - INFO - Loaded 20 annotations
+2025-12-01 23:04:01,503 - __main__ - INFO - Train dataset size: 100
+2025-12-01 23:04:01,503 - __main__ - INFO - Val dataset size: 20
+2025-12-01 23:04:01,503 - __main__ - INFO - Initializing trainer...
+2025-12-01 23:04:01,764 - src.models.trainer - INFO - Trainer initialized (device=cuda)
+2025-12-01 23:04:01,764 - __main__ - INFO - Starting training...
+2025-12-01 23:04:01,764 - src.models.trainer - INFO - Starting training...
+Epoch 1:   0%|          | 0/50 [00:00<?, ?it/s]/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [0,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [1,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [2,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [3,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [4,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [5,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [6,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [7,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [8,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [9,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [10,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [11,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [12,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [13,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [14,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [15,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [16,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [17,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [18,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [19,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [20,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [21,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [22,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [23,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [24,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [25,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [26,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [27,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [28,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [29,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [30,0,0] Assertion `t >= 0 && t < n_classes` failed.
+/pytorch/aten/src/ATen/native/cuda/Loss.cu:245: nll_loss_forward_reduce_cuda_kernel_2d: block: [0,0,0], thread: [31,0,0] Assertion `t >= 0 && t < n_classes` failed.
+Epoch 1:   0%|          | 0/50 [00:01<?, ?it/s]
+2025-12-01 23:04:02,791 - __main__ - ERROR - Error during training: CUDA error: device-side assert triggered
+Search for `cudaErrorAssert' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+Traceback (most recent call last):
+  File "/home/user/t1-2/experiments/run_new_datasets.py", line 146, in run_experiment
+    history = trainer.train()
+              ^^^^^^^^^^^^^^^
+  File "/home/user/t1-2/src/models/trainer.py", line 359, in train
+    output, losses = self.model(images, targets)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/.pyenv/versions/3.11.6/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/.pyenv/versions/3.11.6/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/t1-2/src/models/e2e_hierarchical.py", line 1035, in forward
+    losses = self._compute_losses(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/t1-2/src/models/e2e_hierarchical.py", line 1130, in _compute_losses
+    contrastive_loss = self.hierarchy_predictor.compute_contrastive_loss(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/t1-2/src/models/e2e_hierarchical.py", line 708, in compute_contrastive_loss
+    if labels[i] < 0:  # Skip invalid cells
+       ^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: device-side assert triggered
+Search for `cudaErrorAssert' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+2025-12-01 23:04:02,795 - __main__ - INFO - ============================================================
+2025-12-01 23:04:02,795 - __main__ - INFO - Experiment completed!
+2025-12-01 23:04:02,795 - __main__ - INFO - ============================================================

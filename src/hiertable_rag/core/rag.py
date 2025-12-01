@@ -9,12 +9,19 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+from src.hiertable_rag.core.indexer import MultiGranularityIndexer
+from src.hiertable_rag.core.router import AdaptiveRouter
+from src.hiertable_rag.core.graph import KnowledgeGraphBuilder
+import numpy as np
+
 class HierTableRAG:
     """
     Hierarchical Table-based Retrieval Augmented Generation system.
     
-    This class orchestrates the extraction, processing, and retrieval
-    of hierarchical table data for RAG applications.
+    Integrates:
+    - Multi-granularity Indexing (Table, Text, Cell)
+    - Adaptive Routing (Exact, Header, Aggregation)
+    - Knowledge Graph Construction
     """
 
     def __init__(
@@ -25,94 +32,108 @@ class HierTableRAG:
     ) -> None:
         """
         Initialize the HierTable-RAG system.
-        
-        Args:
-            config_path: Path to configuration file
-            embedding_model: Name of the embedding model to use
-            vector_store_path: Path to store/load vector embeddings
         """
         self.config_path = config_path
         self.embedding_model = embedding_model
         self.vector_store_path = vector_store_path
-        logger.info("HierTableRAG initialized")
+        
+        # Initialize components
+        self.indexer = MultiGranularityIndexer()
+        self.router = AdaptiveRouter()
+        self.kg_builder = KnowledgeGraphBuilder()
+        
+        logger.info("HierTableRAG initialized with Structure-Aware components")
 
     def extract_tables(
         self, document_path: Path, output_dir: Optional[Path] = None
     ) -> List[Dict[str, Any]]:
-        """
-        Extract tables from a document.
-        
-        Args:
-            document_path: Path to the input document
-            output_dir: Optional directory to save extracted tables
-            
-        Returns:
-            List of extracted table dictionaries
-        """
+        """Extract tables (Mock implementation for now)."""
         logger.info(f"Extracting tables from {document_path}")
-        # Implementation will be added
-        return []
+        # Mock data
+        return [{
+            "id": "table_001",
+            "title": "Quarterly Financial Report",
+            "headers": [
+                {"text": "Revenue", "parent": None},
+                {"text": "Q1", "parent": "Revenue"},
+                {"text": "Q2", "parent": "Revenue"}
+            ],
+            "cells": [
+                {"text": "100M", "row_header": "Revenue", "col_header": "Q1"},
+                {"text": "120M", "row_header": "Revenue", "col_header": "Q2"}
+            ]
+        }]
 
     def process_tables(
         self, tables: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
-        """
-        Process and structure extracted tables hierarchically.
-        
-        Args:
-            tables: List of raw table dictionaries
-            
-        Returns:
-            List of processed hierarchical table structures
-        """
-        logger.info(f"Processing {len(tables)} tables")
-        # Implementation will be added
-        return []
+        """Process tables and build KG."""
+        processed = []
+        for table in tables:
+            # Build KG
+            triples = self.kg_builder.build_graph(table)
+            table["triples"] = triples
+            processed.append(table)
+        return processed
 
     def build_index(
         self, processed_tables: List[Dict[str, Any]]
     ) -> None:
-        """
-        Build a searchable index from processed tables.
-        
-        Args:
-            processed_tables: List of processed table structures
-        """
+        """Build multi-granularity index."""
         logger.info("Building search index")
-        # Implementation will be added
+        
+        for table in processed_tables:
+            # 1. Table Level (Mock embedding)
+            table_emb = np.random.rand(768).tolist()
+            self.indexer.add_table(table, table_emb)
+            
+            # 2. Cell Level
+            for cell in table.get("cells", []):
+                cell_emb = np.random.rand(768).tolist()
+                self.indexer.add_cell(cell, cell_emb)
+                
+            # 3. Text Level (Triples as text)
+            for s, p, o in table.get("triples", []):
+                text = f"{s} {p} {o}"
+                text_emb = np.random.rand(768).tolist()
+                self.indexer.add_text_chunk(text, table["id"], text_emb)
 
     def query(
         self, query_text: str, top_k: int = 5
-    ) -> List[Dict[str, Any]]:
+    ) -> Dict[str, Any]:
         """
-        Query the RAG system with natural language.
+        Query the RAG system with adaptive routing.
+        """
+        # 1. Route Query
+        route = self.router.route(query_text)
+        logger.info(f"Query: '{query_text}' -> Route: {route}")
         
-        Args:
-            query_text: Natural language query
-            top_k: Number of top results to return
+        # 2. Retrieve based on route
+        query_emb = np.random.rand(768).tolist() # Mock embedding
+        
+        if route == "EXACT_VALUE":
+            results = self.indexer.search(query_emb, level="cell", top_k=top_k)
+        elif route == "HEADER_MATCH":
+            results = self.indexer.search(query_emb, level="text", top_k=top_k) # Search KG triples
+        else: # AGGREGATION
+            results = self.indexer.search(query_emb, level="table", top_k=top_k)
             
-        Returns:
-            List of relevant table segments with metadata
-        """
-        logger.info(f"Querying: {query_text}")
-        # Implementation will be added
-        return []
+        return {
+            "route": route,
+            "results": results
+        }
 
     def generate_response(
-        self, query: str, retrieved_context: List[Dict[str, Any]]
+        self, query: str, retrieved_context: Dict[str, Any]
     ) -> str:
-        """
-        Generate a response using retrieved context.
+        """Generate response."""
+        route = retrieved_context["route"]
+        results = retrieved_context["results"]
         
-        Args:
-            query: Original query text
-            retrieved_context: Retrieved relevant table segments
+        if not results:
+            return "No relevant information found."
             
-        Returns:
-            Generated response text
-        """
-        logger.info("Generating response")
-        # Implementation will be added
-        return ""
+        # Mock generation
+        return f"Based on {route} retrieval, found {len(results)} relevant items. Top result: {results[0]['item']}"
 
 

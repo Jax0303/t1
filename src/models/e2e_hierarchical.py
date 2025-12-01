@@ -371,17 +371,13 @@ class TableFormerEncoder(nn.Module if TORCH_AVAILABLE else object):
         return output, all_attentions
 
 
+from src.models.vision_encoder import MultiResVisionEncoder
+
 class VisionTableEncoder(nn.Module if TORCH_AVAILABLE else object):
     """
-    Vision encoder for table images.
+    Vision encoder wrapper for table images.
     
-    Extracts visual features from table images using a CNN backbone
-    followed by transformer encoder layers.
-    
-    Architecture:
-    - ResNet/EfficientNet backbone for feature extraction
-    - 2D positional encoding
-    - Transformer encoder for global context
+    Now uses MultiResVisionEncoder for multi-scale processing.
     """
     
     def __init__(self, config: E2EConfig):
@@ -398,89 +394,17 @@ class VisionTableEncoder(nn.Module if TORCH_AVAILABLE else object):
         super().__init__()
         self.config = config
         
-        # CNN Backbone (simplified ResNet-like)
-        self.backbone = nn.Sequential(
-            # Initial conv
-            nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False),
-            nn.BatchNorm2d(64),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
-            
-            # Block 1
-            self._make_layer(64, 64, 2),
-            
-            # Block 2
-            self._make_layer(64, 128, 2, stride=2),
-            
-            # Block 3
-            self._make_layer(128, 256, 2, stride=2),
-            
-            # Block 4
-            self._make_layer(256, config.hidden_dim, 2, stride=2),
-        )
+        # Use new Multi-resolution Encoder
+        self.backbone = MultiResVisionEncoder(config)
         
-        # Positional encoding
-        self.pos_encoding = PositionalEncoding2D(config.hidden_dim)
-        
-        # Transformer encoder
+        # Transformer encoder (still used for global context after fusion)
         self.transformer_encoder = TableFormerEncoder(config)
         
         # Learnable structural biases
         self.row_bias = nn.Parameter(torch.tensor(0.0))
         self.col_bias = nn.Parameter(torch.tensor(0.0))
         
-        logger.info(f"VisionTableEncoder initialized (hidden_dim={config.hidden_dim})")
-    
-    def _make_layer(
-        self, 
-        in_channels: int, 
-        out_channels: int, 
-        num_blocks: int, 
-        stride: int = 1
-    ) -> nn.Sequential:
-        """Create a residual layer."""
-        layers = []
-        
-        # First block with potential downsampling
-        layers.append(self._make_block(in_channels, out_channels, stride))
-        
-        # Remaining blocks
-        for _ in range(1, num_blocks):
-            layers.append(self._make_block(out_channels, out_channels))
-        
-        return nn.Sequential(*layers)
-    
-    def _make_block(
-        self, 
-        in_channels: int, 
-        out_channels: int, 
-        stride: int = 1
-    ) -> nn.Module:
-        """Create a residual block."""
-        
-        class ResBlock(nn.Module):
-            def __init__(self, in_ch, out_ch, stride):
-                super().__init__()
-                self.conv1 = nn.Conv2d(in_ch, out_ch, 3, stride, 1, bias=False)
-                self.bn1 = nn.BatchNorm2d(out_ch)
-                self.conv2 = nn.Conv2d(out_ch, out_ch, 3, 1, 1, bias=False)
-                self.bn2 = nn.BatchNorm2d(out_ch)
-                
-                self.shortcut = nn.Sequential()
-                if stride != 1 or in_ch != out_ch:
-                    self.shortcut = nn.Sequential(
-                        nn.Conv2d(in_ch, out_ch, 1, stride, bias=False),
-                        nn.BatchNorm2d(out_ch)
-                    )
-            
-            def forward(self, x):
-                out = F.relu(self.bn1(self.conv1(x)))
-                out = self.bn2(self.conv2(out))
-                out += self.shortcut(x)
-                out = F.relu(out)
-                return out
-        
-        return ResBlock(in_channels, out_channels, stride)
+        logger.info(f"VisionTableEncoder initialized with MultiResVisionEncoder (hidden_dim={config.hidden_dim})")
     
     def forward(
         self, 
@@ -499,14 +423,13 @@ class VisionTableEncoder(nn.Module if TORCH_AVAILABLE else object):
         if not TORCH_AVAILABLE:
             return None
         
-        # Extract CNN features
-        features = self.backbone(images)  # (B, hidden_dim, H', W')
+        # Extract fused features from MultiRes Encoder
+        # Output shape: (B, L, hidden_dim) where L = H*W of 1.0x scale
+        features, _ = self.backbone(images)
         
-        # Add positional encoding
-        features = self.pos_encoding(features)
-        
-        B, C, H, W = features.shape
-        L = H * W
+        B, L, D = features.shape
+        H = int(math.sqrt(L)) # Assuming square feature map for simplicity
+        W = H
         
         # Compute structural bias
         # Create grid of coordinates
@@ -526,9 +449,6 @@ class VisionTableEncoder(nn.Module if TORCH_AVAILABLE else object):
         
         # Expand for batch: (B, L, L)
         attn_bias = attn_bias.unsqueeze(0).expand(B, -1, -1)
-        
-        # Flatten spatial dimensions
-        features = features.flatten(2).permute(0, 2, 1)  # (B, H'*W', hidden_dim)
         
         # Apply transformer encoder
         encoded, attentions = self.transformer_encoder(

@@ -895,6 +895,8 @@ class LLMReasoner:
                 self.api_key = os.getenv("OPENAI_API_KEY")
             elif self.provider == "anthropic":
                 self.api_key = os.getenv("ANTHROPIC_API_KEY")
+            elif self.provider == "gemini":
+                self.api_key = os.getenv("GEMINI_API_KEY")
             else:
                 self.api_key = None
         
@@ -914,10 +916,15 @@ class LLMReasoner:
             self.client = (
                 anthropic.Anthropic(api_key=self.api_key) if self.api_key else None
             )
+        elif self.provider == "gemini":
+            from src.utils.gemini_manager import GeminiKeyManager
+            # Expect api_key to be a comma-separated list of keys for Gemini
+            keys = self.api_key.split(",") if self.api_key else []
+            self.gemini_manager = GeminiKeyManager(keys)
         else:
             raise ValueError(
                 f"Unsupported provider: {provider}. "
-                f"Supported: openai, anthropic"
+                f"Supported: openai, anthropic, gemini"
             )
         
         # Rate limiting
@@ -935,7 +942,7 @@ class LLMReasoner:
         model: Optional[str] = None,
     ) -> Answer:
         """
-        Call OpenAI/Anthropic API with prompt and parse response.
+        Call OpenAI/Anthropic/Gemini API with prompt and parse response.
         
         Args:
             prompt: Prompt string
@@ -970,8 +977,10 @@ class LLMReasoner:
                 # Call API
                 if self.provider == "openai":
                     response = self._call_openai(prompt, model)
-                else:  # anthropic
+                elif self.provider == "anthropic":
                     response = self._call_anthropic(prompt, model)
+                elif self.provider == "gemini":
+                    response = self._call_gemini(prompt, model)
                 
                 # Parse response
                 answer = self._parse_response(response, model)
@@ -1062,26 +1071,26 @@ class LLMReasoner:
             logger.error(f"Anthropic API call failed: {e}")
             raise
 
+    def _call_gemini(self, prompt: str, model: str) -> Any:
+        """
+        Call Gemini API via GeminiKeyManager.
+        """
+        return self.gemini_manager.generate_content(
+            model_name=model,
+            prompt=prompt,
+            temperature=self.temperature
+        )
+
     def _parse_response(self, response: Any, model: str) -> Answer:
         """
         Parse API response into Answer object.
-        
-        Args:
-            response: API response object
-            model: Model name
-            
-        Returns:
-            Answer object
         """
         if self.provider == "openai":
             content = response.choices[0].message.content
             prompt_tokens = response.usage.prompt_tokens
             completion_tokens = response.usage.completion_tokens
             
-            # Try to extract reasoning and answer
             reasoning, answer_text = self._extract_reasoning_and_answer(content)
-            
-            # Try to extract confidence score
             confidence = self._extract_confidence(content)
             
             return Answer(
@@ -1092,16 +1101,12 @@ class LLMReasoner:
                 prompt_tokens=prompt_tokens,
                 completion_tokens=completion_tokens,
             )
-        else:  # anthropic
+        elif self.provider == "anthropic":
             content = response.content[0].text
             
-            # Try to extract reasoning and answer
             reasoning, answer_text = self._extract_reasoning_and_answer(content)
-            
-            # Try to extract confidence score
             confidence = self._extract_confidence(content)
             
-            # Try to get token usage from Anthropic response if available
             prompt_tokens = 0
             completion_tokens = 0
             if hasattr(response, 'usage'):
@@ -1116,6 +1121,23 @@ class LLMReasoner:
                 prompt_tokens=prompt_tokens,
                 completion_tokens=completion_tokens,
             )
+        elif self.provider == "gemini":
+            content = response # response is just text string from our manager
+            
+            reasoning, answer_text = self._extract_reasoning_and_answer(content)
+            confidence = self._extract_confidence(content)
+            
+            return Answer(
+                answer_text=answer_text,
+                reasoning=reasoning,
+                confidence=confidence,
+                model=model,
+                # Token counts not easily available from simple text response
+                prompt_tokens=0,
+                completion_tokens=0,
+            )
+        else:
+            raise ValueError(f"Unknown provider: {self.provider}")
 
     def _extract_reasoning_and_answer(
         self, content: str

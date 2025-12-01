@@ -7,9 +7,9 @@ table data using RAG techniques.
 
 __version__ = "0.1.0"
 
-from hiertable_rag.core import HierTableRAG
-from hiertable_rag.extractors import TableExtractor
-from hiertable_rag.processors import TableProcessor
+from src.hiertable_rag.core.rag import HierTableRAG
+# from src.hiertable_rag.extractors import TableExtractor
+# from src.hiertable_rag.processors import TableProcessor
 
 __all__ = [
     "HierTableRAG",
