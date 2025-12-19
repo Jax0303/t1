@@ -227,10 +227,4 @@ def _retrieve_adaptive(self, query, top_k):
 
 MIT License
 
-## 🤝 기여
 
-기여를 환영합니다! Issue를 생성하거나 Pull Request를 제출해주세요.
-
-## 📧 문의
-
-프로젝트 관련 문의사항이 있으시면 Issue를 생성해주세요.
