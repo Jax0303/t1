@@ -1,5 +1,5 @@
 """
-HierTable-RAG: Hierarchical Table-based Retrieval Augmented Generation
+Agentic TableRAG: Hierarchical Table-based Retrieval Augmented Generation
 """
 
 __version__ = "0.1.0"
