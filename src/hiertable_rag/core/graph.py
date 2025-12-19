@@ -1,57 +1,105 @@
-"""
-Knowledge Graph Builder for Table Structure.
-
-Converts hierarchical table data into Graph triples:
-(Header) -> [has_child] -> (Sub-Header)
-(Header) -> [has_value] -> (Cell)
-(Row_Entity) -> [has_attribute] -> (Cell)
-"""
-
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 import logging
+from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
 
-class KnowledgeGraphBuilder:
+@dataclass
+class SchemaNode:
+    """Represents a header or hierarchical structure element."""
+    id: str
+    text: str
+    parent_id: Optional[str] = None
+    level: int = 0
+    children_ids: List[str] = field(default_factory=list)
+
+@dataclass
+class CellNode:
+    """Represents a data cell with value and its structural context."""
+    id: str
+    text: str
+    row_header_ids: List[str] = field(default_factory=list)
+    col_header_ids: List[str] = field(default_factory=list)
+    table_id: str = ""
+
+class TableGraph:
     """
-    Constructs KG from table structure.
+    Constructs and manages a graph representation of a table.
+    Includes SchemaNodes (headers) and CellNodes (values).
     """
     
-    def build_graph(self, table_data: Dict[str, Any]) -> List[Tuple[str, str, str]]:
+    def __init__(self, table_id: str):
+        self.table_id = table_id
+        self.schema_nodes: Dict[str, SchemaNode] = {}
+        self.cell_nodes: Dict[str, CellNode] = {}
+        self.triples: List[Tuple[str, str, str]] = []
+
+    def build_from_dict(self, table_data: Dict[str, Any]):
         """
-        Build triples from table.
+        Builds the graph from a structured dictionary.
         
-        Args:
-            table_data: Processed table dictionary
-            
-        Returns:
-            List of (Subject, Predicate, Object) triples
+        Expected table_data format:
+        {
+            "id": "table_1",
+            "headers": [{"id": "h1", "text": "Header 1", "parent": None}, ...],
+            "cells": [{"id": "c1", "text": "Value", "row_headers": ["h1"], "col_headers": ["h2"]}, ...]
+        }
         """
-        triples = []
-        table_id = table_data.get("id", "unknown")
-        
-        # 1. Header Hierarchy
+        # 1. Build Schema Nodes
         headers = table_data.get("headers", [])
         for h in headers:
-            # Parent-Child
-            if h.get("parent"):
-                triples.append((h["parent"], "has_child", h["text"]))
-                
-        # 2. Cell Values
-        cells = table_data.get("cells", [])
-        for cell in cells:
-            row_header = cell.get("row_header")
-            col_header = cell.get("col_header")
-            value = cell.get("text")
+            node_id = str(h.get("id", f"{self.table_id}:h_{h['text']}"))
+            node = SchemaNode(
+                id=node_id,
+                text=h["text"],
+                parent_id=h.get("parent")
+            )
+            self.schema_nodes[node_id] = node
             
-            if row_header and value:
-                triples.append((row_header, "has_value", value))
+            if node.parent_id:
+                self.triples.append((str(node.parent_id), "has_child", node.id))
+        
+        # Update children_ids
+        for node_id, node in self.schema_nodes.items():
+            if node.parent_id and str(node.parent_id) in self.schema_nodes:
+                self.schema_nodes[str(node.parent_id)].children_ids.append(node_id)
+
+        # 2. Build Cell Nodes
+        cells = table_data.get("cells", [])
+        for i, cell in enumerate(cells):
+            cell_id = str(cell.get("id", f"{self.table_id}:c_{i}"))
+            row_headers = [str(rh) for rh in cell.get("row_headers", [cell.get("row_header")] if cell.get("row_header") else [])]
+            col_headers = [str(ch) for ch in cell.get("col_headers", [cell.get("col_header")] if cell.get("col_header") else [])]
+            
+            node = CellNode(
+                id=cell_id,
+                text=str(cell["text"]),
+                row_header_ids=row_headers,
+                col_header_ids=col_headers,
+                table_id=self.table_id
+            )
+            self.cell_nodes[cell_id] = node
+            
+            for rh in row_headers:
+                self.triples.append((rh, "has_value", cell_id))
+            for ch in col_headers:
+                self.triples.append((ch, "contains", cell_id))
                 
-            if col_header and value:
-                triples.append((col_header, "contains", value))
-                
-            # Link row and col headers
-            if row_header and col_header:
-                triples.append((row_header, "related_to", col_header))
-                
-        return triples
+        return self.triples
+
+    def get_context_for_cell(self, cell_id: str) -> str:
+        """Returns string representation of cell and its headers."""
+        if cell_id not in self.cell_nodes:
+            return ""
+        cell = self.cell_nodes[cell_id]
+        headers = []
+        for h_id in cell.row_header_ids + cell.col_header_ids:
+            if h_id in self.schema_nodes:
+                headers.append(self.schema_nodes[h_id].text)
+        return f"Cell: {cell.text} | Context: {' > '.join(headers)}"
+
+class KnowledgeGraphBuilder:
+    """Legacy wrapper for backward compatibility if needed, though we prefer TableGraph."""
+    def build_graph(self, table_data: Dict[str, Any]) -> List[Tuple[str, str, str]]:
+        tg = TableGraph(table_data.get("id", "unknown"))
+        return tg.build_from_dict(table_data)

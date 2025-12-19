@@ -9,131 +9,89 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-from src.hiertable_rag.core.indexer import MultiGranularityIndexer
-from src.hiertable_rag.core.router import AdaptiveRouter
-from src.hiertable_rag.core.graph import KnowledgeGraphBuilder
+from typing import List, Dict, Any, Optional
+from pathlib import Path
+import logging
 import numpy as np
+
+logger = logging.getLogger(__name__)
+
+from src.hiertable_rag.core.indexer import MultiGranularityIndexer, MultiGranularityRetriever
+from src.hiertable_rag.core.planner import RuleBasedPlanner, TrainablePlanner
+from src.hiertable_rag.core.graph import TableGraph
+from src.hiertable_rag.generators.agentic_generator import AgenticGenerator
+from src.hiertable_rag.core.evaluator import LatencyTracker
 
 class HierTableRAG:
     """
-    Hierarchical Table-based Retrieval Augmented Generation system.
-    
-    Integrates:
-    - Multi-granularity Indexing (Table, Text, Cell)
-    - Adaptive Routing (Exact, Header, Aggregation)
-    - Knowledge Graph Construction
+    Agentic TableRAG system.
     """
 
     def __init__(
         self,
-        config_path: Optional[Path] = None,
-        embedding_model: Optional[str] = None,
-        vector_store_path: Optional[Path] = None,
+        planner_type: str = "rule_based",
+        embedding_dim: int = 768
     ) -> None:
-        """
-        Initialize the HierTable-RAG system.
-        """
-        self.config_path = config_path
-        self.embedding_model = embedding_model
-        self.vector_store_path = vector_store_path
+        self.indexer = MultiGranularityIndexer(embedding_dim=embedding_dim)
+        self.retriever = MultiGranularityRetriever(self.indexer)
         
-        # Initialize components
-        self.indexer = MultiGranularityIndexer()
-        self.router = AdaptiveRouter()
-        self.kg_builder = KnowledgeGraphBuilder()
-        
-        logger.info("HierTableRAG initialized with Structure-Aware components")
-
-    def extract_tables(
-        self, document_path: Path, output_dir: Optional[Path] = None
-    ) -> List[Dict[str, Any]]:
-        """Extract tables (Mock implementation for now)."""
-        logger.info(f"Extracting tables from {document_path}")
-        # Mock data
-        return [{
-            "id": "table_001",
-            "title": "Quarterly Financial Report",
-            "headers": [
-                {"text": "Revenue", "parent": None},
-                {"text": "Q1", "parent": "Revenue"},
-                {"text": "Q2", "parent": "Revenue"}
-            ],
-            "cells": [
-                {"text": "100M", "row_header": "Revenue", "col_header": "Q1"},
-                {"text": "120M", "row_header": "Revenue", "col_header": "Q2"}
-            ]
-        }]
-
-    def process_tables(
-        self, tables: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
-        """Process tables and build KG."""
-        processed = []
-        for table in tables:
-            # Build KG
-            triples = self.kg_builder.build_graph(table)
-            table["triples"] = triples
-            processed.append(table)
-        return processed
-
-    def build_index(
-        self, processed_tables: List[Dict[str, Any]]
-    ) -> None:
-        """Build multi-granularity index."""
-        logger.info("Building search index")
-        
-        for table in processed_tables:
-            # 1. Table Level (Mock embedding)
-            table_emb = np.random.rand(768).tolist()
-            self.indexer.add_table(table, table_emb)
+        if planner_type == "trainable":
+            self.planner = TrainablePlanner()
+        else:
+            self.planner = RuleBasedPlanner()
             
-            # 2. Cell Level
-            for cell in table.get("cells", []):
-                cell_emb = np.random.rand(768).tolist()
-                self.indexer.add_cell(cell, cell_emb)
-                
-            # 3. Text Level (Triples as text)
-            for s, p, o in table.get("triples", []):
-                text = f"{s} {p} {o}"
-                text_emb = np.random.rand(768).tolist()
-                self.indexer.add_text_chunk(text, table["id"], text_emb)
+        self.generator = AgenticGenerator()
+        self.latency_tracker = LatencyTracker()
+        
+        logger.info(f"HierTableRAG initialized with {planner_type} planner")
 
-    def query(
-        self, query_text: str, top_k: int = 5
-    ) -> Dict[str, Any]:
-        """
-        Query the RAG system with adaptive routing.
-        """
-        # 1. Route Query
-        route = self.router.route(query_text)
-        logger.info(f"Query: '{query_text}' -> Route: {route}")
+    def ingest_table(self, table_data: Dict[str, Any]):
+        """Builds Graph and indexes all levels."""
+        table_id = table_data.get("id", "unknown")
+        tg = TableGraph(table_id)
+        tg.build_from_dict(table_data)
         
-        # 2. Retrieve based on route
-        query_emb = np.random.rand(768).tolist() # Mock embedding
+        # 1. Table level
+        self.indexer.add_table(table_data, np.random.rand(self.indexer.embedding_dim).tolist())
         
-        if route == "EXACT_VALUE":
-            results = self.indexer.search(query_emb, level="cell", top_k=top_k)
-        elif route == "HEADER_MATCH":
-            results = self.indexer.search(query_emb, level="text", top_k=top_k) # Search KG triples
-        else: # AGGREGATION
-            results = self.indexer.search(query_emb, level="table", top_k=top_k)
+        # 2. Schema level
+        for node_id, node in tg.schema_nodes.items():
+            self.indexer.add_schema({"id": node_id, "text": node.text}, np.random.rand(self.indexer.embedding_dim).tolist())
             
+        # 3. Cell level
+        for cell_id, cell in tg.cell_nodes.items():
+            context_text = tg.get_context_for_cell(cell_id)
+            self.indexer.add_cell({"id": cell_id, "text": context_text}, np.random.rand(self.indexer.embedding_dim).tolist())
+
+    def query(self, query_text: str, top_k: int = 5) -> Dict[str, Any]:
+        """Runs the agentic RAG pipeline."""
+        self.latency_tracker.start("total")
+        
+        # 1. Planning
+        self.latency_tracker.start("planning")
+        levels = self.planner.plan(query_text)
+        self.latency_tracker.stop("planning")
+        
+        # 2. Retrieval
+        self.latency_tracker.start("retrieval")
+        query_emb = np.random.rand(self.indexer.embedding_dim).tolist() # In real app, use model.encode
+        raw_results = self.retriever.retrieve(query_emb, levels=levels, top_k=top_k)
+        evidence_pack = self.retriever.bundle_evidence(raw_results)
+        self.latency_tracker.stop("retrieval")
+        
+        # 3. Generation
+        self.latency_tracker.start("generation")
+        response = self.generator.generate(query_text, evidence_pack)
+        self.latency_tracker.stop("generation")
+        
+        self.latency_tracker.stop("total")
+        
         return {
-            "route": route,
-            "results": results
+            "query": query_text,
+            "levels_used": levels,
+            "response": response,
+            "evidence_count": len(evidence_pack),
+            "latency_ms": self.latency_tracker.durations
         }
-
-    def generate_response(
-        self, query: str, retrieved_context: Dict[str, Any]
-    ) -> str:
-        """Generate response."""
-        route = retrieved_context["route"]
-        results = retrieved_context["results"]
-        
-        if not results:
-            return "No relevant information found."
-            
-        # Mock generation
-        return f"Based on {route} retrieval, found {len(results)} relevant items. Top result: {results[0]['item']}"
 
 
