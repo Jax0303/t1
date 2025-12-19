@@ -1,0 +1,33 @@
+{
+  "summary": {
+    "avg_citation_f1": 1.0,
+    "avg_latency_ms": 0.6327629089355469,
+    "avg_tokens": 259.0,
+    "total_samples": 1
+  },
+  "results": [
+    {
+      "sample_id": "q1",
+      "query": "What is the revenue for North America in Q1?",
+      "response": {
+        "answer": "The value for What is the revenue for North America in Q1? is Cell: 120M | Context: North America > Q1.",
+        "cited_cell_ids": [
+          "c1"
+        ],
+        "confidence": 0.95
+      },
+      "metrics": {
+        "citation_f1": 1.0,
+        "latency_ms": 0.6327629089355469,
+        "tokens": 259,
+        "answer": "The value for What is the revenue for North America in Q1? is Cell: 120M | Context: North America > Q1."
+      },
+      "latency_breakdown": {
+        "planning": 0.016450881958007812,
+        "retrieval": 0.5664825439453125,
+        "generation": 0.028848648071289062,
+        "total": 0.6198883056640625
+      }
+    }
+  ]
+}

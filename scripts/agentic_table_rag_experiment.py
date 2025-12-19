@@ -6,6 +6,13 @@ from pathlib import Path
 from typing import List, Dict, Any
 import numpy as np
 
+import sys
+import os
+from pathlib import Path
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from src.hiertable_rag.core.rag import HierTableRAG
 from src.hiertable_rag.core.evaluator import AgenticEvaluator
 

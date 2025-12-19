@@ -1,11 +1,11 @@
-# HierTable-RAG
+# Agentic-TableRAG
 
-**Hierarchical Table-based Retrieval Augmented Generation**
+**Self-Evolving Agentic Retrieval-Augmented Generation for Hierarchical Tables**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-HierTable-RAG는 **계층적 테이블 구조**를 인식하고 이를 활용하여 정확한 테이블 QA를 수행하는 연구 프로젝트입니다.
+Agentic-TableRAG는 **지능형 플래너(Agentic Planner)**를 통해 테이블의 계층 구조를 동적으로 파악하고, 최적의 검색 입도(Granularity)를 결정하여 정확한 답변과 인용(Citation)을 제공하는 연구 프로젝트입니다.
 
 ## 🎯 연구 목표
 
@@ -107,41 +107,33 @@ pip install -r requirements.txt
 ```python
 from src.hiertable_rag.core.rag import HierTableRAG
 
-# 시스템 초기화
-rag = HierTableRAG()
+# 1. Agentic RAG 시스템 초기화 (Planner 타입 설정 가능)
+rag = HierTableRAG(planner_type="rule_based") # or "trainable"
 
-# 1. 테이블 추출 및 인덱싱
-tables = rag.extract_tables("report.pdf")
-processed_tables = rag.process_tables(tables)
-rag.build_index(processed_tables)
+# 2. 데이터 준비 (Hierarchical Table Data)
+table_data = {
+    "id": "t1",
+    "headers": [...],
+    "cells": [...]
+}
 
-# 2. 질의 수행 (Adaptive Routing 자동 적용)
-result = rag.query("2023년 Q1 매출은 얼마인가요?")
+# 3. 인덱싱 (Table, Schema, Cell level 동시 인덱싱)
+rag.ingest_table(table_data)
 
-# 3. 응답 생성
-response = rag.generate_response("2023년 Q1 매출은 얼마인가요?", result)
-print(response)
+# 4. 에이전틱 질의 수행
+# Planner가 질문을 분석하여 필요한 검색 레벨(Table/Schema/Cell)을 선택합니다.
+result = rag.query("What is the Q1 revenue for North America?")
+
+# 5. 근거 기반 응답 확인
+print(f"Answer: {result['response']['answer']}")
+print(f"Cited Evidence: {result['response']['cited_cell_ids']}")
 ```
 
-### E2E 모델 사용 (Vision 기반)
+### 실험 실행
 
-```python
-from src.models.integration import E2ETableRAGPipeline
-
-# 파이프라인 초기화
-pipeline = E2ETableRAGPipeline(
-    llm_provider="openai",
-    llm_model="gpt-4",
-    device="cuda"  # or "cpu"
-)
-
-# 이미지에서 직접 QA
-result = pipeline.process_and_answer(
-    image_path="table.png",
-    question="2023년 Q1 매출은 얼마인가요?"
-)
-
-print(result["answer"].answer_text)
+```bash
+# HiTab 데이터셋 대상 실험 실행
+python scripts/agentic_table_rag_experiment.py --dataset hitab --input data/sample_dataset.json
 ```
 
 ## 📁 프로젝트 구조
@@ -149,28 +141,25 @@ print(result["answer"].answer_text)
 ```
 HierTable-RAG/
 ├── src/
-│   ├── hiertable_rag/     # Core RAG Logic
-│   │   └── core/
-│   │       ├── rag.py         # Main Pipeline
-│   │       ├── indexer.py     # Multi-Granularity Indexer
-│   │       ├── gnn_indexer.py # GNN-based Indexer
-│   │       ├── router.py      # Adaptive Router
-│   │       └── graph.py       # Knowledge Graph Builder
+│   ├── hiertable_rag/     # Core Agentic RAG Logic
+│   │   ├── core/          # RAG Pipeline, Indexer, Planner, Evaluator
+│   │   ├── extractors/    # PDF/Table Extractors
+│   │   ├── generators/    # Citation-grounded Generators
+│   │   ├── retrievers/    # Multi-Granularity Retrievers
+│   │   └── processors/    # Table Structure Processors
 │   │
-│   ├── models/            # Deep Learning Models
-│   │   ├── vision_encoder.py  # Multi-res Vision Encoder
-│   │   ├── graph_tsr.py       # Graph-based TSR
-│   │   └── e2e_hierarchical.py # E2E Model
+│   ├── models/            # Deep Learning Models (Structure Recognition)
+│   │   ├── vision_encoder.py
+│   │   ├── graph_tsr.py
+│   │   └── e2e_hierarchical.py
 │   │
-│   ├── parsing/           # Legacy Parsing Utils
-│   ├── retrieval/         # Legacy Retrieval Utils
-│   ├── generation/        # Prompting & Generation
-│   └── evaluation/        # Metrics & Benchmarks
+│   └── utils/             # Common Utilities
 │
-├── experiments/           # Experiment Results
-├── scripts/               # Training & Running Scripts
-├── data/                  # Datasets
-└── outputs/               # Artifacts
+├── scripts/               # Experiment & Training Scripts
+├── data/                  # Datasets (HiTab, etc.)
+├── experiments/           # Experiment Results & Logs
+├── outputs/               # Generated Artifacts
+└── verify_agentic_rag.py  # Core Pipeline Verification Script
 ```
 
 ## 🔬 핵심 알고리즘
