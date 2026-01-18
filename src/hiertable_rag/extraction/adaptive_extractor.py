@@ -23,13 +23,22 @@ class AdaptiveExtractor:
         self.high_threshold = high_threshold
         self.low_threshold = low_threshold
 
-    def extract(self, table_raw: Dict[str, Any]) -> Dict[str, Any]:
+    def extract(self, table_raw: Dict[str, Any], force_strategy: str = None) -> Dict[str, Any]:
         """
-        Routes the extraction request based on confidence.
+        Routes the extraction request based on confidence or a forced strategy.
         """
         confidence = self.confidence_estimator.estimate_confidence(table_raw)
         
-        if confidence > self.high_threshold:
+        if force_strategy == "OCR_ONLY":
+            result = self.basic_ocr.extract(table_raw)
+            result["strategy_tier"] = "FORCED (BASIC)"
+        elif force_strategy == "OCR_TSR":
+            result = self.structural_ocr.extract(table_raw)
+            result["strategy_tier"] = "FORCED (STRUCTURAL)"
+        elif force_strategy == "OCR_VLM":
+            result = self.vision_vlm.extract(table_raw)
+            result["strategy_tier"] = "FORCED (VISION_LLM)"
+        elif confidence > self.high_threshold:
             logger.info(f"Confidence ({confidence:.2f}) > {self.high_threshold}: Routing to BASIC OCR")
             result = self.basic_ocr.extract(table_raw)
             result["strategy_tier"] = "HIGH_CONFIDENCE (BASIC)"

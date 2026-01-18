@@ -109,3 +109,10 @@ temp/
 Thumbs.db
 .DS_Store
 .venv311/
+# Binary tools
+git-xet
+xet
+*.tar.gz
+
+# Data
+data/hf/

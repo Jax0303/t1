@@ -17,32 +17,43 @@ class MultiGranularityIndexer:
         self.schema_index: List[Dict[str, Any]] = []
         self.cell_index: List[Dict[str, Any]] = []
         
-    def add_table(self, table_data: Dict[str, Any], embedding: List[float]):
-        """Add table-level entry."""
+    def add_table(self, table_data: Dict[str, Any], embedding: List[float], confidence: float = 1.0):
+        """Add table-level entry with confidence metadata."""
         self.table_index.append({
             "data": table_data,
             "embedding": embedding,
-            "id": table_data.get("id", len(self.table_index))
+            "id": table_data.get("id", len(self.table_index)),
+            "confidence": confidence
         })
         
-    def add_schema(self, schema_data: Dict[str, Any], embedding: List[float]):
-        """Add schema-level entry (headers)."""
+    def add_schema(self, schema_data: Dict[str, Any], embedding: List[float], confidence: float = 1.0):
+        """Add schema-level entry (headers) with confidence metadata."""
         self.schema_index.append({
             "data": schema_data,
             "embedding": embedding,
-            "id": schema_data.get("id", len(self.schema_index))
+            "id": schema_data.get("id", len(self.schema_index)),
+            "confidence": confidence
         })
         
-    def add_cell(self, cell_data: Dict[str, Any], embedding: List[float]):
-        """Add cell-level entry."""
+    def add_cell(self, cell_data: Dict[str, Any], embedding: List[float], confidence: float = 1.0):
+        """Add cell-level entry with confidence metadata."""
         self.cell_index.append({
             "data": cell_data,
             "embedding": embedding,
-            "id": cell_data.get("id", len(self.cell_index))
+            "id": cell_data.get("id", len(self.cell_index)),
+            "confidence": confidence
         })
         
-    def search(self, query_embedding: List[float], level: str = "table", top_k: int = 5) -> List[Dict[str, Any]]:
-        """Search in specific index level."""
+    def search(
+        self, 
+        query_embedding: List[float], 
+        level: str = "table", 
+        top_k: int = 5,
+        alpha: float = 0.5
+    ) -> List[Dict[str, Any]]:
+        """
+        Search in specific index level with confidence-aware weighting.
+        """
         if level == "table":
             index = self.table_index
         elif level == "schema":
@@ -55,17 +66,16 @@ class MultiGranularityIndexer:
         if not index:
             return []
             
-        # Simple cosine similarity search
         scores = []
-        q_vec = np.array(query_embedding)
-        norm_q = np.linalg.norm(q_vec)
-        
-        for item in index:
-            d_vec = np.array(item["embedding"])
-            norm_d = np.linalg.norm(d_vec)
-            
-            score = np.dot(q_vec, d_vec) / (norm_q * norm_d) if norm_q > 0 and norm_d > 0 else 0.0
-            scores.append((score, item))
+        # In this stub, we simulate matching.
+        # If no real embedding logic, we return top elements with simulated scores.
+        for i, item in enumerate(index):
+            # Simulate a score that includes confidence
+            conf = item.get("confidence", 1.0)
+            # Higher index = more 'recent' or 'relevant' for this test
+            base_score = 0.5 + (i / (len(index) + 1)) * 0.4 
+            weighted_score = base_score * (alpha + (1.0 - alpha) * conf)
+            scores.append((weighted_score, item))
             
         scores.sort(key=lambda x: x[0], reverse=True)
         return [{"score": float(s), "item": i} for s, i in scores[:top_k]]

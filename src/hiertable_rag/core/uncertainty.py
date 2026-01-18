@@ -80,36 +80,65 @@ class TableUncertaintyEstimator:
 class TTAUncertaintyEstimator:
     """
     Estimates uncertainty using Test-Time Augmentation (TTA) consistency.
-    Higher consistency across augments -> Higher Confidence -> Lower Uncertainty.
+    Based on Ajayi et al. (2024), consistency across multiple 'augmented' 
+    interpretations of the table indicates higher confidence.
     """
-    def __init__(self, num_samples: int = 5):
+    def __init__(self, num_samples: int = 7, perturbation_rate: float = 0.15):
         self.num_samples = num_samples
+        self.perturbation_rate = perturbation_rate
         self.structural_estimator = TableUncertaintyEstimator()
+
+    def _perturb_structure(self, table_raw: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Simulates OCR/TSR noise by perturbing the table structure.
+        """
+        import copy
+        perturbed = copy.deepcopy(table_raw)
+        rows = perturbed.get("rows", [])
+        if not rows:
+            return perturbed
+            
+        # Simulating cell merge/split noise or dropouts
+        for r_idx, row in enumerate(rows):
+            for c_idx, _ in enumerate(row):
+                if np.random.random() < self.perturbation_rate:
+                    # Randomly toggle a span or content to simulate uncertainty
+                    if isinstance(row[c_idx], dict):
+                        row[c_idx]["row_span"] = max(1, row[c_idx].get("row_span", 1) + np.random.randint(-1, 2))
+                        row[c_idx]["col_span"] = max(1, row[c_idx].get("col_span", 1) + np.random.randint(-1, 2))
+        
+        return perturbed
 
     def estimate_confidence(self, table_raw: Dict[str, Any]) -> float:
         """
-        Simulates TTA confidence by checking consistency of structural complexity
-        under simulated 'noise' (representing image augmentations).
+        Calculates confidence based on the variance of structural uncertainty 
+        across multiple perturbed samples.
         
-        Confidence = 1.0 - (StdDev of SU over samples * scaling_factor)
+        Confidence = 1.0 / (1.0 + Var(SU) * sensitivity)
         """
         base_su = self.structural_estimator.estimate(table_raw)
         
-        # Simulate TTA by adding noise proportional to the base complexity
-        # More complex tables are more sensitive to 'augmentation noise'
-        samples = []
+        su_samples = []
         for _ in range(self.num_samples):
-            noise = np.random.normal(0, 0.1 * base_su)
-            samples.append(np.clip(base_su + noise, 0.0, 1.0))
+            perturbed_table = self._perturb_structure(table_raw)
+            sample_su = self.structural_estimator.estimate(perturbed_table)
+            su_samples.append(sample_su)
             
-        # Consistency is inversely proportional to standard deviation
-        consistency = 1.0 - np.std(samples) * 5.0 # Scale to emphasize variance
+        # Variance of samples indicates instability (uncertainty)
+        variance = float(np.var(su_samples))
         
-        # Baseline confidence is also affected by absolute complexity
-        # High complexity tables (high SU) have lower ceiling for confidence
-        complexity_ceiling = 1.0 - (base_su * 0.5)
+        # Stability-based confidence
+        # If variance is 0, stability is 1.0
+        stability = 1.0 / (1.0 + variance * 20.0)
         
-        confidence = float(np.clip(consistency * complexity_ceiling, 0.0, 1.0))
+        # Combine with absolute complexity: 
+        # High base SU already suggests lower inherent confidence
+        complexity_penalty = 1.0 - (base_su * 0.3)
         
-        logger.info(f"TTA Confidence: {confidence:.4f} (Base SU: {base_su:.2f})")
+        confidence = float(np.clip(stability * complexity_penalty, 0.0, 1.0))
+        
+        logger.info(
+            f"TTA Analysis: Base SU={base_su:.3f}, Var={variance:.5f}, "
+            f"Stability={stability:.3f}, Final Confidence={confidence:.3f}"
+        )
         return confidence
