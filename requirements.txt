@@ -22,3 +22,5 @@ faiss-cpu>=1.7.4         # 벡터 검색
 sentence-transformers>=2.2.0
 
 pytesseract>=0.3.10      # OCR (필요시)
+apted>=1.0.3             # TEDS calculation
+rouge-score>=0.1.2       # RAG evaluation

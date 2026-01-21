@@ -138,3 +138,41 @@ def dataframe_to_table_data(df: pd.DataFrame, table_id: str) -> Dict:
     }
 
 
+
+def table_data_to_html(cells: List[Dict]) -> str:
+    """
+    Converts cell list (with row_idx, col_idx, row_span, col_span) to HTML table string.
+    """
+    if not cells:
+        return "<table></table>"
+    
+    # Organize cells into rows
+    rows_dict = {}
+    for cell in cells:
+        # Support both 'row_idx' and 'row' keys
+        r = cell.get('row_idx', cell.get('row', 0))
+        if r not in rows_dict:
+            rows_dict[r] = []
+        rows_dict[r].append(cell)
+    
+    html = "<table>"
+    for r in sorted(rows_dict.keys()):
+        html += "<tr>"
+        # Sort cells in row by column index
+        row_cells = sorted(rows_dict[r], key=lambda x: x.get('col_idx', x.get('col', 0)))
+        for cell in row_cells:
+            tag = "th" if cell.get('is_header', False) else "td"
+            row_span = cell.get('row_span', 1)
+            col_span = cell.get('col_span', 1)
+            content = cell.get('content', cell.get('text', ''))
+            
+            span_attr = ""
+            if row_span > 1:
+                span_attr += f' rowspan="{row_span}"'
+            if col_span > 1:
+                span_attr += f' colspan="{col_span}"'
+            
+            html += f"<{tag}{span_attr}>{content}</{tag}>"
+        html += "</tr>"
+    html += "</table>"
+    return html
