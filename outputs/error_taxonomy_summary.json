@@ -1,0 +1,49 @@
+{
+  "overall": {},
+  "by_macro_type": {
+    "Macro: Complex-Irregular": {
+      "Row-Shift": 0.0,
+      "Col-Misalignment": 0.0,
+      "Cell-Merge-Error": 0.5833333333333334,
+      "Row-Count-Mismatch": 0.9166666666666666,
+      "Col-Count-Mismatch": 0.8333333333333334,
+      "Content-Loss": 0.0
+    },
+    "Macro: Pure-Matrix": {
+      "Row-Shift": 0.0,
+      "Col-Misalignment": 0.0625,
+      "Cell-Merge-Error": 0.0,
+      "Row-Count-Mismatch": 0.7875,
+      "Col-Count-Mismatch": 0.6625,
+      "Content-Loss": 0.0
+    },
+    "Macro: Standard-Spanning": {
+      "Row-Shift": 0.0,
+      "Col-Misalignment": 0.0,
+      "Cell-Merge-Error": 0.125,
+      "Row-Count-Mismatch": 0.5,
+      "Col-Count-Mismatch": 0.75,
+      "Content-Loss": 0.0
+    }
+  },
+  "by_header_structure": {
+    "Struct: Single-Row-Header": {
+      "Row-Shift": 0.0,
+      "Col-Misalignment": 0.05,
+      "Cell-Merge-Error": 0.08,
+      "Row-Count-Mismatch": 0.78,
+      "Col-Count-Mismatch": 0.69,
+      "Content-Loss": 0.0
+    }
+  },
+  "by_cell_type": {
+    "Micro: Empty-Dominant": {
+      "Row-Shift": 0.0,
+      "Col-Misalignment": 0.05,
+      "Cell-Merge-Error": 0.08,
+      "Row-Count-Mismatch": 0.78,
+      "Col-Count-Mismatch": 0.69,
+      "Content-Loss": 0.0
+    }
+  }
+}

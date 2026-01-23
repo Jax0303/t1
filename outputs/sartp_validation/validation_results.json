@@ -1,0 +1,25 @@
+{
+  "test_cases": [
+    {
+      "case": "Perfectly Aligned Table",
+      "baseline_quality": "poor",
+      "sartp_quality": "corrected",
+      "global_score": 0.9989067912101746,
+      "misaligned_cols": 1
+    },
+    {
+      "case": "Row Shift Error",
+      "baseline_quality": "good",
+      "sartp_quality": "good",
+      "global_score": 0.9994954466819763,
+      "misaligned_cols": 0
+    },
+    {
+      "case": "Column Misalignment",
+      "baseline_quality": "good",
+      "sartp_quality": "good",
+      "global_score": 0.9992464383443197,
+      "misaligned_cols": 0
+    }
+  ]
+}

@@ -59,21 +59,36 @@ class TableClassifier:
         return "Macro: Complex-Irregular"
 
     def _classify_structural(self, cells, max_row, max_col) -> str:
-        # Check for top headers
+        # Improved Header Detection
+        # Check first 3 rows. If distinct features found, classify.
+        
+        # Heuristic: Header rows usually have spans OR are the first row
         header_rows = 0
-        for r in range(min(max_row + 1, 5)):
+        potential_header_rows = min(max_row + 1, 3) # Check top 3 rows
+        
+        for r in range(potential_header_rows):
             row_cells = [c for c in cells if c.get("row_index", 0) == r]
-            if any(c.get("col_span", 1) > 1 for c in row_cells):
+            if not row_cells: continue
+            
+            # Key feature: Spanning cells in early rows often indicate headers
+            has_span = any(c.get("col_span", 1) > 1 or c.get("row_span", 1) > 1 for c in row_cells)
+            
+            if r == 0:
                 header_rows += 1
-            elif r == 0:
+            elif has_span:
                 header_rows += 1
             else:
-                break
-        
-        # Check for left stubs
+                # If row 1 (second row) has no spans, it might still be a header if row 0 had spans columns
+                # For now, let's stop if we see a non-spanning row after row 0 to avoid false positives?
+                # Actually, many headers are just 1 row.
+                pass
+
+        # Stub Column detection
         stub_cols = 0
-        for c in range(min(max_col + 1, 2)):
+        potential_stub_cols = min(max_col + 1, 2)
+        for c in range(potential_stub_cols):
             col_cells = [cell for cell in cells if cell.get("col_index", 0) == c]
+            # Key feature: Row spans in first columns often indicate stubs
             if any(cell.get("row_span", 1) > 1 for cell in col_cells):
                 stub_cols += 1
         
@@ -87,29 +102,57 @@ class TableClassifier:
         return "Struct: Implicit"
 
     def _classify_micro(self, cells, total_cells) -> str:
-        ratios = []
-        is_mixed = False
-        empty_slots = 0 # Placeholder for slot analysis
+        if not cells: return "Micro: Unknown"
+        
+        # Analyze content distribution
+        numerical_count = 0
+        text_count = 0
+        mixed_count = 0
+        empty_count = 0
+        merged_value_count = 0
         
         for c in cells:
-            bbox = c.get("bbox", [0, 0, 1, 1])
-            h, w = bbox[2]-bbox[0], bbox[3]-bbox[1]
-            if w > 0: ratios.append(h / w)
+            content = str(c.get("content", "")).strip()
             
-            content = str(c.get("content", ""))
-            if any(char in content for char in "*^#$"):
-                is_mixed = True
-        
-        avg_ratio = np.mean(ratios) if ratios else 0
-        
-        if avg_ratio > 1.2:
-            return "Micro: Multi-line-Text"
-        if is_mixed:
-            return "Micro: Symbolic-Mixed"
-        
-        # Check for non-header merged values
-        data_merged = any(c.get("row_index", 0) > 2 and (c.get("row_span", 1) > 1 or c.get("col_span", 1) > 1) for c in cells)
-        if data_merged:
-            return "Micro: Merged-Value"
+            # Check for merges outside headers
+            is_data_cell = c.get("row_index", 0) > 1
+            is_merged = c.get("row_span", 1) > 1 or c.get("col_span", 1) > 1
+            if is_data_cell and is_merged:
+                merged_value_count += 1
 
-        return "Micro: Numerical-Short"
+            if not content:
+                empty_count += 1
+                continue
+                
+            # Content type check
+            digit_count = sum(char.isdigit() for char in content)
+            alpha_count = sum(char.isalpha() for char in content)
+            total_chars = len(content)
+            
+            if total_chars == 0: 
+                empty_count += 1 # Should match if content was empty string
+            elif digit_count / total_chars > 0.8:
+                numerical_count += 1
+            elif alpha_count / total_chars > 0.8:
+                text_count += 1
+            else:
+                mixed_count += 1
+
+        # Determine dominant type
+        # Priority: Merged-Value -> Mixed -> Text -> Numerical -> Empty
+        
+        if merged_value_count / total_cells > 0.1: # Threshold for classifying as Merged-Value type
+             return "Micro: Merged-Value"
+             
+        # Normalize counts by non-empty cells for content type
+        non_empty = total_cells - empty_count
+        if non_empty == 0: return "Micro: Empty-Dominant"
+        
+        if mixed_count / non_empty > 0.3:
+            return "Micro: Symbolic-Mixed"
+        if text_count / non_empty > 0.4: # If >40% is text, it's likely a text-heavy table
+            return "Micro: Textual"
+        if numerical_count / non_empty > 0.5:
+            return "Micro: Numerical-Short"
+            
+        return "Micro: Mixed-General"

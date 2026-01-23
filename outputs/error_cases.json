@@ -1,0 +1,1720 @@
+{
+  "dataset": "scitsr",
+  "split": "val",
+  "teds_threshold": 0.8,
+  "total_samples": 100,
+  "error_count": 100,
+  "error_rate": 1.0,
+  "avg_teds_all": 0.251890957494213,
+  "avg_teds_errors": 0.251890957494213,
+  "taxonomy_counts": {
+    "macro_type": {
+      "Macro: Complex-Irregular": 12,
+      "Macro: Pure-Matrix": 80,
+      "Macro: Standard-Spanning": 8
+    },
+    "header_structure": {
+      "Struct: Single-Row-Header": 100
+    },
+    "cell_characteristics": {
+      "Micro: Empty-Dominant": 100
+    }
+  },
+  "error_cases": [
+    {
+      "index": 0,
+      "teds": 0.2608695652173913,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Merge-Error"
+      ],
+      "num_pred_cells": 23,
+      "num_gt_cells": 23,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 10,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 1,
+      "teds": 0.26666666666666666,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 15,
+      "num_gt_cells": 15,
+      "num_pred_rows": 10,
+      "num_gt_rows": 14,
+      "num_pred_cols": 7,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 2,
+      "teds": 0.07142857142857142,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 14,
+      "num_gt_cells": 14,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 8,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 3,
+      "teds": 0.4304635761589404,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 96,
+      "num_gt_cells": 151,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 4,
+      "teds": 0.28846153846153844,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 52,
+      "num_gt_cells": 52,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 5,
+      "teds": 0.19047619047619047,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 21,
+      "num_gt_cells": 21,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 9,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 6,
+      "teds": 0.25,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 12,
+      "num_gt_cells": 12,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 8,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 7,
+      "teds": 0.19047619047619047,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 21,
+      "num_gt_cells": 21,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 11,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 8,
+      "teds": 0.30612244897959184,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 49,
+      "num_gt_cells": 49,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 9,
+      "teds": 0.4583333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 66,
+      "num_gt_cells": 72,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 10,
+      "teds": 0.21428571428571427,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch",
+        "Cell-Merge-Error"
+      ],
+      "num_pred_cells": 30,
+      "num_gt_cells": 42,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 11,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 11,
+      "teds": 0.2,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 20,
+      "num_gt_cells": 20,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 12,
+      "teds": 0.13333333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 30,
+      "num_gt_cells": 30,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 13,
+      "teds": 0.17647058823529413,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Merge-Error"
+      ],
+      "num_pred_cells": 17,
+      "num_gt_cells": 17,
+      "num_pred_rows": 12,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 14,
+      "teds": 0.17647058823529413,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 22,
+      "num_gt_cells": 34,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 11,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 15,
+      "teds": 0.25,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 44,
+      "num_gt_cells": 48,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 16,
+      "teds": 0.12903225806451613,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Cell-Merge-Error"
+      ],
+      "num_pred_cells": 31,
+      "num_gt_cells": 31,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 17,
+      "teds": 0.0,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 20,
+      "num_gt_cells": 20,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 9,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 18,
+      "teds": 0.25,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 36,
+      "num_gt_cells": 36,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 19,
+      "teds": 0.35714285714285715,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 56,
+      "num_gt_cells": 56,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 20,
+      "teds": 0.22916666666666666,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 44,
+      "num_gt_cells": 48,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 11,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 21,
+      "teds": 0.6272727272727273,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Unknown-Error"
+      ],
+      "num_pred_cells": 110,
+      "num_gt_cells": 110,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 22,
+      "teds": 0.33116883116883117,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 91,
+      "num_gt_cells": 154,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 23,
+      "teds": 0.125,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 24,
+      "num_gt_cells": 24,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 24,
+      "teds": 0.22727272727272727,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 44,
+      "num_gt_cells": 44,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 25,
+      "teds": 0.21428571428571427,
+      "table_type": "Macro: Standard-Spanning",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 24,
+      "num_gt_cells": 28,
+      "num_pred_rows": 12,
+      "num_gt_rows": 14,
+      "num_pred_cols": 10,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 26,
+      "teds": 0.125,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 16,
+      "num_gt_cells": 16,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 27,
+      "teds": 0.0,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 11,
+      "num_gt_cells": 11,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 10,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 28,
+      "teds": 0.20833333333333334,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 24,
+      "num_gt_cells": 24,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 10,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 29,
+      "teds": 0.2597402597402597,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 66,
+      "num_gt_cells": 77,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 30,
+      "teds": 0.16,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 25,
+      "num_gt_cells": 25,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 31,
+      "teds": 0.08333333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 12,
+      "num_gt_cells": 12,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 9,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 32,
+      "teds": 0.2857142857142857,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 14,
+      "num_gt_cells": 14,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 6,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 33,
+      "teds": 0.45161290322580644,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 62,
+      "num_gt_cells": 62,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 34,
+      "teds": 0.22727272727272727,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 44,
+      "num_gt_cells": 44,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 35,
+      "teds": 0.1,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 20,
+      "num_gt_cells": 20,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 36,
+      "teds": 0.28125,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 32,
+      "num_gt_cells": 32,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 10,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 37,
+      "teds": 0.4,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 70,
+      "num_gt_cells": 70,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 38,
+      "teds": 0.125,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 24,
+      "num_gt_cells": 24,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 39,
+      "teds": 0.2222222222222222,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 36,
+      "num_gt_cells": 36,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 40,
+      "teds": 0.5632183908045977,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 87,
+      "num_gt_cells": 86,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 41,
+      "teds": 0.21428571428571427,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 42,
+      "num_gt_cells": 42,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 42,
+      "teds": 0.26229508196721313,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 49,
+      "num_gt_cells": 61,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 43,
+      "teds": 0.2857142857142857,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 14,
+      "num_gt_cells": 14,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 8,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 44,
+      "teds": 0.26666666666666666,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 45,
+      "num_gt_cells": 45,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 45,
+      "teds": 0.16,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Misalignment"
+      ],
+      "num_pred_cells": 25,
+      "num_gt_cells": 25,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 46,
+      "teds": 0.1111111111111111,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 27,
+      "num_gt_cells": 27,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 47,
+      "teds": 0.08333333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 12,
+      "num_gt_cells": 12,
+      "num_pred_rows": 11,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 48,
+      "teds": 0.35714285714285715,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 56,
+      "num_gt_cells": 56,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 49,
+      "teds": 0.24,
+      "table_type": "Macro: Standard-Spanning",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 42,
+      "num_gt_cells": 50,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 50,
+      "teds": 0.45454545454545453,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 66,
+      "num_gt_cells": 66,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 51,
+      "teds": 0.3333333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 36,
+      "num_gt_cells": 36,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 11,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 52,
+      "teds": 0.2857142857142857,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 14,
+      "num_gt_cells": 14,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 8,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 53,
+      "teds": 0.26666666666666666,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 30,
+      "num_gt_cells": 30,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 10,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 54,
+      "teds": 0.2222222222222222,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 12,
+      "num_gt_cells": 18,
+      "num_pred_rows": 11,
+      "num_gt_rows": 14,
+      "num_pred_cols": 9,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 55,
+      "teds": 0.0,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 15,
+      "num_gt_cells": 15,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 56,
+      "teds": 0.2,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Misalignment"
+      ],
+      "num_pred_cells": 30,
+      "num_gt_cells": 30,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 57,
+      "teds": 0.2,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 20,
+      "num_gt_cells": 20,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 58,
+      "teds": 0.1875,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 16,
+      "num_gt_cells": 16,
+      "num_pred_rows": 12,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 59,
+      "teds": 0.5348837209302325,
+      "table_type": "Macro: Standard-Spanning",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 62,
+      "num_gt_cells": 86,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 10,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 60,
+      "teds": 0.16,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Misalignment"
+      ],
+      "num_pred_cells": 25,
+      "num_gt_cells": 25,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 61,
+      "teds": 0.4,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch",
+        "Cell-Merge-Error"
+      ],
+      "num_pred_cells": 60,
+      "num_gt_cells": 110,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 9,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 62,
+      "teds": 0.08333333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 12,
+      "num_gt_cells": 12,
+      "num_pred_rows": 11,
+      "num_gt_rows": 14,
+      "num_pred_cols": 9,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 63,
+      "teds": 0.20833333333333334,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 24,
+      "num_gt_cells": 24,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 8,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 64,
+      "teds": 0.24,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 24,
+      "num_gt_cells": 100,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 5,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 65,
+      "teds": 0.20512820512820512,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 33,
+      "num_gt_cells": 39,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 10,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 66,
+      "teds": 0.29411764705882354,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 51,
+      "num_gt_cells": 50,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 67,
+      "teds": 0.2,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 30,
+      "num_gt_cells": 30,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 68,
+      "teds": 0.2692307692307692,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Cell-Count-Mismatch",
+        "Cell-Merge-Error"
+      ],
+      "num_pred_cells": 52,
+      "num_gt_cells": 49,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 69,
+      "teds": 0.0,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 7,
+      "num_gt_cells": 10,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 8,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 70,
+      "teds": 0.2,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 30,
+      "num_gt_cells": 30,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 71,
+      "teds": 0.5196850393700787,
+      "table_type": "Macro: Standard-Spanning",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 77,
+      "num_gt_cells": 127,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 11,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 72,
+      "teds": 0.13333333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 15,
+      "num_gt_cells": 15,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 10,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 73,
+      "teds": 0.32,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 60,
+      "num_gt_cells": 75,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 74,
+      "teds": 0.2682926829268293,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Misalignment",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 41,
+      "num_gt_cells": 40,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 75,
+      "teds": 0.13333333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 30,
+      "num_gt_cells": 30,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 76,
+      "teds": 0.2,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 10,
+      "num_gt_cells": 10,
+      "num_pred_rows": 12,
+      "num_gt_rows": 14,
+      "num_pred_cols": 6,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 77,
+      "teds": 0.06666666666666667,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 15,
+      "num_gt_cells": 15,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 11,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 78,
+      "teds": 0.4583333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 22,
+      "num_gt_cells": 24,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 6,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 79,
+      "teds": 0.23333333333333334,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 30,
+      "num_gt_cells": 30,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 11,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 80,
+      "teds": 0.3125,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 16,
+      "num_gt_cells": 16,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 8,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 81,
+      "teds": 0.16,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 25,
+      "num_gt_cells": 25,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 82,
+      "teds": 0.3382352941176471,
+      "table_type": "Macro: Standard-Spanning",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 68,
+      "num_gt_cells": 67,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 83,
+      "teds": 0.4583333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 22,
+      "num_gt_cells": 24,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 6,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 84,
+      "teds": 0.4805194805194805,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 65,
+      "num_gt_cells": 77,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 85,
+      "teds": 0.08333333333333333,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 12,
+      "num_gt_cells": 12,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 7,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 86,
+      "teds": 0.4067796610169492,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Merge-Error"
+      ],
+      "num_pred_cells": 59,
+      "num_gt_cells": 59,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 87,
+      "teds": 0.29523809523809524,
+      "table_type": "Macro: Standard-Spanning",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Cell-Count-Mismatch",
+        "Cell-Merge-Error"
+      ],
+      "num_pred_cells": 134,
+      "num_gt_cells": 315,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 88,
+      "teds": 0.2,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 39,
+      "num_gt_cells": 60,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 10,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 89,
+      "teds": 0.1,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 20,
+      "num_gt_cells": 20,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 90,
+      "teds": 0.5833333333333334,
+      "table_type": "Macro: Standard-Spanning",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 81,
+      "num_gt_cells": 96,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 91,
+      "teds": 0.4666666666666667,
+      "table_type": "Macro: Standard-Spanning",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 21,
+      "num_gt_cells": 45,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 6,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 92,
+      "teds": 0.05263157894736842,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 19,
+      "num_gt_cells": 19,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 13,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 93,
+      "teds": 0.3,
+      "table_type": "Macro: Complex-Irregular",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 18,
+      "num_gt_cells": 30,
+      "num_pred_rows": 12,
+      "num_gt_rows": 14,
+      "num_pred_cols": 8,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 94,
+      "teds": 0.4,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Unknown-Error"
+      ],
+      "num_pred_cells": 80,
+      "num_gt_cells": 80,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 95,
+      "teds": 0.2222222222222222,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 36,
+      "num_gt_cells": 36,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 96,
+      "teds": 0.28205128205128205,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch",
+        "Cell-Count-Mismatch"
+      ],
+      "num_pred_cells": 33,
+      "num_gt_cells": 39,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 9,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 97,
+      "teds": 0.36363636363636365,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Col-Misalignment"
+      ],
+      "num_pred_cells": 55,
+      "num_gt_cells": 55,
+      "num_pred_rows": 14,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 98,
+      "teds": 0.16,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch",
+        "Col-Count-Mismatch"
+      ],
+      "num_pred_cells": 25,
+      "num_gt_cells": 25,
+      "num_pred_rows": 13,
+      "num_gt_rows": 14,
+      "num_pred_cols": 12,
+      "num_gt_cols": 14
+    },
+    {
+      "index": 99,
+      "teds": 0.41818181818181815,
+      "table_type": "Macro: Pure-Matrix",
+      "header_structure": "Struct: Single-Row-Header",
+      "cell_characteristics": "Micro: Empty-Dominant",
+      "failure_modes": [
+        "Row-Count-Mismatch"
+      ],
+      "num_pred_cells": 55,
+      "num_gt_cells": 55,
+      "num_pred_rows": 12,
+      "num_gt_rows": 14,
+      "num_pred_cols": 14,
+      "num_gt_cols": 14
+    }
+  ]
+}

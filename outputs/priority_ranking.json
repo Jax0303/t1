@@ -1,0 +1,101 @@
+[
+  {
+    "category":"Header Structure",
+    "value":"Single-Row",
+    "error_count":2982,
+    "pct_of_errors":99.5327102804,
+    "current_avg_teds":0.2448471302,
+    "max_improvement":0.7506219526,
+    "priority_score":74.7114373407
+  },
+  {
+    "category":"Table Type",
+    "value":"Simple-Matrix",
+    "error_count":2606,
+    "pct_of_errors":86.9826435247,
+    "current_avg_teds":0.2476690212,
+    "max_improvement":0.6535248436,
+    "priority_score":56.8453185023
+  },
+  {
+    "category":"Failure Mode",
+    "value":"Row-Count-Mismatch",
+    "error_count":2488,
+    "pct_of_errors":83.044058745,
+    "current_avg_teds":0.226700295,
+    "max_improvement":0.641323222,
+    "priority_score":53.2580833235
+  },
+  {
+    "category":"Failure Mode",
+    "value":"Col-Count-Mismatch",
+    "error_count":2419,
+    "pct_of_errors":80.740987984,
+    "current_avg_teds":0.2312101616,
+    "max_improvement":0.619900873,
+    "priority_score":50.0514089409
+  },
+  {
+    "category":"Failure Mode",
+    "value":"Col-Misalignment",
+    "error_count":577,
+    "pct_of_errors":19.259012016,
+    "current_avg_teds":0.3026300817,
+    "max_improvement":0.134127481,
+    "priority_score":2.5831627674
+  },
+  {
+    "category":"Failure Mode",
+    "value":"Row-Shift",
+    "error_count":508,
+    "pct_of_errors":16.955941255,
+    "current_avg_teds":0.3344185119,
+    "max_improvement":0.112705132,
+    "priority_score":1.9110215969
+  },
+  {
+    "category":"Table Type",
+    "value":"Hierarchical-Header",
+    "error_count":326,
+    "pct_of_errors":10.8811748999,
+    "current_avg_teds":0.2286589551,
+    "max_improvement":0.0838190602,
+    "priority_score":0.9120498541
+  },
+  {
+    "category":"Failure Mode",
+    "value":"Cell-Merge-Error",
+    "error_count":330,
+    "pct_of_errors":11.0146862483,
+    "current_avg_teds":0.2991491938,
+    "max_improvement":0.0770935887,
+    "priority_score":0.8491616911
+  },
+  {
+    "category":"Table Type",
+    "value":"Irregular-Spanning",
+    "error_count":50,
+    "pct_of_errors":1.6688918558,
+    "current_avg_teds":0.232525961,
+    "max_improvement":0.012791234,
+    "priority_score":0.0213471862
+  },
+  {
+    "category":"Table Type",
+    "value":"Complex-Merged",
+    "error_count":14,
+    "pct_of_errors":0.4672897196,
+    "current_avg_teds":0.165739379,
+    "max_improvement":0.0038932162,
+    "priority_score":0.0018192599
+  },
+  {
+    "category":"Header Structure",
+    "value":"No-Header",
+    "error_count":14,
+    "pct_of_errors":0.4672897196,
+    "current_avg_teds":0.2700568501,
+    "max_improvement":0.0034064014,
+    "priority_score":0.0015917763
+  }
+]

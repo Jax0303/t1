@@ -2,7 +2,7 @@ import os
 import subprocess
 from pathlib import Path
 
-DATA_ROOT = Path("/home/user/t1-4/data/external")
+DATA_ROOT = Path("/root/t1-9/data/external")
 DATA_ROOT.mkdir(parents=True, exist_ok=True)
 
 def run_cmd(cmd):
@@ -16,7 +16,7 @@ def download_hf_dataset(repo_id, folder_name, include_glob=None):
     print(f"Downloading {repo_id} to {folder_name}...")
     target_dir = DATA_ROOT / folder_name
     target_dir.mkdir(exist_ok=True)
-    cmd = f"hf download {repo_id} --local-dir {target_dir} --repo-type dataset"
+    cmd = f"huggingface-cli download {repo_id} --local-dir {target_dir} --repo-type dataset"
     if include_glob:
         cmd += f" --include '{include_glob}'"
     run_cmd(cmd)

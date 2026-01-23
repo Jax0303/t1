@@ -63,7 +63,7 @@ class UniversalTableDataset(Dataset):
         elif self.dataset_type == "scitsr":
             # JSON format in SciTsr_Logical/train/gt or test/gt
             scitsr_dir = "test" if self.split == "val" else self.split
-            data_dir = self.base_dir / "scitsr" / "extracted" / "SciTsr_Logical" / scitsr_dir
+            data_dir = self.base_dir / "scitsr" / "SciTsr_Logical" / scitsr_dir
             if not data_dir.exists():
                 print(f"Warning: {data_dir} does not exist")
                 return []
@@ -282,11 +282,22 @@ class UniversalTableDataset(Dataset):
                     data = self._parse_scitsr_json(sample["json_path"])
                     row_lines = [y / orig_h for y in data["row_lines"]]
                     col_lines = [x / orig_w for x in data["col_lines"]]
+                    
+                    # Normalize raw OCR boxes for TAGR
+                    normalized_raw_cells = []
+                    for cell in data.get("raw_cells", []):
+                        box = cell["box"]
+                        norm_box = [box[0] / orig_w, box[1] / orig_h, box[2] / orig_w, box[3] / orig_h]
+                        new_cell = cell.copy()
+                        new_cell["box"] = norm_box
+                        normalized_raw_cells.append(new_cell)
+
                     return {
                         "image": img_tensor,
                         "row_gt": self._generate_prob_map(row_lines),
                         "col_gt": self._generate_prob_map(col_lines),
-                        "cells": data["cells"],
+                        "cells": data["cells"], # Logical cells for TEDS
+                        "raw_cells": normalized_raw_cells, # Normalized OCR boxes for TAGR
                         "cell_map": self._generate_cell_map(data.get("raw_cells", []), orig_w, orig_h),
                         "dataset": self.dataset_type
                     }

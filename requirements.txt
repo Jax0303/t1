@@ -20,6 +20,9 @@ openai>=1.0.0
 faiss-cpu>=1.7.4         # 벡터 검색
 
 sentence-transformers>=2.2.0
+transformers>=4.30.0       # For RoBERTa/BERT semantic encoding
+torch>=2.0.0               # PyTorch for deep learning
+scipy>=1.10.0              # For Hungarian algorithm in GraphOptimizer
 
 pytesseract>=0.3.10      # OCR (필요시)
 apted>=1.0.3             # TEDS calculation
