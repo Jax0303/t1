@@ -27,3 +27,7 @@ scipy>=1.10.0              # For Hungarian algorithm in GraphOptimizer
 pytesseract>=0.3.10      # OCR (필요시)
 apted>=1.0.3             # TEDS calculation
 rouge-score>=0.1.2       # RAG evaluation
+
+# GNN-CSP TSR Dependencies
+torch-geometric>=2.3.0   # Graph Neural Networks
+ortools>=9.5.2237        # Constraint solving (CP-SAT solver)
