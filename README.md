@@ -18,28 +18,51 @@ Traditional Vision-Only TSR models (RCA, TableTransformer) rely purely on pixel 
 
 ---
 
-## 💡 The Solution: Neurosymbolic GNN-CSP
+## 🏗 Architecture: Neurosymbolic GNN-CSP
 
-GNN-CSP treats table parsing as a **Constrained Optimization Problem**.
+Our core innovation is the fusion of **Deep Learning (GNN)** for probabilistic pattern recognition and **Constraint Programming (CSP)** for logical consistency.
 
 ```mermaid
 graph TD
-    A[Input: Table Image + OCR] --> B[Stage 1: Cell Graph Builder]
-    B --> C[Stage 2: GNN Encoding]
-    C --> D[Stage 3: Constraint Definition]
-    D --> E[Stage 4: CSP Solver]
-    E --> F[Output: Optimized Table Grid]
-    F --> G[Downstream: RAG Pipeline]
+    subgraph Input
+        IMG[Table Image] --> RCA[RCA: Visual Boundary Detection]
+        IMG --> OCR[OCR: Text Extraction]
+    end
+
+    subgraph "Graph Neural Network (Probabilistic)"
+        RCA --> NODE[Node Features: Visual + Positional]
+        OCR --> SEM[Semantic Encoder: RoBERTa]
+        SEM --> NODE
+        
+        NODE --> GNN[TableGNN]
+        GNN --> EDGE_PRED[Edge Prediction Head]
+        
+        EDGE_PRED -- "P(Same-Row), P(Same-Col)" --> PROBS[Relation Probabilities]
+        GNN -- "P(Header)" --> HEADER[Header Classification]
+    end
+
+    subgraph "Constraint Solver (Deterministic)"
+        PROBS --> COST[Soft Constraints: Maximize Alignment]
+        
+        CONST[Hard Constraints] --> SOLVER
+        COST --> SOLVER[OR-Tools CP-SAT Solver]
+        
+        CONST_LIST["1. Non-overlapping Rows/Cols
+        2. Physical Alignment (y-order)
+        3. DAG Topology"] -.-> CONST
+    end
+
+    SOLVER --> OUT[Optimal Table Structure]
+    
+    style SOLVER fill:#f9f,stroke:#333
+    style GNN fill:#bbf,stroke:#333
 ```
 
-### 4-Stage Pipeline
-
-1.  **Graph Construction**: Converts OCR boxes into a spatial graph (Nodes = Cells, Edges = Spatial Adjacency).
-2.  **GNN Encoding**: Uses a 3-layer GNN to propagate context (Message Passing). Each cell learns its role (e.g., "I am a data cell under the 'Price' header").
-3.  **Constraint Definition**:
-    - **Hard Constraints (Physical Laws)**: Row height/Column width consistency, No overlap, Full coverage.
-    - **Soft Constraints (Learned Preferences)**: Semantic alignment, Visual confidence.
-4.  **CSP Solver**: Uses an optimization engine to find the structure that maximizes confidence while **guaranteeing 100% satisfaction** of physical laws.
+### 1. Hybrid Pipeline
+1.  **Visual Parsing (RCA)**: ResNet-based Cascade R-CNN detects rough cell boundaries.
+2.  **Graph Construction**: Cells become nodes in a spatial graph ($k$-nearest neighbors).
+3.  **Relation Prediction (GNN)**: A GNN predicts edge types (Same-Row, Same-Column, None) based on visual and semantic features.
+4.  **Structure Optimization (CSP)**: Google OR-Tools CP-SAT solver finds the global optimum that maximizes GNN probability agreement while strictly zeroing out invalid topologies (e.g., overlapping rows).
 
 ---
 
@@ -108,8 +131,10 @@ src/
     └── evaluation/      # TSR Metrics (TEDS, etc.)
 
 scripts/
-├── analyze_gnn_csp.ipynb # Main analysis notebook
-└── verify_gnn_csp.py     # Functional verification
+├── analyze_gnn_csp.ipynb        # Main analysis notebook
+├── train_gnn_csp.py             # GNN Training script (Edge Prediction)
+├── infer_gnn_csp.py             # Inference & Correction script
+└── verify_gnn_csp.py            # Functional verification
 ```
 
 ---
