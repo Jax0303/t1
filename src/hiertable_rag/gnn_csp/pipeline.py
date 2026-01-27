@@ -15,7 +15,7 @@ import logging
 import time
 
 from hiertable_rag.core.rca_model import RCAModel
-from hiertable_rag.sartp.semantic_encoder import SemanticEncoder
+from hiertable_rag.core.semantic_encoder import SemanticEncoder
 from .gnn_encoder import CellGraphBuilder, TableGNN
 from .constraint_layer import ConstraintLayer, TableConstraints
 from .csp_solver import TableCSPSolver
@@ -115,7 +115,9 @@ class GNNCSPPipeline:
         self,
         image: torch.Tensor,
         ocr_boxes: List[Dict[str, Any]],
-        return_intermediate: bool = False
+        return_intermediate: bool = False,
+        use_csp: bool = True,
+        use_semantic: bool = True
     ) -> Dict[str, Any]:
         """
         Parse table image into structured cells using GNN-CSP.
@@ -124,6 +126,8 @@ class GNNCSPPipeline:
             image: Input image tensor [B, 3, H, W] or [3, H, W]
             ocr_boxes: List of OCR boxes with 'box' [x1,y1,x2,y2] and 'content' (text)
             return_intermediate: If True, return all intermediate results
+            use_csp: If True, use CSP solver for refinement. If False, use raw GNN/spatial output.
+            use_semantic: If True, use semantic embeddings. If False, use zero tensors.
             
         Returns:
             Dictionary containing:
@@ -169,9 +173,13 @@ class GNNCSPPipeline:
         visual_confidences = torch.rand(num_cells).to(self.device) * 0.5 + 0.5
         
         # Stage 2: Semantic encoding
-        logger.info("[2/5] Encoding cell semantics...")
-        cell_contents = [box.get('content', '') for box in ocr_boxes]
-        semantic_embeddings = self.semantic_encoder.encode_batch(cell_contents)
+        if use_semantic:
+            logger.info("[2/5] Encoding cell semantics...")
+            # SemanticEncoder.encode_cells expects list of dicts with 'content'
+            semantic_embeddings = self.semantic_encoder.encode_cells(ocr_boxes)
+        else:
+            logger.info("[2/5] Skipping semantic encoding (Ablation)...")
+            semantic_embeddings = torch.zeros(num_cells, 768).to(self.device)
         
         # Stage 3: Graph construction and GNN encoding
         logger.info("[3/5] Building spatial graph and running GNN...")
@@ -191,12 +199,13 @@ class GNNCSPPipeline:
         initial_structure = None
         
         # Stage 5: CSP solving
-        logger.info("[5/5] Solving constraints for optimal structure...")
+        logger.info(f"[5/5] Solving constraints for optimal structure (use_csp={use_csp})...")
         solution = self.solver.solve(
             ocr_boxes,
             gnn_scores,
             visual_confidences,
-            initial_structure
+            initial_structure,
+            refine_structure=use_csp
         )
         
         # Validate constraints on solution

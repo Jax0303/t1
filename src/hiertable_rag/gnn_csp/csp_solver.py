@@ -57,7 +57,8 @@ class TableCSPSolver:
         cells: List[Dict[str, Any]],
         gnn_scores: Dict[str, torch.Tensor],
         visual_scores: torch.Tensor,
-        initial_structure: Optional[Dict[str, np.ndarray]] = None
+        initial_structure: Optional[Dict[str, np.ndarray]] = None,
+        refine_structure: bool = True
     ) -> Dict[str, Any]:
         """
         Solve for optimal table structure.
@@ -67,6 +68,7 @@ class TableCSPSolver:
             gnn_scores: Scores from GNN (structure_confidence, header_prob)
             visual_scores: Visual confidence from RCA
             initial_structure: Optional initial row/col assignments for warm start
+            refine_structure: If False, skip constraint solving and return initial spatial sort (Ablation).
             
         Returns:
             Dictionary with:
@@ -98,7 +100,7 @@ class TableCSPSolver:
         logger.info(f"Solving CSP for {num_cells} cells")
         
         result = self._greedy_solve_with_constraints(
-            cells, gnn_scores, visual_scores, initial_structure
+            cells, gnn_scores, visual_scores, initial_structure, refine_structure
         )
         
         return result
@@ -108,7 +110,8 @@ class TableCSPSolver:
         cells: List[Dict[str, Any]],
         gnn_scores: Dict[str, torch.Tensor],
         visual_scores: torch.Tensor,
-        initial_structure: Optional[Dict[str, np.ndarray]]
+        initial_structure: Optional[Dict[str, np.ndarray]],
+        refine_structure: bool = True
     ) -> Dict[str, Any]:
         """
         Greedy algorithm with constraint checking.
@@ -126,9 +129,12 @@ class TableCSPSolver:
             row_assignment, col_assignment = self._spatial_sort_initialization(cells)
         
         # Refine assignments to satisfy constraints
-        row_assignment, col_assignment = self._refine_assignments(
-            cells, row_assignment, col_assignment, gnn_scores, visual_scores
-        )
+        if refine_structure:
+            row_assignment, col_assignment = self._refine_assignments(
+                cells, row_assignment, col_assignment, gnn_scores, visual_scores
+            )
+        else:
+            logger.info("Skipping refinement (Ablation: No CSP)")
         
         # Count unique rows/cols
         num_rows = len(np.unique(row_assignment))

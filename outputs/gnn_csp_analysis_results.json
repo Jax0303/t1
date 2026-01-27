@@ -1,0 +1,48 @@
+{
+  "ablations": {
+    "Full Model": {
+      "mean_teds": 0.0,
+      "mean_time": 2.0080114364624024,
+      "mean_row_error": 4.2,
+      "mean_col_error": 0.0
+    },
+    "No CSP": {
+      "mean_teds": 0.0,
+      "mean_time": 2.282337951660156,
+      "mean_row_error": 4.2,
+      "mean_col_error": 0.0
+    },
+    "No Semantic": {
+      "mean_teds": 0.0,
+      "mean_time": 1.0566354274749756,
+      "mean_row_error": 4.2,
+      "mean_col_error": 0.0
+    }
+  },
+  "sensitivity": {
+    "Weights(a=0.5,b=0.3,g=0.2)": {
+      "mean_teds": 0.0,
+      "mean_time": 1.3195699214935304,
+      "mean_row_error": 4.2,
+      "mean_col_error": 0.0
+    },
+    "Weights(a=0.8,b=0.1,g=0.1)": {
+      "mean_teds": 0.0,
+      "mean_time": 1.5541913032531738,
+      "mean_row_error": 4.2,
+      "mean_col_error": 0.0
+    },
+    "Weights(a=0.1,b=0.8,g=0.1)": {
+      "mean_teds": 0.0,
+      "mean_time": 2.23298921585083,
+      "mean_row_error": 4.2,
+      "mean_col_error": 0.0
+    },
+    "Weights(a=0.33,b=0.33,g=0.33)": {
+      "mean_teds": 0.0,
+      "mean_time": 2.0012927532196043,
+      "mean_row_error": 4.2,
+      "mean_col_error": 0.0
+    }
+  }
+}

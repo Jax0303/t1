@@ -72,18 +72,21 @@ cd t1
 pip install torch-geometric ortools
 ```
 
-### Usage
+### Usage (Script/Notebook)
 ```python
-from src.hiertable_rag.gnn_csp import GNNCSPPipeline
+import gnn_csp_utils
 
-# Initialize
-pipeline = GNNCSPPipeline(
+# Environment setup (adds paths to sys.path)
+gnn_csp_utils.setup_notebook_env()
+
+# Initialize Pipeline
+pipeline = gnn_csp_utils.get_pipeline(
     rca_checkpoint="outputs/rca_best.pth",
     device="cuda"
 )
 
-# Parse table
-result = pipeline.parse(image, ocr_boxes)
+# Parse table from OCR boxes
+result = pipeline.parse(image_tensor, ocr_boxes)
 print(f"Structure: {result['num_rows']} rows x {result['num_cols']} cols")
 ```
 
@@ -97,13 +100,15 @@ python scripts/verify_gnn_csp.py
 ## 📁 Project Structure
 
 ```
-src/hiertable_rag/gnn_csp/
-├── gnn_encoder.py       # Spatial Graph Builder & GNN
-├── constraint_layer.py  # Hard/Soft Table Constraints
-├── csp_solver.py        # Optimization Engine
-└── pipeline.py          # End-to-End TSR Pipeline
+src/
+├── gnn_csp_utils.py     # Simple entry point for notebooks
+└── hiertable_rag/
+    ├── core/            # Core models (RCA, SemanticEncoder)
+    ├── gnn_csp/         # TSR Engine (GNN + CSP)
+    └── evaluation/      # TSR Metrics (TEDS, etc.)
 
 scripts/
+├── analyze_gnn_csp.ipynb # Main analysis notebook
 └── verify_gnn_csp.py     # Functional verification
 ```
 
