@@ -104,32 +104,27 @@ class CellGraphBuilder:
         
         return data
     
-    def _build_edges(self, ocr_boxes: List[Dict[str, Any]]) -> torch.Tensor:
+    def _build_edges(self, ocr_boxes: List[Dict[str, Any]], return_labels: bool = False, 
+                     gt_structure: Optional[Dict] = None) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
         """
         Build edge connectivity based on 4-connectivity (up, down, left, right).
         
-        Two cells are connected if they are spatially adjacent:
-        - Horizontal neighbors: similar y-coordinate, adjacent x
-        - Vertical neighbors: similar x-coordinate, adjacent y
+        Two cells are connected if they are spatially adjacent.
         """
         num_cells = len(ocr_boxes)
         edges = []
+        edge_labels = [] # 0: None, 1: Same-Row, 2: Same-Col
         
         for i in range(num_cells):
             box_i = ocr_boxes[i]['box']
             x1_i, y1_i, x2_i, y2_i = box_i
-            cx_i = (x1_i + x2_i) / 2
-            cy_i = (y1_i + y2_i) / 2
-            w_i = x2_i - x1_i
-            h_i = y2_i - y1_i
+            cx_i, cy_i = (x1_i + x2_i) / 2, (y1_i + y2_i) / 2
+            w_i, h_i = x2_i - x1_i, y2_i - y1_i
             
             for j in range(i + 1, num_cells):
                 box_j = ocr_boxes[j]['box']
                 x1_j, y1_j, x2_j, y2_j = box_j
-                cx_j = (x1_j + x2_j) / 2
-                cy_j = (y1_j + y2_j) / 2
-                w_j = x2_j - x1_j
-                h_j = y2_j - y1_j
+                cx_j, cy_j = (x1_j + x2_j) / 2, (y1_j + y2_j) / 2
                 
                 # Check horizontal adjacency
                 y_overlap = min(y2_i, y2_j) - max(y1_i, y1_j)
@@ -137,10 +132,7 @@ class CellGraphBuilder:
                 y_iou = y_overlap / y_union if y_union > 0 else 0
                 
                 x_distance = abs(cx_i - cx_j)
-                horizontal_neighbor = (
-                    y_iou > self.threshold and
-                    x_distance < (w_i + w_j) * 0.6
-                )
+                horizontal_neighbor = (y_iou > self.threshold and x_distance < (w_i + (x2_j - x1_j)) * 0.6)
                 
                 # Check vertical adjacency
                 x_overlap = min(x2_i, x2_j) - max(x1_i, x1_j)
@@ -148,22 +140,25 @@ class CellGraphBuilder:
                 x_iou = x_overlap / x_union if x_union > 0 else 0
                 
                 y_distance = abs(cy_i - cy_j)
-                vertical_neighbor = (
-                    x_iou > self.threshold and
-                    y_distance < (h_i + h_j) * 0.6
-                )
+                vertical_neighbor = (x_iou > self.threshold and y_distance < (h_i + (y2_j - y1_j)) * 0.6)
                 
                 if horizontal_neighbor or vertical_neighbor:
-                    edges.append([i, j])
-                    edges.append([j, i])  # Undirected graph
+                    edges.extend([[i, j], [j, i]])
+                    
+                    if return_labels and gt_structure:
+                        c_i, c_j = gt_structure['cells'][i], gt_structure['cells'][j]
+                        label = 0
+                        if c_i.get('row') == c_j.get('row'): label = 1
+                        elif c_i.get('col') == c_j.get('col'): label = 2
+                        edge_labels.extend([label, label])
         
         if len(edges) == 0:
-            # If no edges, create self-loops at least
             edges = [[i, i] for i in range(num_cells)]
         
         edge_index = torch.tensor(edges, dtype=torch.long).t().contiguous()
+        labels = torch.tensor(edge_labels, dtype=torch.long) if (return_labels and edge_labels) else None
         
-        return edge_index
+        return edge_index, labels
 
 
 class TableGNN(nn.Module):
@@ -214,6 +209,14 @@ class TableGNN(nn.Module):
         self.batch_norm_final = nn.BatchNorm1d(output_dim)
         
         self.dropout = nn.Dropout(dropout)
+        
+        # Edge relation predictor (Pairwise classification)
+        # Concatenate two node embeddings -> relation logits [None, Same-Row, Same-Col]
+        self.edge_predictor = nn.Sequential(
+            nn.Linear(output_dim * 2, 64),
+            nn.ReLU(),
+            nn.Linear(64, 3) 
+        )
     
     def forward(self, data: Data) -> Tuple[torch.Tensor, torch.Tensor]:
         """
@@ -257,6 +260,23 @@ class TableGNN(nn.Module):
         graph_embedding = global_mean_pool(node_embeddings, batch)
         
         return node_embeddings, graph_embedding
+    
+    def predict_edges(self, node_embeddings: torch.Tensor, edge_index: torch.Tensor) -> torch.Tensor:
+        """
+        Predict edge relations (Same-Row/Same-Col) for given edges.
+        
+        Args:
+            node_embeddings: [N, D]
+            edge_index: [2, E]
+            
+        Returns:
+            logits: [E, 3] (0:None, 1:Row, 2:Col)
+        """
+        src, dst = edge_index
+        src_emb = node_embeddings[src]
+        dst_emb = node_embeddings[dst]
+        pair_feat = torch.cat([src_emb, dst_emb], dim=-1)
+        return self.edge_predictor(pair_feat)
     
     def get_cell_scores(self, node_embeddings: torch.Tensor) -> Dict[str, torch.Tensor]:
         """

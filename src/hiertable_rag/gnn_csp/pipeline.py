@@ -108,6 +108,7 @@ class GNNCSPPipeline:
             beta=beta,
             gamma=gamma
         )
+        self.edge_probs_cache = None # Debug/Vis helper
         
         logger.info("GNN-CSP Pipeline initialized successfully")
     
@@ -188,10 +189,16 @@ class GNNCSPPipeline:
             visual_features,
             semantic_embeddings
         )
+        if isinstance(graph, tuple): graph = graph[0] # Handle label return
+        graph = graph.to(self.device)
         
         with torch.no_grad():
             node_embeddings, graph_embedding = self.gnn(graph)
             gnn_scores = self.gnn.get_cell_scores(node_embeddings)
+            edge_logits = self.gnn.predict_edges(node_embeddings, graph.edge_index)
+            gnn_scores['edge_probs'] = torch.softmax(edge_logits, dim=-1)
+            gnn_scores['edge_index'] = graph.edge_index
+            self.edge_probs_cache = gnn_scores['edge_probs']
         
         # Stage 4: Initial structure from spatial sorting
         logger.info("[4/5] Initializing structure with spatial sorting...")
