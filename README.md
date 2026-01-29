@@ -23,32 +23,41 @@ Traditional Vision-Only TSR models (RCA, TableTransformer) rely purely on pixel 
 Our core innovation is the fusion of **Deep Learning (GNN)** for probabilistic pattern recognition and **Constraint Programming (CSP)** for logical consistency.
 
 ```mermaid
-graph TD
+flowchart TD
   subgraph Inputs
-    IMG[Table Image] --> VIS[Visual Primitive Extractor<br/>(cell/row/col proposals or line segments)]
-    IMG --> OCR[OCR Tokens<br/>(text + bbox + conf)]
+    IMG[Table Image]
+    VIS[Visual Primitive Extractor<br/>(cell/row/col proposals or line segments)]
+    OCR[OCR Tokens<br/>(text, bbox, conf)]
+    IMG --> VIS
+    IMG --> OCR
   end
 
-  VIS --> CAND[Cell Candidate Builder<br/>(fuse VIS + OCR, token→cell assignment)]
+  CAND[Cell Candidate Builder<br/>(fuse VIS + OCR, token-to-cell assignment)]
+  FEAT[Feature Encoder<br/>(Visual embed + Geometry + Text (RoBERTa))]
+  GNN[TableGNN<br/>(node+edge message passing)]
+
+  EP[Edge Head<br/>(P(same-row), P(same-col))]
+  NP[Node Head<br/>(P(header), span-likelihood)]
+  OBJ[Objective (soft)<br/>(maximize log-prob alignment)]
+
+  subgraph "CP-SAT Optimization"
+    HC[Hard Constraints<br/>• Row/Col monotonic order<br/>• Non-overlap / non-crossing<br/>• Transitivity (same-row/col)<br/>• Span contiguity<br/>• Row/Col count bounds]
+    SOLVER[OR-Tools CP-SAT]
+    HC --> SOLVER
+  end
+
+  POST[Post-process & Export<br/>(grid+spans to HTML/CSV)]
+  OUT[TSR Output]
+  RAG[RAG: chunking + indexing + QA]
+
+  VIS --> CAND
   OCR --> CAND
+  CAND --> FEAT --> GNN
+  GNN --> EP --> OBJ
+  GNN --> NP --> OBJ
+  OBJ --> SOLVER
+  SOLVER --> POST --> OUT --> RAG
 
-  CAND --> FEAT[Feature Encoder<br/>Visual embed + Geometry + Text(RoBERTa)]
-  FEAT --> GNN[TableGNN<br/>(node+edge message passing)]
-
-  GNN --> EP[Edge Head<br/>P(same-row), P(same-col)]
-  GNN --> NP[Node Head<br/>P(header), span-likelihood]
-
-  EP --> OBJ[Objective (soft)<br/>maximize log-prob alignment]
-  NP --> OBJ
-
-  subgraph CP-SAT Optimization
-    HC[Hard Constraints<br/>- Row/Col monotonic order<br/>- Non-overlap / non-crossing<br/>- Transitivity (same-row/col)<br/>- Span contiguity<br/>- Row/Col count bounds] --> SOLVER[OR-Tools CP-SAT]
-    OBJ --> SOLVER
-  end
-
-  SOLVER --> POST[Post-process & Export<br/>grid+spans → HTML/CSV]
-  POST --> OUT[TSR Output]
-  OUT --> RAG[RAG: chunking + indexing + QA]
 
 ```
 
