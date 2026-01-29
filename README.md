@@ -26,29 +26,29 @@ Our core innovation is the fusion of **Deep Learning (GNN)** for probabilistic p
 flowchart TD
   subgraph Inputs
     IMG[Table Image]
-    VIS[Visual Primitive Extractor<br/>(cell/row/col proposals or line segments)]
-    OCR[OCR Tokens<br/>(text, bbox, conf)]
+    VIS["Visual Primitive Extractor<br>(cell, row, col proposals or line segments)"]
+    OCR["OCR Tokens<br>(text, bbox, conf)"]
     IMG --> VIS
     IMG --> OCR
   end
 
-  CAND[Cell Candidate Builder<br/>(fuse VIS + OCR, token-to-cell assignment)]
-  FEAT[Feature Encoder<br/>(Visual embed + Geometry + Text (RoBERTa))]
-  GNN[TableGNN<br/>(node+edge message passing)]
+  CAND["Cell Candidate Builder<br>(fuse VIS + OCR, token-to-cell assignment)"]
+  FEAT["Feature Encoder<br>(Visual embed + Geometry + Text (RoBERTa))"]
+  GNN["TableGNN<br>(node+edge message passing)"]
 
-  EP[Edge Head<br/>(P(same-row), P(same-col))]
-  NP[Node Head<br/>(P(header), span-likelihood)]
-  OBJ[Objective (soft)<br/>(maximize log-prob alignment)]
+  EP["Edge Head<br>(P(same-row), P(same-col))"]
+  NP["Node Head<br>(P(header), span-likelihood)"]
+  OBJ["Objective (soft)<br>(maximize log-prob alignment)"]
 
-  subgraph CP-SAT_Optimization
-    HC[Hard Constraints<br/>Row/Col monotonic order<br/>Non-overlap / non-crossing<br/>Transitivity (same-row/col)<br/>Span contiguity<br/>Row/Col count bounds]
-    SOLVER[OR-Tools CP-SAT]
+  subgraph CP_SAT_Optimization
+    HC["Hard Constraints<br>Row/Col monotonic order<br>Non-overlap / non-crossing<br>Transitivity (same-row/col)<br>Span contiguity<br>Row/Col count bounds"]
+    SOLVER["OR-Tools CP-SAT"]
     HC --> SOLVER
   end
 
-  POST[Post-process & Export<br/>(grid+spans to HTML/CSV)]
-  OUT[TSR Output]
-  RAG[RAG: chunking + indexing + QA]
+  POST["Post-process & Export<br>(grid+spans to HTML/CSV)"]
+  OUT["TSR Output"]
+  RAG["RAG: chunking + indexing + QA"]
 
   VIS --> CAND
   OCR --> CAND
@@ -57,10 +57,6 @@ flowchart TD
   GNN --> NP --> OBJ
   OBJ --> SOLVER
   SOLVER --> POST --> OUT --> RAG
-
-
-
-
 ```
 
 ### 1. Hybrid Pipeline
