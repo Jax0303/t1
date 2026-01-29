@@ -22,7 +22,7 @@ Traditional Vision-Only TSR models (RCA, TableTransformer) rely purely on pixel 
 
 Our core innovation is the fusion of **Deep Learning (GNN)** for probabilistic pattern recognition and **Constraint Programming (CSP)** for logical consistency.
 
-```
+```mermaid
 flowchart TD
   subgraph Inputs
     IMG[Table Image]
