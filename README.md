@@ -24,38 +24,32 @@ Our core innovation is the fusion of **Deep Learning (GNN)** for probabilistic p
 
 ```mermaid
 graph TD
-    subgraph Input
-        IMG[Table Image] --> RCA[RCA: Visual Boundary Detection]
-        IMG --> OCR[OCR: Text Extraction]
-    end
+  subgraph Inputs
+    IMG[Table Image] --> VIS[Visual Primitive Extractor<br/>(cell/row/col proposals or line segments)]
+    IMG --> OCR[OCR Tokens<br/>(text + bbox + conf)]
+  end
 
-    subgraph "Graph Neural Network (Probabilistic)"
-        RCA --> NODE[Node Features: Visual + Positional]
-        OCR --> SEM[Semantic Encoder: RoBERTa]
-        SEM --> NODE
-        
-        NODE --> GNN[TableGNN]
-        GNN --> EDGE_PRED[Edge Prediction Head]
-        
-        EDGE_PRED -- "P(Same-Row), P(Same-Col)" --> PROBS[Relation Probabilities]
-        GNN -- "P(Header)" --> HEADER[Header Classification]
-    end
+  VIS --> CAND[Cell Candidate Builder<br/>(fuse VIS + OCR, token→cell assignment)]
+  OCR --> CAND
 
-    subgraph "Constraint Solver (Deterministic)"
-        PROBS --> COST[Soft Constraints: Maximize Alignment]
-        
-        CONST[Hard Constraints] --> SOLVER
-        COST --> SOLVER[OR-Tools CP-SAT Solver]
-        
-        CONST_LIST["1. Non-overlapping Rows/Cols
-        2. Physical Alignment (y-order)
-        3. DAG Topology"] -.-> CONST
-    end
+  CAND --> FEAT[Feature Encoder<br/>Visual embed + Geometry + Text(RoBERTa)]
+  FEAT --> GNN[TableGNN<br/>(node+edge message passing)]
 
-    SOLVER --> OUT[Optimal Table Structure]
-    
-    style SOLVER fill:#f9f,stroke:#333
-    style GNN fill:#bbf,stroke:#333
+  GNN --> EP[Edge Head<br/>P(same-row), P(same-col)]
+  GNN --> NP[Node Head<br/>P(header), span-likelihood]
+
+  EP --> OBJ[Objective (soft)<br/>maximize log-prob alignment]
+  NP --> OBJ
+
+  subgraph CP-SAT Optimization
+    HC[Hard Constraints<br/>- Row/Col monotonic order<br/>- Non-overlap / non-crossing<br/>- Transitivity (same-row/col)<br/>- Span contiguity<br/>- Row/Col count bounds] --> SOLVER[OR-Tools CP-SAT]
+    OBJ --> SOLVER
+  end
+
+  SOLVER --> POST[Post-process & Export<br/>grid+spans → HTML/CSV]
+  POST --> OUT[TSR Output]
+  OUT --> RAG[RAG: chunking + indexing + QA]
+
 ```
 
 ### 1. Hybrid Pipeline
