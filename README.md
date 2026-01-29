@@ -22,7 +22,7 @@ Traditional Vision-Only TSR models (RCA, TableTransformer) rely purely on pixel 
 
 Our core innovation is the fusion of **Deep Learning (GNN)** for probabilistic pattern recognition and **Constraint Programming (CSP)** for logical consistency.
 
-```mermaid
+```
 flowchart TD
   subgraph Inputs
     IMG[Table Image]
@@ -40,8 +40,8 @@ flowchart TD
   NP[Node Head<br/>(P(header), span-likelihood)]
   OBJ[Objective (soft)<br/>(maximize log-prob alignment)]
 
-  subgraph "CP-SAT Optimization"
-    HC[Hard Constraints<br/>• Row/Col monotonic order<br/>• Non-overlap / non-crossing<br/>• Transitivity (same-row/col)<br/>• Span contiguity<br/>• Row/Col count bounds]
+  subgraph CP-SAT_Optimization
+    HC[Hard Constraints<br/>Row/Col monotonic order<br/>Non-overlap / non-crossing<br/>Transitivity (same-row/col)<br/>Span contiguity<br/>Row/Col count bounds]
     SOLVER[OR-Tools CP-SAT]
     HC --> SOLVER
   end
@@ -57,6 +57,8 @@ flowchart TD
   GNN --> NP --> OBJ
   OBJ --> SOLVER
   SOLVER --> POST --> OUT --> RAG
+
+
 
 
 ```
