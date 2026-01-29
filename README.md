@@ -26,37 +26,35 @@ Our core innovation is the fusion of **Deep Learning (GNN)** for probabilistic p
 flowchart TD
   subgraph Inputs
     IMG[Table Image]
-    VIS["Visual Primitive Extractor<br>(cell, row, col proposals or line segments)"]
+    VIS["Visual Primitive Extractor<br>(cell proposals or line segments)"]
     OCR["OCR Tokens<br>(text, bbox, conf)"]
     IMG --> VIS
     IMG --> OCR
   end
 
-  CAND["Cell Candidate Builder<br>(fuse VIS + OCR, token-to-cell assignment)"]
-  FEAT["Feature Encoder<br>(Visual embed + Geometry + Text (RoBERTa))"]
-  GNN["TableGNN<br>(node+edge message passing)"]
+  CAND["Cell Candidate Builder<br>(assign tokens to cell candidates)"]
+  FEAT["Feature Encoder<br>(Geometry + Visual + Text (RoBERTa))"]
+  GNN["TableGNN<br>(edge classification: row/col relation)"]
 
-  EP["Edge Head<br>(P(same-row), P(same-col))"]
-  NP["Node Head<br>(P(header), span-likelihood)"]
-  OBJ["Objective (soft)<br>(maximize log-prob alignment)"]
+  EP["Edge Head<br>(P(same-row), P(same-col), P(none))"]
+  OBJ["Objective (soft)<br>(maximize sum of selected edge scores)"]
 
-  subgraph CP_SAT_Optimization
-    HC["Hard Constraints<br>Row/Col monotonic order<br>Non-overlap / non-crossing<br>Transitivity (same-row/col)<br>Span contiguity<br>Row/Col count bounds"]
+  subgraph CP_SAT_Core
+    HC["Hard Constraints (MVP)<br>Monotonic row/col order<br>Non-crossing / non-overlap<br>Row/Col count bounds"]
     SOLVER["OR-Tools CP-SAT"]
     HC --> SOLVER
   end
 
-  POST["Post-process & Export<br>(grid+spans to HTML/CSV)"]
-  OUT["TSR Output"]
+  POST["Post-process<br>(build grid from assignments; optional simple span rules)"]
+  OUT["TSR Output<br>(grid -> HTML/CSV)"]
   RAG["RAG: chunking + indexing + QA"]
 
   VIS --> CAND
   OCR --> CAND
   CAND --> FEAT --> GNN
-  GNN --> EP --> OBJ
-  GNN --> NP --> OBJ
-  OBJ --> SOLVER
+  GNN --> EP --> OBJ --> SOLVER
   SOLVER --> POST --> OUT --> RAG
+
 ```
 
 ### 1. Hybrid Pipeline
