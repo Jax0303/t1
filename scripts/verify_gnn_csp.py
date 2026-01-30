@@ -136,10 +136,10 @@ def test_end_to_end_pipeline():
         
         image = torch.randn(1, 3, 224, 224)
         ocr_boxes = [
-            {'box': [0, 0, 10, 10], 'content': 'Header1'},
-            {'box': [10, 0, 20, 10], 'content': 'Header2'},
-            {'box': [0, 10, 10, 20], 'content': 'Data1'},
-            {'box': [10, 10, 20, 20], 'content': 'Data2'},
+            {'box': [0, 0, 10, 10], 'content': 'Header 1'},
+            {'box': [10, 0, 20, 10], 'content': 'Header 2'},
+            {'box': [0, 10, 10, 20], 'content': 'Data 1'},
+            {'box': [10, 10, 20, 20], 'content': 'Data 2'},
         ]
         
         result = pipeline.parse(image, ocr_boxes)

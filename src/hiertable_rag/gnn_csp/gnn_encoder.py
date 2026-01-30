@@ -9,7 +9,7 @@ Implements:
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 import networkx as nx
 from torch_geometric.data import Data
 from torch_geometric.nn import GCNConv, global_mean_pool
@@ -90,7 +90,7 @@ class CellGraphBuilder:
         ], dim=-1)
         
         # Build edges based on spatial adjacency
-        edge_index = self._build_edges(ocr_boxes)
+        edge_index, _ = self._build_edges(ocr_boxes)
         
         # Create PyTorch Geometric Data object
         data = Data(

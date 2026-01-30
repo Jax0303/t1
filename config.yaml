@@ -53,6 +53,7 @@ target_metrics:
 dataset:
   hwpx_path: "./data/hwpx"
   pdf_path: "./data/pdf"
+  pubtables_path: "./data/pubtables-1m"
   ground_truth_path: "./data/ground_truth"
   questions_path: "./data/questions.json"
 

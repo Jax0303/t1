@@ -62,7 +62,8 @@ class RCAModel(nn.Module):
             "col_probs": col_probs,
             "cell_map": cell_map,
             "row_confidence": row_confidence,
-            "col_confidence": col_confidence
+            "col_confidence": col_confidence,
+            "features": features
         }
 
     def _compute_confidence(self, probs: torch.Tensor) -> torch.Tensor:

@@ -114,6 +114,18 @@ class TableCSPSolver:
         """OR-Tools CP-SAT Solver Implementation."""
         num_cells = len(cells)
         if num_cells == 0: return self._empty_result()
+        
+        # If refinement is disabled, return spatial sort immediately
+        if not refine_structure:
+            row_assignment, col_assignment = self._spatial_sort_initialization(cells)
+            return {
+                'row_assignment': row_assignment,
+                'col_assignment': col_assignment,
+                'num_rows': row_assignment.max() + 1,
+                'num_cols': col_assignment.max() + 1,
+                'objective_value': 0.0,
+                'status': 'SKIPPED'
+            }
 
         model = cp_model.CpModel()
 
@@ -170,6 +182,40 @@ class TableCSPSolver:
                    bsc = model.NewBoolVar(f'same_col_{u}_{v}')
                    model.Add(cols[u] == cols[v]).OnlyEnforceIf(bsc)
                    objective_terms.append(bsc * w_col)
+        
+        # 4. Spatial Alignment Objective (Fallback/Complement)
+        # Minimize total row/col index span for overlapping cells
+        for i in range(num_cells):
+            for j in range(i + 1, num_cells):
+                box_i, box_j = cells[i]['box'], cells[j]['box']
+                
+                # y-overlap -> likely same row
+                y_overlap = min(box_i[3], box_j[3]) - max(box_i[1], box_j[1])
+                y_union = max(box_i[3], box_j[3]) - min(box_i[1], box_j[1])
+                
+                if y_overlap > 0:
+                    # Moderate overlap -> encourage same row
+                    if (y_overlap / min(box_i[3]-box_i[1], box_j[3]-box_j[1])) > 0.5:
+                        bsr = model.NewBoolVar(f'spatial_row_{i}_{j}')
+                        model.Add(rows[i] == rows[j]).OnlyEnforceIf(bsr)
+                        objective_terms.append(bsr * 10)
+                else:
+                    # No y-overlap -> MUST be different rows
+                    model.Add(rows[i] != rows[j])
+                
+                # x-overlap -> likely same col
+                x_overlap = min(box_i[2], box_j[2]) - max(box_i[0], box_j[0])
+                x_union = max(box_i[2], box_j[2]) - min(box_i[0], box_j[0])
+                
+                if x_overlap > 0:
+                    # Moderate overlap -> encourage same col
+                    if (x_overlap / min(box_i[2]-box_i[0], box_j[2]-box_j[0])) > 0.5:
+                        bsc = model.NewBoolVar(f'spatial_col_{i}_{j}')
+                        model.Add(cols[i] == cols[j]).OnlyEnforceIf(bsc)
+                        objective_terms.append(bsc * 10)
+                else:
+                    # No x-overlap -> MUST be different cols
+                    model.Add(cols[i] != cols[j])
         
         model.Maximize(sum(objective_terms))
         

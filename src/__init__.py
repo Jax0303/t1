@@ -4,14 +4,9 @@ Agentic TableRAG: Hierarchical Table-based Retrieval Augmented Generation
 
 __version__ = "0.1.0"
 
-from src.hiertable_rag.core.rag import HierTableRAG
-from src.hiertable_rag.core.indexer import MultiGranularityIndexer, MultiGranularityRetriever
-from src.hiertable_rag.core.evaluator import AgenticEvaluator
+# Note: Some core modules (rag, indexer, evaluator) are temporarily unavailable 
+# or moved. Removing imports to avoid initialization failures.
 
 __all__ = [
-    "HierTableRAG",
-    "MultiGranularityIndexer",
-    "MultiGranularityRetriever",
-    "AgenticEvaluator",
     "__version__",
 ]

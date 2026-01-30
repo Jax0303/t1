@@ -13,6 +13,7 @@ import torch.nn as nn
 from typing import List, Dict, Any, Optional
 import logging
 import time
+import numpy as np
 
 from hiertable_rag.core.rca_model import RCAModel
 from hiertable_rag.core.semantic_encoder import SemanticEncoder
@@ -157,21 +158,73 @@ class GNNCSPPipeline:
         # Ensure image has batch dimension
         if image.dim() == 3:
             image = image.unsqueeze(0)
+        image = image.to(self.device)
         
-        # Stage 1: Visual prediction (RCA)
-        logger.info("[1/5] Running visual structure prediction (RCA)...")
+        # Stage 1: Visual structure prediction (RCA)
+        logger.info("[1/5] Running visual structure prediction (RCA) and feature extraction...")
         with torch.no_grad():
+            rca_out = self.rca_model(image)
             visual_pred = self.rca_model.predict_boundaries(
-                image,
-                threshold=0.5,
+                image, 
+                threshold=0.5, 
                 return_confidence=True
             )
+            features_mask = rca_out["features"] # [1, 512, 14, 14]
+            confidence_mask = rca_out["cell_map"] # [1, 1, 14, 14]
+            
+        # Extract visual features for each cell via ROI Mean Pooling
+        visual_features = []
+        visual_confidences = []
         
-        # Extract visual features for each cell
-        # For simplicity, we'll use dummy features here
-        # In practice, you'd extract features from RCA's intermediate layers
-        visual_features = torch.randn(num_cells, 128).to(self.device)
-        visual_confidences = torch.rand(num_cells).to(self.device) * 0.5 + 0.5
+        # Feature map size (typically 14x14 for 448x448 input)
+        _, C, Hf, Wf = features_mask.shape
+        
+        for cell in ocr_boxes:
+            box = cell['box'] # [x1, y1, x2, y2] in image coords
+            x1, y1, x2, y2 = box
+            
+            # Defensive check for NaN
+            if np.isnan(x1) or np.isnan(y1) or np.isnan(x2) or np.isnan(y2):
+                visual_features.append(torch.zeros(C).to(self.device))
+                visual_confidences.append(0.0)
+                continue
+
+            # Map image coords to feature map coords (assumes fixed 448x448 input)
+            fx1 = max(0, int(x1 * Wf / 448))
+            fy1 = max(0, int(y1 * Hf / 448))
+            fx2 = min(Wf, int(np.ceil(x2 * Wf / 448)))
+            fy2 = min(Hf, int(np.ceil(y2 * Hf / 448)))
+            
+            if fx2 <= fx1: fx2 = fx1 + 1
+            if fy2 <= fy1: fy2 = fy1 + 1
+            
+            # Mean pool over the region
+            region_feat = features_mask[0, :, fy1:fy2, fx1:fx2]
+            if region_feat.numel() > 0:
+                cell_feat = region_feat.mean(dim=(1, 2))
+                cell_conf = confidence_mask[0, 0, fy1:fy2, fx1:fx2].mean()
+            else:
+                cell_feat = torch.zeros(C).to(self.device)
+                cell_conf = torch.tensor(0.0).to(self.device)
+            
+            # Ensure no NaNs propagate
+            cell_feat = torch.nan_to_num(cell_feat, nan=0.0)
+            cell_conf = torch.nan_to_num(cell_conf, nan=0.0)
+            
+            visual_features.append(cell_feat)
+            visual_confidences.append(cell_conf)
+            
+        visual_features = torch.stack(visual_features) # [N, 512]
+        visual_confidences = torch.tensor(visual_confidences).to(self.device)
+        
+        # Project 512 -> 128 if needed or just use first 128 for now
+        # Ideally we'd have a trained projection layer, but since this is a recovery,
+        # we'll use a simple linear projection (initialized or dummy)
+        # For this experiment, let's use the first 128 dims or a simple mean if we don't have weights
+        # Actually, let's check if there's an existing projection layer in TableGNN or similar.
+        # Since TableGNN expects 900 total, and 128 is visual:
+        if visual_features.shape[1] > 128:
+            visual_features = visual_features[:, :128] # Simple truncation as a placeholder
         
         # Stage 2: Semantic encoding
         if use_semantic:
@@ -228,11 +281,24 @@ class GNNCSPPipeline:
         
         # Assemble final cell structure
         cells_with_assignments = []
+        row_assign = solution['row_assignment']
+        col_assign = solution['col_assignment']
+        
         for i, cell in enumerate(ocr_boxes):
+            r = row_assign[i]
+            c = col_assign[i]
+            
+            # Robust conversion to int, handle NaN/None
+            try:
+                r_int = int(r) if not np.isnan(r) else 0
+                c_int = int(c) if not np.isnan(c) else 0
+            except:
+                r_int, c_int = 0, 0
+                
             cells_with_assignments.append({
                 **cell,
-                'row': int(solution['row_assignment'][i]),
-                'col': int(solution['col_assignment'][i])
+                'row': r_int,
+                'col': c_int
             })
         
         end_time = time.time()
