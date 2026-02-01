@@ -1,0 +1,132 @@
+{
+  "cells": [
+    {
+      "row": 0,
+      "col": 0,
+      "row_span": 1,
+      "col_span": 1,
+      "text": "Cell_0_0",
+      "box": [
+        10,
+        10,
+        191,
+        115
+      ],
+      "confidence": 1.0
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "row_span": 1,
+      "col_span": 1,
+      "text": "Cell_0_1",
+      "box": [
+        211,
+        10,
+        392,
+        115
+      ],
+      "confidence": 1.0
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "row_span": 1,
+      "col_span": 1,
+      "text": "Cell_0_2",
+      "box": [
+        412,
+        10,
+        593,
+        115
+      ],
+      "confidence": 1.0
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "row_span": 1,
+      "col_span": 1,
+      "text": "Cell_1_0",
+      "box": [
+        10,
+        135,
+        191,
+        240
+      ],
+      "confidence": 1.0
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "row_span": 1,
+      "col_span": 1,
+      "text": "Cell_1_1",
+      "box": [
+        211,
+        135,
+        392,
+        240
+      ],
+      "confidence": 1.0
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "row_span": 1,
+      "col_span": 1,
+      "text": "Cell_1_2",
+      "box": [
+        412,
+        135,
+        593,
+        240
+      ],
+      "confidence": 1.0
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "row_span": 1,
+      "col_span": 1,
+      "text": "Cell_2_0",
+      "box": [
+        10,
+        260,
+        191,
+        365
+      ],
+      "confidence": 1.0
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "row_span": 1,
+      "col_span": 1,
+      "text": "Cell_2_1",
+      "box": [
+        211,
+        260,
+        392,
+        365
+      ],
+      "confidence": 1.0
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "row_span": 1,
+      "col_span": 1,
+      "text": "Cell_2_2",
+      "box": [
+        412,
+        260,
+        593,
+        365
+      ],
+      "confidence": 1.0
+    }
+  ],
+  "num_rows": 3,
+  "num_cols": 3
+}

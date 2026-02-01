@@ -1,0 +1,161 @@
+{
+  "taxonomy": "Type 5: Complex Internal Spans",
+  "table_id": "1807.01801v1.6",
+  "error_metrics": {
+    "cell_loss": 2,
+    "shift_count": 1
+  },
+  "scenarios": {
+    "A_Full": {
+      "f1": 0.8311688311688312,
+      "fp_edges": [
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          "vertical"
+        ]
+      ],
+      "fn_edges": [
+        [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          "vertical"
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            5
+          ],
+          "vertical"
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            4
+          ],
+          "vertical"
+        ],
+        [
+          [
+            2,
+            4
+          ],
+          [
+            3,
+            4
+          ],
+          "vertical"
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            2
+          ],
+          "vertical"
+        ]
+      ]
+    },
+    "B_PureTSR": {
+      "f1": 0.8888888888888891,
+      "fp_edges": [
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          "vertical"
+        ]
+      ],
+      "fn_edges": [
+        [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          "vertical"
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            4
+          ],
+          "vertical"
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            2
+          ],
+          "vertical"
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          "vertical"
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            3
+          ],
+          "vertical"
+        ]
+      ]
+    },
+    "C_PureOCR": {
+      "f1": 1.0,
+      "fp_edges": [],
+      "fn_edges": []
+    }
+  }
+}

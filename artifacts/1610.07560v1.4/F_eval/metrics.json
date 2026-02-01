@@ -1,0 +1,249 @@
+{
+  "precision": 0.0,
+  "recall": 0.0,
+  "f1": 0.0,
+  "TP": 0,
+  "FP": 12,
+  "FN": 32,
+  "horizontal_f1": 0.0,
+  "horizontal_precision": 0.0,
+  "horizontal_recall": 0.0,
+  "vertical_f1": 0.0,
+  "vertical_precision": 0.0,
+  "vertical_recall": 0.0,
+  "edge_FP": [
+    [
+      3,
+      4,
+      "horizontal"
+    ],
+    [
+      0,
+      3,
+      "vertical"
+    ],
+    [
+      0,
+      1,
+      "horizontal"
+    ],
+    [
+      1,
+      2,
+      "horizontal"
+    ],
+    [
+      1,
+      4,
+      "vertical"
+    ],
+    [
+      3,
+      6,
+      "vertical"
+    ],
+    [
+      4,
+      7,
+      "vertical"
+    ],
+    [
+      4,
+      5,
+      "horizontal"
+    ],
+    [
+      2,
+      5,
+      "vertical"
+    ],
+    [
+      7,
+      8,
+      "horizontal"
+    ],
+    [
+      5,
+      8,
+      "vertical"
+    ],
+    [
+      6,
+      7,
+      "horizontal"
+    ]
+  ],
+  "edge_FN": [
+    [
+      3,
+      11,
+      "horizontal"
+    ],
+    [
+      14,
+      19,
+      "vertical"
+    ],
+    [
+      1,
+      5,
+      "horizontal"
+    ],
+    [
+      13,
+      15,
+      "horizontal"
+    ],
+    [
+      7,
+      15,
+      "vertical"
+    ],
+    [
+      16,
+      20,
+      "vertical"
+    ],
+    [
+      7,
+      19,
+      "horizontal"
+    ],
+    [
+      6,
+      13,
+      "vertical"
+    ],
+    [
+      12,
+      16,
+      "vertical"
+    ],
+    [
+      4,
+      6,
+      "horizontal"
+    ],
+    [
+      0,
+      20,
+      "vertical"
+    ],
+    [
+      14,
+      18,
+      "horizontal"
+    ],
+    [
+      0,
+      15,
+      "horizontal"
+    ],
+    [
+      16,
+      17,
+      "horizontal"
+    ],
+    [
+      8,
+      18,
+      "horizontal"
+    ],
+    [
+      4,
+      15,
+      "vertical"
+    ],
+    [
+      0,
+      9,
+      "vertical"
+    ],
+    [
+      10,
+      14,
+      "vertical"
+    ],
+    [
+      13,
+      19,
+      "vertical"
+    ],
+    [
+      3,
+      8,
+      "vertical"
+    ],
+    [
+      4,
+      17,
+      "vertical"
+    ],
+    [
+      5,
+      17,
+      "vertical"
+    ],
+    [
+      8,
+      9,
+      "vertical"
+    ],
+    [
+      5,
+      12,
+      "horizontal"
+    ],
+    [
+      2,
+      17,
+      "horizontal"
+    ],
+    [
+      11,
+      18,
+      "vertical"
+    ],
+    [
+      2,
+      6,
+      "vertical"
+    ],
+    [
+      1,
+      2,
+      "vertical"
+    ],
+    [
+      10,
+      11,
+      "horizontal"
+    ],
+    [
+      7,
+      9,
+      "horizontal"
+    ],
+    [
+      7,
+      18,
+      "vertical"
+    ],
+    [
+      4,
+      20,
+      "horizontal"
+    ]
+  ],
+  "total_pred_relations": 12,
+  "total_gt_relations": 32,
+  "num_pred_cells": 9,
+  "num_gt_cells": 21,
+  "cell_count_diff": -12,
+  "gt_rows": 7,
+  "gt_cols": 3,
+  "pred_rows": 3,
+  "pred_cols": 3,
+  "cer": 0.0,
+  "wer": 0.0
+}

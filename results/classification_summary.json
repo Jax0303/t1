@@ -1,0 +1,15 @@
+{
+  "total_tables": 100,
+  "error_types": {
+    "Table Boundary Error": 61,
+    "Pure TSR Error": 38,
+    "Span Error": 1
+  },
+  "stages": {
+    "TSR Grid Detection": 99,
+    "TSR Spanning/Merge": 1
+  },
+  "avg_severity": 0.8315984642969664,
+  "avg_struct_f1": 0.04126421343236027,
+  "timestamp": "2026-02-02T05:55:21.100413"
+}

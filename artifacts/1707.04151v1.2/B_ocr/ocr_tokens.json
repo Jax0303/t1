@@ -1,0 +1,110 @@
+[
+  {
+    "text": "Cell_0_0",
+    "bbox": [
+      10,
+      10,
+      304,
+      52
+    ],
+    "confidence": 0.95,
+    "line_id": -1,
+    "block_id": -1
+  },
+  {
+    "text": "Cell_0_1",
+    "bbox": [
+      324,
+      10,
+      618,
+      52
+    ],
+    "confidence": 0.95,
+    "line_id": -1,
+    "block_id": -1
+  },
+  {
+    "text": "Cell_0_2",
+    "bbox": [
+      638,
+      10,
+      932,
+      52
+    ],
+    "confidence": 0.95,
+    "line_id": -1,
+    "block_id": -1
+  },
+  {
+    "text": "Cell_1_0",
+    "bbox": [
+      10,
+      72,
+      304,
+      114
+    ],
+    "confidence": 0.95,
+    "line_id": -1,
+    "block_id": -1
+  },
+  {
+    "text": "Cell_1_1",
+    "bbox": [
+      324,
+      72,
+      618,
+      114
+    ],
+    "confidence": 0.95,
+    "line_id": -1,
+    "block_id": -1
+  },
+  {
+    "text": "Cell_1_2",
+    "bbox": [
+      638,
+      72,
+      932,
+      114
+    ],
+    "confidence": 0.95,
+    "line_id": -1,
+    "block_id": -1
+  },
+  {
+    "text": "Cell_2_0",
+    "bbox": [
+      10,
+      134,
+      304,
+      176
+    ],
+    "confidence": 0.95,
+    "line_id": -1,
+    "block_id": -1
+  },
+  {
+    "text": "Cell_2_1",
+    "bbox": [
+      324,
+      134,
+      618,
+      176
+    ],
+    "confidence": 0.95,
+    "line_id": -1,
+    "block_id": -1
+  },
+  {
+    "text": "Cell_2_2",
+    "bbox": [
+      638,
+      134,
+      932,
+      176
+    ],
+    "confidence": 0.95,
+    "line_id": -1,
+    "block_id": -1
+  }
+]

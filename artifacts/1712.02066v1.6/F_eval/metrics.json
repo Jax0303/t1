@@ -1,0 +1,179 @@
+{
+  "precision": 0.25,
+  "recall": 0.125,
+  "f1": 0.16666666666666666,
+  "TP": 3,
+  "FP": 9,
+  "FN": 21,
+  "horizontal_f1": 0.3333333333333333,
+  "horizontal_precision": 0.5,
+  "horizontal_recall": 0.25,
+  "vertical_f1": 0.0,
+  "vertical_precision": 0.0,
+  "vertical_recall": 0.0,
+  "edge_FP": [
+    [
+      3,
+      6,
+      "vertical"
+    ],
+    [
+      0,
+      3,
+      "vertical"
+    ],
+    [
+      0,
+      1,
+      "horizontal"
+    ],
+    [
+      1,
+      4,
+      "vertical"
+    ],
+    [
+      4,
+      7,
+      "vertical"
+    ],
+    [
+      4,
+      5,
+      "horizontal"
+    ],
+    [
+      2,
+      5,
+      "vertical"
+    ],
+    [
+      5,
+      8,
+      "vertical"
+    ],
+    [
+      6,
+      7,
+      "horizontal"
+    ]
+  ],
+  "edge_FN": [
+    [
+      7,
+      11,
+      "vertical"
+    ],
+    [
+      9,
+      12,
+      "horizontal"
+    ],
+    [
+      5,
+      14,
+      "vertical"
+    ],
+    [
+      3,
+      13,
+      "vertical"
+    ],
+    [
+      0,
+      15,
+      "horizontal"
+    ],
+    [
+      5,
+      13,
+      "horizontal"
+    ],
+    [
+      4,
+      15,
+      "vertical"
+    ],
+    [
+      2,
+      11,
+      "horizontal"
+    ],
+    [
+      9,
+      14,
+      "vertical"
+    ],
+    [
+      4,
+      10,
+      "horizontal"
+    ],
+    [
+      12,
+      15,
+      "horizontal"
+    ],
+    [
+      8,
+      13,
+      "horizontal"
+    ],
+    [
+      7,
+      10,
+      "vertical"
+    ],
+    [
+      4,
+      8,
+      "vertical"
+    ],
+    [
+      5,
+      6,
+      "vertical"
+    ],
+    [
+      1,
+      13,
+      "vertical"
+    ],
+    [
+      3,
+      14,
+      "horizontal"
+    ],
+    [
+      1,
+      6,
+      "horizontal"
+    ],
+    [
+      3,
+      12,
+      "vertical"
+    ],
+    [
+      0,
+      10,
+      "vertical"
+    ],
+    [
+      2,
+      8,
+      "vertical"
+    ]
+  ],
+  "total_pred_relations": 12,
+  "total_gt_relations": 24,
+  "num_pred_cells": 9,
+  "num_gt_cells": 16,
+  "cell_count_diff": -7,
+  "gt_rows": 4,
+  "gt_cols": 4,
+  "pred_rows": 3,
+  "pred_cols": 3,
+  "cer": 0.0,
+  "wer": 0.0
+}

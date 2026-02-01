@@ -1,0 +1,33 @@
+{
+  "Input": {
+    "status": "pass",
+    "timestamp": "2026-02-01T23:16:35.752592",
+    "details": {
+      "image_loaded": true
+    }
+  },
+  "OCR_Recognition": {
+    "status": "pass",
+    "timestamp": "2026-02-01T23:16:35.928178",
+    "details": {
+      "num_tokens": 9,
+      "avg_confidence": 0.9499999999999998
+    }
+  },
+  "OCR_to_TSR_Transform": {
+    "status": "pass",
+    "timestamp": "2026-02-01T23:16:35.928660",
+    "details": {
+      "input_tokens": 9
+    }
+  },
+  "TSR_Grid_Detection": {
+    "status": "pass",
+    "timestamp": "2026-02-01T23:16:36.107355",
+    "details": {
+      "detected_cells": 9,
+      "detected_rows": 3,
+      "detected_cols": 3
+    }
+  }
+}

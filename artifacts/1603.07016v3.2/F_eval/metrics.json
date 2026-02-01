@@ -1,0 +1,149 @@
+{
+  "precision": 0.3333333333333333,
+  "recall": 0.2,
+  "f1": 0.25,
+  "TP": 4,
+  "FP": 8,
+  "FN": 16,
+  "horizontal_f1": 0.28571428571428575,
+  "horizontal_precision": 0.3333333333333333,
+  "horizontal_recall": 0.25,
+  "vertical_f1": 0.2222222222222222,
+  "vertical_precision": 0.3333333333333333,
+  "vertical_recall": 0.16666666666666666,
+  "edge_FP": [
+    [
+      3,
+      4,
+      "horizontal"
+    ],
+    [
+      3,
+      6,
+      "vertical"
+    ],
+    [
+      1,
+      4,
+      "vertical"
+    ],
+    [
+      1,
+      2,
+      "horizontal"
+    ],
+    [
+      4,
+      7,
+      "vertical"
+    ],
+    [
+      4,
+      5,
+      "horizontal"
+    ],
+    [
+      7,
+      8,
+      "horizontal"
+    ],
+    [
+      5,
+      8,
+      "vertical"
+    ]
+  ],
+  "edge_FN": [
+    [
+      4,
+      9,
+      "vertical"
+    ],
+    [
+      6,
+      10,
+      "horizontal"
+    ],
+    [
+      3,
+      7,
+      "vertical"
+    ],
+    [
+      6,
+      8,
+      "vertical"
+    ],
+    [
+      4,
+      5,
+      "vertical"
+    ],
+    [
+      1,
+      9,
+      "vertical"
+    ],
+    [
+      0,
+      11,
+      "vertical"
+    ],
+    [
+      1,
+      4,
+      "horizontal"
+    ],
+    [
+      2,
+      9,
+      "vertical"
+    ],
+    [
+      3,
+      8,
+      "horizontal"
+    ],
+    [
+      4,
+      8,
+      "vertical"
+    ],
+    [
+      5,
+      10,
+      "vertical"
+    ],
+    [
+      1,
+      8,
+      "vertical"
+    ],
+    [
+      2,
+      4,
+      "horizontal"
+    ],
+    [
+      9,
+      11,
+      "horizontal"
+    ],
+    [
+      5,
+      8,
+      "horizontal"
+    ]
+  ],
+  "total_pred_relations": 12,
+  "total_gt_relations": 20,
+  "num_pred_cells": 9,
+  "num_gt_cells": 12,
+  "cell_count_diff": -3,
+  "gt_rows": 4,
+  "gt_cols": 13,
+  "pred_rows": 3,
+  "pred_cols": 3,
+  "cer": 0.0,
+  "wer": 0.0
+}

@@ -1,0 +1,199 @@
+{
+  "precision": 0.08333333333333333,
+  "recall": 0.041666666666666664,
+  "f1": 0.05555555555555555,
+  "TP": 1,
+  "FP": 11,
+  "FN": 23,
+  "horizontal_f1": 0.1111111111111111,
+  "horizontal_precision": 0.16666666666666666,
+  "horizontal_recall": 0.08333333333333333,
+  "vertical_f1": 0.0,
+  "vertical_precision": 0.0,
+  "vertical_recall": 0.0,
+  "edge_FP": [
+    [
+      3,
+      4,
+      "horizontal"
+    ],
+    [
+      0,
+      3,
+      "vertical"
+    ],
+    [
+      1,
+      4,
+      "vertical"
+    ],
+    [
+      1,
+      2,
+      "horizontal"
+    ],
+    [
+      3,
+      6,
+      "vertical"
+    ],
+    [
+      4,
+      7,
+      "vertical"
+    ],
+    [
+      4,
+      5,
+      "horizontal"
+    ],
+    [
+      2,
+      5,
+      "vertical"
+    ],
+    [
+      7,
+      8,
+      "horizontal"
+    ],
+    [
+      5,
+      8,
+      "vertical"
+    ],
+    [
+      6,
+      7,
+      "horizontal"
+    ]
+  ],
+  "edge_FN": [
+    [
+      4,
+      5,
+      "vertical"
+    ],
+    [
+      4,
+      11,
+      "vertical"
+    ],
+    [
+      2,
+      14,
+      "vertical"
+    ],
+    [
+      9,
+      10,
+      "vertical"
+    ],
+    [
+      1,
+      14,
+      "vertical"
+    ],
+    [
+      3,
+      6,
+      "horizontal"
+    ],
+    [
+      9,
+      11,
+      "horizontal"
+    ],
+    [
+      4,
+      10,
+      "horizontal"
+    ],
+    [
+      2,
+      15,
+      "horizontal"
+    ],
+    [
+      8,
+      13,
+      "horizontal"
+    ],
+    [
+      7,
+      10,
+      "vertical"
+    ],
+    [
+      2,
+      4,
+      "horizontal"
+    ],
+    [
+      2,
+      13,
+      "vertical"
+    ],
+    [
+      12,
+      15,
+      "vertical"
+    ],
+    [
+      11,
+      13,
+      "horizontal"
+    ],
+    [
+      5,
+      14,
+      "horizontal"
+    ],
+    [
+      8,
+      15,
+      "vertical"
+    ],
+    [
+      6,
+      7,
+      "vertical"
+    ],
+    [
+      1,
+      3,
+      "horizontal"
+    ],
+    [
+      5,
+      7,
+      "horizontal"
+    ],
+    [
+      12,
+      14,
+      "horizontal"
+    ],
+    [
+      0,
+      12,
+      "vertical"
+    ],
+    [
+      3,
+      5,
+      "vertical"
+    ]
+  ],
+  "total_pred_relations": 12,
+  "total_gt_relations": 24,
+  "num_pred_cells": 9,
+  "num_gt_cells": 16,
+  "cell_count_diff": -7,
+  "gt_rows": 4,
+  "gt_cols": 4,
+  "pred_rows": 3,
+  "pred_cols": 3,
+  "cer": 0.0,
+  "wer": 0.0
+}

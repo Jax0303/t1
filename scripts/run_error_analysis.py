@@ -130,15 +130,25 @@ def run_experiment(
             with open(gt_path, 'r') as f:
                 gt_data = json.load(f)
             
+            # SciTSR format: dict with 'cells' array, each cell has start_row, end_row, start_col, end_col
+            cells_data = gt_data.get('cells', gt_data) if isinstance(gt_data, dict) else gt_data
+            
             gt_cells = []
-            for cell in gt_data:
+            for cell in cells_data:
+                # Handle both content formats: string or list
+                content = cell.get('content', cell.get('tex', ''))
+                if isinstance(content, list):
+                    content = ' '.join(content)
+                elif not isinstance(content, str):
+                    content = str(content)
+                
                 gt_cells.append({
-                    "row": cell["logical_coords"][0], # Consistent key 'row'
-                    "col": cell["logical_coords"][2],
-                    "row_span": cell["logical_coords"][1] - cell["logical_coords"][0] + 1,
-                    "col_span": cell["logical_coords"][3] - cell["logical_coords"][2] + 1,
-                    "text": cell.get("text", cell.get("content", "")),
-                    "box": cell["box"]
+                    "row": cell.get("start_row", 0),
+                    "col": cell.get("start_col", 0),
+                    "row_span": cell.get("end_row", 0) - cell.get("start_row", 0) + 1,
+                    "col_span": cell.get("end_col", 0) - cell.get("start_col", 0) + 1,
+                    "text": content,
+                    "box": [0, 0, 10, 10]  # SciTSR doesn't have bbox, will use default
                 })
             
             gt_html = table_data_to_html(gt_cells)
@@ -180,14 +190,15 @@ def main():
     parser.add_argument('--num_samples', type=int, default=100, help='Samples per category')
     args = parser.parse_args()
 
-    scitsr_root = Path("/root/t1-9/data/external/scitsr/SciTsr_Logical/test")
-    gt_dir = str(scitsr_root / "gt")
-    img_dir = str(scitsr_root / "images")
-    comp_list_path = "/root/t1-11/data/scitsr/SciTSR/SciTSR-COMP.list"
-    checkpoint_path = "/root/t1-10/outputs/rca_best.pth"
-    output_report_path = "/root/t1-10/outputs/refined_comparison_report.json"
+    project_root_path = Path(__file__).resolve().parent.parent
+    scitsr_root = project_root_path / "data" / "SciTSR" / "test"
+    gt_dir = str(scitsr_root / "structure")
+    img_dir = str(scitsr_root / "img")
+    comp_list_path = str(project_root_path / "data" / "SciTSR" / "SciTSR-COMP.list")
+    checkpoint_path = str(project_root_path / "outputs" / "rca_best.pth")
+    output_report_path = str(project_root_path / "outputs" / "refined_comparison_report.json")
     
-    os.makedirs("/root/t1-10/outputs", exist_ok=True)
+    os.makedirs(str(project_root_path / "outputs"), exist_ok=True)
     
     print(f"Sampling {args.num_samples} tables (Normal & Complex)...")
     comp_list = load_scitsr_comp_list(comp_list_path)

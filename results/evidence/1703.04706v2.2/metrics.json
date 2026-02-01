@@ -1,0 +1,209 @@
+{
+  "precision": 0.0,
+  "recall": 0.0,
+  "f1": 0.0,
+  "TP": 0,
+  "FP": 0,
+  "FN": 17,
+  "horizontal_f1": 0.0,
+  "horizontal_precision": 0.0,
+  "horizontal_recall": 0.0,
+  "vertical_f1": 0.0,
+  "vertical_precision": 0.0,
+  "vertical_recall": 0.0,
+  "edge_FP": [],
+  "edge_FN": [
+    [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      "horizontal"
+    ],
+    [
+      [
+        2,
+        1
+      ],
+      [
+        3,
+        1
+      ],
+      "vertical"
+    ],
+    [
+      [
+        3,
+        1
+      ],
+      [
+        3,
+        2
+      ],
+      "horizontal"
+    ],
+    [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      "horizontal"
+    ],
+    [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      "vertical"
+    ],
+    [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      "vertical"
+    ],
+    [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      "horizontal"
+    ],
+    [
+      [
+        2,
+        2
+      ],
+      [
+        3,
+        2
+      ],
+      "vertical"
+    ],
+    [
+      [
+        2,
+        0
+      ],
+      [
+        3,
+        0
+      ],
+      "vertical"
+    ],
+    [
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      "horizontal"
+    ],
+    [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        1
+      ],
+      "horizontal"
+    ],
+    [
+      [
+        0,
+        2
+      ],
+      [
+        1,
+        2
+      ],
+      "vertical"
+    ],
+    [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      "vertical"
+    ],
+    [
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      "vertical"
+    ],
+    [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      "horizontal"
+    ],
+    [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        1
+      ],
+      "horizontal"
+    ],
+    [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      "vertical"
+    ]
+  ],
+  "total_pred_relations": 0,
+  "total_gt_relations": 17,
+  "num_pred_cells": 0,
+  "num_gt_cells": 12,
+  "cell_count_diff": -12
+}
