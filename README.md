@@ -2,124 +2,78 @@
 
 ## 프로젝트 개요
 
-이 프로젝트는 SciTSR 데이터셋을 사용하여 기존 OCR + TSR 파이프라인의 오류를 정밀하게 분석하기 위한 실험 프레임워크입니다. GNN 의존성을 제거하고, 규칙 기반 베이스라인과 노이즈 시뮬레이션을 통해 OCR과 TSR 각각의 성능 한계를 측정합니다.
+이 프로젝트는 SciTSR 데이터셋을 사용하여 기존 OCR + TSR 파이프라인의 오류를 정밀하게 분석하기 위한 실험 프레임워크입니다. GNN 의존성을 제거하고, 규칙 기반 베이스라인(PaddleOCR)과 SOTA 모델(Table Transformer)을 통해 표 구조 복잡도에 따른 성능 한계를 측정합니다.
 
-## 주요 실험 결과 (2026-01-30)
+---
 
-### 📊 실험 시나리오별 성능 비교
+## 📊 표 구조 복잡도 유형별 상세 분석 (2026-02-02 업데이트)
 
-| Scenario | TEDS-S | CER | Numeric CER | Alpha CER | Adj F1 |
-|----------|--------|-----|-------------|-----------|--------|
-| **Exp 1: Perfect OCR + Spatial TSR** | 0.9766 | 0.0000 | 0.0000 | 0.0000 | 0.8721 |
-| **Exp 2: Noisy OCR + Spatial TSR** | 0.9013 | 0.0145 | 0.0188 | 0.0125 | 0.8701 |
-| **Exp 3: Noisy OCR + GNN-CSP TSR** | 0.3157 | 0.0143 | 0.0186 | 0.0155 | 0.7931 |
-| **Exp 4: Noisy OCR + Perfect TSR** | 1.0303 | 0.0000 | 0.0000 | 0.0000 | 1.0000 |
+표의 구조적 특성에 따라 5가지 복잡도 유형(Taxonomy)을 정의하고, **PaddleOCR(OCR) + Table Transformer(TSR)** 조합으로 실험을 수행했습니다.
 
-### 🔍 핵심 발견사항
+### 1. 표 복잡도 유형 (Taxonomy)
+| 유형 | 특징 | 대표 샘플 (SciTSR) |
+| :--- | :--- | :--- |
+| **Type 1: Simple Grid** | 규칙적인 격자 구조, 병합 없음 | `1003.0628v1.3` |
+| **Type 2: Hierarchical Col** | 다중 행 컬럼 헤더 (가로 병합) | `1504.01806v1.4` |
+| **Type 3: Hierarchical Row** | 트리 구조 로우 헤더 (세로 병합) | `1805.02036v1.2` |
+| **Type 4: Sparse/Irregular** | 구분선 부재 또는 낮은 데이터 밀도 | `1704.01419v1.3` |
+| **Type 5: Complex Spans** | 데이터 본문 내 복합 병합 셀 존재 | `1807.01801v1.6` |
 
-1. **Spatial TSR 베이스라인의 우수성**: Perfect OCR 조건에서 Spatial 정렬만으로도 **0.9766 TEDS-S** 달성
-2. **OCR 노이즈의 영향**: 5% 좌표 노이즈 + 10% 텍스트 노이즈 주입 시 TEDS-S가 **7.5% 하락** (0.9766 → 0.9013)
-3. **GNN-CSP의 취약점**: 미학습 GNN 사용 시 성능이 **0.3157로 급락**, CSP 최적화 실패 빈번
-4. **복잡한 표에서의 병목**: SciTSR-COMP 데이터에서 CSP 수렴 지연 및 연산 오버헤드 심각
+### 2. 베이스라인 모델 (Baselines)
+- **OCR Engine**: [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) (v2.7+)
+- **TSR Model**: [Table Transformer (TATR)](https://github.com/microsoft/table-transformer) (Structure Only 모드)
+- **평가 라이브러리**: 자체 구현 `RelationEvaluator` (Adjacency Relation 기반)
 
-### 📈 시각화 결과
+---
 
-실험 결과 시각화는 `outputs/visualizations/` 디렉토리에서 확인할 수 있습니다:
+### 3. 시각화 분석 결과
 
-- `teds_comparison.png` - TEDS-S 비교 바 차트
-- `cer_comparison.png` - 전체 및 카테고리별 CER 비교
-- `error_distribution_heatmap.png` - 오류 유형 분포 히트맵
-- `adjacency_f1_comparison.png` - 인접 관계 인식 성능
+#### 🧪 유형별 에러 분포 히트맵
+어떤 표 구조에서 어떤 종류의 에러가 발생하는지 상세히 보여줍니다.
+![Error Type Heatmap](results/taxonomy_analysis/plots/error_type_distribution_heatmap.png)
+- **Merge/Split**: 계층 구조(Type 2, 3)에서 셀 경계 오인으로 인해 빈번히 발생
+- **Row/Col Shift**: 헤더 인식 실패 시 하위 데이터 전체가 밀리는 현상 (Type 3 최다)
+
+#### 📉 에러 증상 (Shift vs Loss) 분석
+구조적 어긋남(Shift)과 데이터 유실(Cell Loss) 지표를 비교 분석한 결과입니다.
+![Symptoms Plot](results/taxonomy_analysis/plots/error_symptoms_by_type.png)
+- **Shift**는 계층형 표에서, **Loss**는 희소 표(Sparse)에서 주된 오류 증상으로 나타남
+
+#### 🔬 시나리오별 성능 비교 (Error Attribution)
+OCR 단계와 TSR 단계 중 어디가 병목인지 분석한 결과입니다.
+![Attribution Plot](results/taxonomy_analysis/plots/error_attribution_by_type.png)
+- 대부분의 복잡한 표 구조에서 **TSR(구조 파악)** 단계의 오류 기여도가 **70% 이상**으로 압도적임
+
+---
 
 ## 프로젝트 구조
 
 ```
-/root/t1-10/
+/home/user/t1-7/
 ├── scripts/
-│   ├── run_error_analysis.py    # 메인 실험 스크립트
-│   ├── visualize_results.py     # 결과 시각화 스크립트
+│   ├── run_taxonomy_analysis.py    # 5대 유형별 실험 자동화
+│   ├── generate_taxonomy_graphics.py # 결과 시각화 및 히트맵 생성
 │   └── ...
 ├── src/
+│   ├── ocr_tsr/
+│   │   ├── enhanced_pipeline.py   # PaddleOCR + TATR 통합 파이프라인
+│   │   └── table_transformer.py   # TATR 모델 래퍼
 │   ├── evaluation/
-│   │   ├── error_analyzer.py    # 오류 분석 로직 (Adjacency F1, Categorical CER)
-│   │   ├── metrics.py           # TEDS, CER, WER 평가 지표
-│   │   └── tsr_evaluator.py
-│   ├── hiertable_rag/
-│   │   └── gnn_csp/
-│   │       ├── pipeline.py      # GNN-CSP 파이프라인
-│   │       └── csp_solver.py    # OR-Tools 기반 CSP 솔버
-│   └── utils/
-│       └── table_converter.py   # 표 데이터 변환 유틸리티
-├── outputs/
-│   ├── refined_comparison_report.json  # 실험 결과 JSON
-│   └── visualizations/                 # 시각화 결과
+│   │   └── relation_evaluator.py  # 인접 관계 기반 정밀 평가 로직
+│   └── ...
+├── results/
+│   └── taxonomy_analysis/         # 실험 결과 데이터 및 시각화 파일
 └── README.md
-
 ```
 
-## 실행 방법
+## 검증 방법론 (Relation Comparison)
 
-### 1. 실험 실행
-
-```bash
-# 기본 실험 (30 샘플)
-python scripts/run_error_analysis.py --num_samples 30
-
-# 전체 실험 (100 샘플)
-python scripts/run_error_analysis.py --num_samples 100
-```
-
-### 2. 결과 시각화
-
-```bash
-python scripts/visualize_results.py
-```
-
-## 주요 파일 설명
-
-### `src/evaluation/error_analyzer.py`
-- **범주별 CER 계산**: 숫자/영문/혼합 텍스트 유형별 OCR 오류율 측정
-- **Adjacency F1**: 셀 간 인접 관계(수평/수직) 인식 정확도 평가
-- **오류 유형 분류**: OCR Error, TSR Error, Combined Error, Success 자동 분류
-
-### `scripts/run_error_analysis.py`
-- **4가지 실험 시나리오** 자동화:
-  1. Perfect OCR + Spatial TSR (상한선)
-  2. Noisy OCR + Spatial TSR (OCR 영향도)
-  3. Noisy OCR + GNN-CSP TSR (복잡한 모델 강건성)
-  4. Noisy OCR + Perfect TSR (TSR 상한선)
-- **TSRModelWrapper**: 다양한 TSR 전략(spatial, gnn_csp, gt) 유연하게 전환
-
-## 개선 방안 제안
-
-### 단기 (즉시 적용 가능)
-1. **이미지 전처리 강화**: 경계선 선명도 개선, 적응형 임계값 처리
-2. **Spatial TSR 최적화**: 베이스라인 성능이 우수하므로 경량화 및 속도 개선
-3. **OCR 엔진 개선**: 숫자 인식 정확도 향상 (현재 CER 1.88%)
-
-### 중기 (모델 재학습 필요)
-1. **GNN 학습**: 현재 미학습 상태로 인한 성능 저하 해결
-2. **Transformer 기반 TSR**: 복잡한 표 구조에 대한 적응력 향상
-3. **앙상블 전략**: Spatial + GNN 결합으로 강건성과 정확도 동시 확보
-
-## 참고 문서
-
-- [`implementation_plan.md`](file:///root/.gemini/antigravity/brain/2991ffaf-212c-4694-ab9f-af03950ce14b/implementation_plan.md) - 실험 설계 상세 계획
-- [`task.md`](file:///root/.gemini/antigravity/brain/2991ffaf-212c-4694-ab9f-af03950ce14b/task.md) - 작업 진행 체크리스트
-
-## 라이선스 및 인용
-
-이 프로젝트는 SciTSR 데이터셋을 활용합니다:
-```
-@inproceedings{chi2019complicated,
-  title={Complicated table structure recognition},
-  author={Chi, Zewen and Huang, Heyan and Xu, Heng-Da and Yu, Houjin and Yin, Wanxuan and Mao, Xian-Ling},
-  booktitle={AAAI},
-  year={2019}
-}
-```
+단순한 좌표 매칭이 아닌 **논리적 인접 관계(Adjacency Relation)**를 대조합니다.
+1. 모든 셀 쌍에 대해 수평/수직 이웃 관계를 추출
+2. Ground Truth 세트와 모델 예측 세트 간의 교집합(TP), 차집합(FP/FN) 계산
+3. 이를 통해 **Shift(밀림)**와 **Merge(병합)**를 수학적으로 구분하여 탐지
 
 ---
 
-**Last Updated**: 2026-02-01  
-**Status**: ✅ Experimental Analysis & Final Reporting Complete | 📑 Presentation Ready
+**Last Updated**: 2026-02-02  
+**Status**: ✅ Taxonomy Analysis Complete | 📊 5-Type Error Attribution Finalized
