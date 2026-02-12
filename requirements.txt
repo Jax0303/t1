@@ -31,3 +31,15 @@ rouge-score>=0.1.2       # RAG evaluation
 # GNN-CSP TSR Dependencies
 torch-geometric>=2.3.0   # Graph Neural Networks
 ortools>=9.5.2237        # Constraint solving (CP-SAT solver)
+
+# Diagnosis Module Dependencies
+pillow>=9.0.0            # Image processing for overlays
+opencv-python>=4.5.0     # Advanced drawing
+scikit-learn>=1.0.0      # For bootstrap sampling
+tqdm>=4.65.0             # Progress bars
+
+# External TSR Baseline Engines (added for diagnosis module)
+paddleocr>=2.7.0         # PaddleOCR for noisy OCR source  
+paddlepaddle-gpu>=2.5.0  # PaddlePaddle GPU (or use paddlepaddle for CPU)
+paddlex>=3.0.0           # PaddleX for SLANet_plus TSR
+docling>=1.0.0           # Docling (IBM) for PDF/image TSR
