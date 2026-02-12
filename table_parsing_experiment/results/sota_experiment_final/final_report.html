@@ -1,0 +1,43 @@
+
+<html>
+<head>
+<style>
+body { font-family: sans-serif; margin: 20px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f2f2f2; }
+.success { color: green; font-weight: bold; }
+.fail { color: red; }
+.warning { color: orange; }
+</style>
+</head>
+<body>
+<h1>SOTA Table Parsing Model Comparison (Final)</h1>
+
+<h2>1. Model Availability & Status</h2>
+<table>
+<tr><th>Model</th><th>Type</th><th>Status</th><th>Notes</th></tr>
+<tr><td>Table Transformer</td><td>TD + TSR</td><td class="success">Integrated</td><td>Baseline</td></tr>
+<tr><td>CascadeTabNet</td><td>TD</td><td class="fail">Failed</td><td>MMDetection</td></tr>
+<tr><td>TFLOP</td><td>TSR</td><td class="success">Integrated</td><td>Donut Base</td></tr>
+<tr><td>Multi-Type-TD-TSR</td><td>TSR</td><td class="success">Integrated</td><td>Deterministic</td></tr>
+<tr><td>DocTR</td><td>OCR</td><td class="success">Integrated</td><td>PyTorch SOTA</td></tr>
+<tr><td>Tesseract</td><td>OCR</td><td class="success">Integrated</td><td>System Installed</td></tr>
+</table>
+
+<h2>2. Performance Summary</h2>
+<h3>Table Detection (CascadeTabNet vs Table Transformer)</h3>
+<p>Success rate on 5 synthetic samples:</p>
+<ul>
+<li>Table Transformer: 1/5</li>
+<li>CascadeTabNet: 0/5</li>
+</ul>
+
+<h3>OCR Accuracy (DocTR vs Tesseract)</h3>
+<ul>
+<li>DocTR Avg Accuracy: 74.33%</li>
+<li>Tesseract Avg Accuracy: 51.53%</li>
+</ul>
+
+</body>
+</html>

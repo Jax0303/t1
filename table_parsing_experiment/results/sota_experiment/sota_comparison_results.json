@@ -1,0 +1,580 @@
+{
+  "experiment_id": "20260204_194730",
+  "models_tested": {
+    "table_transformer": true,
+    "doctr": true
+  },
+  "total_samples": 5,
+  "samples": [
+    {
+      "id": 0,
+      "path": "results/sota_experiment/test_images/table_fully_bordered_0.png",
+      "type": "fully_bordered",
+      "rows": 4,
+      "cols": 3,
+      "ground_truth": [
+        {
+          "row": 0,
+          "col": 0,
+          "text": "Cell00",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "text": "Cell01",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "text": "Cell02",
+          "is_header": true
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "text": "Data10",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "text": "Data11",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "text": "Data12",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "text": "Data20",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "text": "Data21",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "text": "Data22",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 0,
+          "text": "Data30",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "text": "Data31",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "text": "Data32",
+          "is_header": false
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "path": "results/sota_experiment/test_images/table_unbordered_1.png",
+      "type": "unbordered",
+      "rows": 5,
+      "cols": 4,
+      "ground_truth": [
+        {
+          "row": 0,
+          "col": 0,
+          "text": "Cell00",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "text": "Cell01",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "text": "Cell02",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "text": "Cell03",
+          "is_header": true
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "text": "Data10",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "text": "Data11",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "text": "Data12",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "text": "Data13",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "text": "Data20",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "text": "Data21",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "text": "Data22",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "text": "Data23",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 0,
+          "text": "Data30",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "text": "Data31",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "text": "Data32",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 3,
+          "text": "Data33",
+          "is_header": false
+        },
+        {
+          "row": 4,
+          "col": 0,
+          "text": "Data40",
+          "is_header": false
+        },
+        {
+          "row": 4,
+          "col": 1,
+          "text": "Data41",
+          "is_header": false
+        },
+        {
+          "row": 4,
+          "col": 2,
+          "text": "Data42",
+          "is_header": false
+        },
+        {
+          "row": 4,
+          "col": 3,
+          "text": "Data43",
+          "is_header": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "path": "results/sota_experiment/test_images/table_fully_bordered_2.png",
+      "type": "fully_bordered",
+      "rows": 3,
+      "cols": 3,
+      "ground_truth": [
+        {
+          "row": 0,
+          "col": 0,
+          "text": "Cell00",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "text": "Cell01",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "text": "Cell02",
+          "is_header": true
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "text": "Data10",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "text": "Data11",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "text": "Data12",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "text": "Data20",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "text": "Data21",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "text": "Data22",
+          "is_header": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "path": "results/sota_experiment/test_images/table_fully_bordered_3.png",
+      "type": "fully_bordered",
+      "rows": 4,
+      "cols": 4,
+      "ground_truth": [
+        {
+          "row": 0,
+          "col": 0,
+          "text": "Cell00",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "text": "Cell01",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "text": "Cell02",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "text": "Cell03",
+          "is_header": true
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "text": "Data10",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "text": "Data11",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "text": "Data12",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "text": "Data13",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "text": "Data20",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "text": "Data21",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "text": "Data22",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "text": "Data23",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 0,
+          "text": "Data30",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "text": "Data31",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "text": "Data32",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 3,
+          "text": "Data33",
+          "is_header": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "path": "results/sota_experiment/test_images/table_fully_bordered_4.png",
+      "type": "fully_bordered",
+      "rows": 3,
+      "cols": 4,
+      "ground_truth": [
+        {
+          "row": 0,
+          "col": 0,
+          "text": "Cell00",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "text": "Cell01",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "text": "Cell02",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "text": "Cell03",
+          "is_header": true
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "text": "Data10",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "text": "Data11",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "text": "Data12",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "text": "Data13",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "text": "Data20",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "text": "Data21",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "text": "Data22",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "text": "Data23",
+          "is_header": false
+        }
+      ]
+    }
+  ],
+  "table_transformer_results": [
+    {
+      "sample_id": 0,
+      "type": "fully_bordered",
+      "tables_detected": 2,
+      "td_time": 1.8973414897918701,
+      "tsr_time": 1.9282548427581787,
+      "success": true
+    },
+    {
+      "sample_id": 1,
+      "type": "unbordered",
+      "tables_detected": 1,
+      "td_time": 1.7175629138946533,
+      "tsr_time": 1.8920347690582275,
+      "success": true
+    },
+    {
+      "sample_id": 2,
+      "type": "fully_bordered",
+      "tables_detected": 0,
+      "td_time": 1.7517132759094238,
+      "tsr_time": 0,
+      "success": false
+    },
+    {
+      "sample_id": 3,
+      "type": "fully_bordered",
+      "tables_detected": 2,
+      "td_time": 1.7444162368774414,
+      "tsr_time": 1.9873557090759277,
+      "success": true
+    },
+    {
+      "sample_id": 4,
+      "type": "fully_bordered",
+      "tables_detected": 0,
+      "td_time": 1.844832420349121,
+      "tsr_time": 0,
+      "success": false
+    }
+  ],
+  "doctr_results": [
+    {
+      "sample_id": 0,
+      "type": "fully_bordered",
+      "num_detected": 12,
+      "num_expected": 12,
+      "matched": 9,
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "ocr_time": 2.2826991081237793
+    },
+    {
+      "sample_id": 1,
+      "type": "unbordered",
+      "num_detected": 20,
+      "num_expected": 20,
+      "matched": 16,
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1": 0.8000000000000002,
+      "ocr_time": 2.1920831203460693
+    },
+    {
+      "sample_id": 2,
+      "type": "fully_bordered",
+      "num_detected": 9,
+      "num_expected": 9,
+      "matched": 6,
+      "precision": 0.6666666666666666,
+      "recall": 0.6666666666666666,
+      "f1": 0.6666666666666666,
+      "ocr_time": 3.202375888824463
+    },
+    {
+      "sample_id": 3,
+      "type": "fully_bordered",
+      "num_detected": 16,
+      "num_expected": 16,
+      "matched": 12,
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "ocr_time": 1.753183126449585
+    },
+    {
+      "sample_id": 4,
+      "type": "fully_bordered",
+      "num_detected": 12,
+      "num_expected": 12,
+      "matched": 8,
+      "precision": 0.6666666666666666,
+      "recall": 0.6666666666666666,
+      "f1": 0.6666666666666666,
+      "ocr_time": 4.124572515487671
+    }
+  ],
+  "summary": {
+    "table_transformer": {
+      "avg_detection_time": 1.791173267364502,
+      "detection_success_rate": 0.6
+    },
+    "doctr": {
+      "avg_f1": 0.7266666666666667,
+      "avg_precision": 0.7266666666666667,
+      "avg_recall": 0.7266666666666667,
+      "avg_ocr_time": 2.7109827518463137
+    }
+  }
+}

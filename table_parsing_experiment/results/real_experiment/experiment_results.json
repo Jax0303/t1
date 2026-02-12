@@ -1,0 +1,520 @@
+{
+  "experiment_id": "20260204_190844",
+  "total_samples": 5,
+  "ocr_available": true,
+  "samples": [
+    {
+      "id": 0,
+      "path": "results/real_experiment/test_images/table_unbordered_0.png",
+      "type": "unbordered",
+      "rows": 5,
+      "cols": 4,
+      "ground_truth": [
+        {
+          "row": 0,
+          "col": 0,
+          "text": "Cell00",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "text": "Cell01",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "text": "Cell02",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "text": "Cell03",
+          "is_header": true
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "text": "Data10",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "text": "Data11",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "text": "Data12",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "text": "Data13",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "text": "Data20",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "text": "Data21",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "text": "Data22",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "text": "Data23",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 0,
+          "text": "Data30",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "text": "Data31",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "text": "Data32",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 3,
+          "text": "Data33",
+          "is_header": false
+        },
+        {
+          "row": 4,
+          "col": 0,
+          "text": "Data40",
+          "is_header": false
+        },
+        {
+          "row": 4,
+          "col": 1,
+          "text": "Data41",
+          "is_header": false
+        },
+        {
+          "row": 4,
+          "col": 2,
+          "text": "Data42",
+          "is_header": false
+        },
+        {
+          "row": 4,
+          "col": 3,
+          "text": "Data43",
+          "is_header": false
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "path": "results/real_experiment/test_images/table_unbordered_1.png",
+      "type": "unbordered",
+      "rows": 3,
+      "cols": 4,
+      "ground_truth": [
+        {
+          "row": 0,
+          "col": 0,
+          "text": "Cell00",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "text": "Cell01",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "text": "Cell02",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "text": "Cell03",
+          "is_header": true
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "text": "Data10",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "text": "Data11",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "text": "Data12",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "text": "Data13",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "text": "Data20",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "text": "Data21",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "text": "Data22",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "text": "Data23",
+          "is_header": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "path": "results/real_experiment/test_images/table_unbordered_2.png",
+      "type": "unbordered",
+      "rows": 3,
+      "cols": 3,
+      "ground_truth": [
+        {
+          "row": 0,
+          "col": 0,
+          "text": "Cell00",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "text": "Cell01",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "text": "Cell02",
+          "is_header": true
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "text": "Data10",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "text": "Data11",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "text": "Data12",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "text": "Data20",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "text": "Data21",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "text": "Data22",
+          "is_header": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "path": "results/real_experiment/test_images/table_unbordered_3.png",
+      "type": "unbordered",
+      "rows": 4,
+      "cols": 4,
+      "ground_truth": [
+        {
+          "row": 0,
+          "col": 0,
+          "text": "Cell00",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "text": "Cell01",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "text": "Cell02",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "text": "Cell03",
+          "is_header": true
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "text": "Data10",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "text": "Data11",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "text": "Data12",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "text": "Data13",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "text": "Data20",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "text": "Data21",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "text": "Data22",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "text": "Data23",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 0,
+          "text": "Data30",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "text": "Data31",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "text": "Data32",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 3,
+          "text": "Data33",
+          "is_header": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "path": "results/real_experiment/test_images/table_partially_bordered_4.png",
+      "type": "partially_bordered",
+      "rows": 4,
+      "cols": 4,
+      "ground_truth": [
+        {
+          "row": 0,
+          "col": 0,
+          "text": "Cell00",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "text": "Cell01",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "text": "Cell02",
+          "is_header": true
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "text": "Cell03",
+          "is_header": true
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "text": "Data10",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "text": "Data11",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "text": "Data12",
+          "is_header": false
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "text": "Data13",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "text": "Data20",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "text": "Data21",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "text": "Data22",
+          "is_header": false
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "text": "Data23",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 0,
+          "text": "Data30",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "text": "Data31",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "text": "Data32",
+          "is_header": false
+        },
+        {
+          "row": 3,
+          "col": 3,
+          "text": "Data33",
+          "is_header": false
+        }
+      ]
+    }
+  ],
+  "ocr_results": [
+    {
+      "sample_id": 0,
+      "type": "unbordered",
+      "error": "tesseract is not installed or it's not in your PATH. See README file for more information."
+    },
+    {
+      "sample_id": 1,
+      "type": "unbordered",
+      "error": "tesseract is not installed or it's not in your PATH. See README file for more information."
+    },
+    {
+      "sample_id": 2,
+      "type": "unbordered",
+      "error": "tesseract is not installed or it's not in your PATH. See README file for more information."
+    },
+    {
+      "sample_id": 3,
+      "type": "unbordered",
+      "error": "tesseract is not installed or it's not in your PATH. See README file for more information."
+    },
+    {
+      "sample_id": 4,
+      "type": "partially_bordered",
+      "error": "tesseract is not installed or it's not in your PATH. See README file for more information."
+    }
+  ],
+  "summary": {
+    "by_type": {}
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "TableTransformer": [
+    {
+      "id": 0,
+      "success": false
+    },
+    {
+      "id": 1,
+      "success": false
+    },
+    {
+      "id": 2,
+      "success": true
+    },
+    {
+      "id": 3,
+      "success": false
+    },
+    {
+      "id": 4,
+      "success": false
+    }
+  ],
+  "CascadeTabNet": {
+    "error": "MMDetection is required for CascadeTabNet"
+  },
+  "TFLOP": [
+    {
+      "id": 0,
+      "cells": 1,
+      "sample_text": "<s_menu><s_nm> Cell00 Cell01</s_nm><s_num> Cell02</s_num><s_price> Cell03</s_price></s_menu><s_sub_t..."
+    },
+    {
+      "id": 1,
+      "cells": 1,
+      "sample_text": "<s_menu><s_nm> Cell00 Cell01</s_nm><s_price> Cell02</s_price></s_menu><s_sub_total><s_subtotal_price..."
+    },
+    {
+      "id": 2,
+      "cells": 1,
+      "sample_text": "<s_menu><s_nm> Cell00 Cell01</s_nm><s_price> Cell02</s_price></s_menu><s_sub_total><s_subtotal_price..."
+    },
+    {
+      "id": 3,
+      "cells": 1,
+      "sample_text": "<s_menu><s_nm> Cell00 Cell01</s_nm><s_price> Cell02</s_price></s_menu><s_sub_total><s_subtotal_price..."
+    },
+    {
+      "id": 4,
+      "cells": 1,
+      "sample_text": "<s_menu><s_nm> Cell00 Cell01</s_nm><s_price> Cell02</s_price></s_menu><s_sub_total><s_subtotal_price..."
+    }
+  ],
+  "MultiTypeTSR": [
+    {
+      "id": 0,
+      "cells": 0
+    },
+    {
+      "id": 1,
+      "cells": 0
+    },
+    {
+      "id": 2,
+      "cells": 0
+    },
+    {
+      "id": 3,
+      "cells": 0
+    },
+    {
+      "id": 4,
+      "cells": 0
+    }
+  ],
+  "OCR": {
+    "DocTR": [
+      {
+        "id": 0,
+        "accuracy": 0.75,
+        "time": 0
+      },
+      {
+        "id": 1,
+        "accuracy": 0.75,
+        "time": 0
+      },
+      {
+        "id": 2,
+        "accuracy": 0.8,
+        "time": 0
+      },
+      {
+        "id": 3,
+        "accuracy": 0.75,
+        "time": 0
+      },
+      {
+        "id": 4,
+        "accuracy": 0.6666666666666666,
+        "time": 0
+      }
+    ],
+    "Tesseract": [
+      {
+        "id": 0,
+        "accuracy": 0.6875,
+        "time": 0
+      },
+      {
+        "id": 1,
+        "accuracy": 0.6666666666666666,
+        "time": 0
+      },
+      {
+        "id": 2,
+        "accuracy": 0.0,
+        "time": 0
+      },
+      {
+        "id": 3,
+        "accuracy": 0.6666666666666666,
+        "time": 0
+      },
+      {
+        "id": 4,
+        "accuracy": 0.5555555555555556,
+        "time": 0
+      }
+    ]
+  }
+}
