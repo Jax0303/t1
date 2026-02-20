@@ -116,3 +116,4 @@ xet
 
 # Data
 data/hf/
+*.pth
