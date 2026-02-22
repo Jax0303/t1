@@ -1,97 +1,70 @@
-# 📊 SciTSR Table Taxonomy & Error Analysis: Final Report
+# 📊 TSR Baseline Evaluation Harness & Failure Taxonomy
 
-> **상태**: ✅ 프로젝트 완결 | 📈 데이터 기반 에러 분석 및 실계측 리포트 업데이트 완료  
-> **최근 업데이트**: 2026-02-02
+> **상태**: ✅ 4개 모델 비교 평가 완료 | 📈 구조적 에러 분류(Cell Loss, Shift, Overlap) 업데이트 완료  
+> **최근 업데이트**: 2026-02-23
 
-이 리포트는 SciTSR 데이터셋과 실무 수준의 OCR+TSR 파이프라인을 활용하여, **표 구조의 복잡도**가 추출 정확도에 미치는 영향을 심층 분석한 최종 결과물입니다.
-
----
-
-## 🏗️ 1. 표 복잡도 유형 (5-Type Taxonomy)
-
-표의 기술적 난이도를 5가지 유형으로 정의하고, 각 유형별 성능 임계치를 측정했습니다.
-
-| Taxonomy | 핵심 구조 특성 | SciTSR 샘플 ID | 난이도 |
-| :--- | :--- | :--- | :---: |
-| **Type 1: Simple Grid** | 병합 없는 정방형 격자 구조 | `1003.0628v1.3` | Low |
-| **Type 2: Hierarchical Col** | 다중 행 컬럼 헤더 (가로 병합) | `1504.01806v1.4` | Mid |
-| **Type 3: Hierarchical Row** | 트리 구조 로우 헤더 (세로 병합) | `1805.02036v1.2` | High |
-| **Type 4: Sparse/Irregular** | 구분선 부재 및 데이터 희소성 | `1704.01419v1.3` | Mid |
-| **Type 5: Complex Spans** | 본문 내 복합 병합 셀 존재 | `1807.01801v1.6` | Very High |
+이 프로젝트는 표 구조 인식(Table Structure Recognition, TSR) 엔진들의 성능을 정밀 진단하기 위한 전용 평가 파이프라인(Harness)입니다. 딥러닝 기반 모델과 규칙 기반 알고리즘의 상반된 설계적 한계를 비교 분석하여 데이터 추출의 신뢰성을 검증합니다.
 
 ---
 
-## 🧪 2. 실험 환경 및 베이스라인
+## 🏗️ 1. 평가 대상 모델 (4-Model Matrix)
 
-- **OCR Engine**: [PaddleOCR (v3.4)](https://github.com/PaddlePaddle/PaddleOCR) / **OlmOCR** (SOTA)
-- **TSR Model**: [Table Transformer (TATR)](https://github.com/microsoft/table-transformer)
-- **Evaluation Metric**: **Relation-based F1 Score**  
-  *(단순 좌표 매칭이 아닌, 셀 간 '논리적 인접 관계'를 추출하여 대조하는 정밀 검증 방식)*
+알고리즘적 접근 방식이 서로 다른 4가지 모델을 선정하여 비교 실험을 진행했습니다.
 
----
-
-## 📈 3. 핵심 분석 시각화
-
-### A. 에러 유형 분포 히트맵 (Error Type Distribution)
-어떤 표 구조에서 어떤 실수가 발생하는지 빈도를 분석한 결과입니다.
-![Error Type Heatmap](assets/error_type_distribution_heatmap.png)
-- **분석 결과**: 계층 구조가 복잡한 **Type 2, 3**에서 **Merge/Split** 및 **Row/Col Shift(정렬 어긋남)** 에러가 집중적으로 발생합니다.
-
-### B. 주요 에러 증상: Shift vs Loss
-표 추출 실패 시 나타나는 두 가지 물리적 증상(어긋남 vs 유실)을 비교했습니다.
-![Symptoms Plot](assets/error_symptoms_by_type.png)
-- **Structural Shift**: 헤더 인식 실패로 인한 하부 데이터 전체의 정렬 붕괴 현상 (Type 3 최다)
-- **Cell Loss**: 텍스트 누락 또는 셀 경계 오인으로 인한 데이터 실종 (Type 4, 5 우세)
-
-### C. 원인 단계 기여도 분석 (Error Attribution)
-추출 실패의 책임이 **OCR(글자 읽기)**에 있는지, **TSR(구조 인식)**에 있는지 수치화했습니다.
-![Attribution Plot](assets/error_attribution_by_type.png)
-- **결론**: 복잡한 표일수록 **TSR(구조 파악)** 단계의 에러 기여도가 **70% 이상**으로, 엔진 성능 향상을 위한 핵심 병목임을 확인했습니다.
+| 분류 | 모델명 (Model) | 핵심 알고리즘 사상 | 주요 강점 |
+| :--- | :--- | :--- | :--- |
+| **Vision DL** | **Table Transformer (TATR)** | 픽셀 기반 Bbox 회기 (Object Detection) | 높은 재현율, 무선 표 강점 |
+| **Doc Analysis** | **IBM Docling** | 최신 VLM + TableFormer 하이브리드 | 안정적인 구조 복원 및 문서 파싱 |
+| **Text Rules** | **Tesseract** | OCR 텍스트 토큰 간 spatial clustering | 정방형 텍실 표의 완벽한 Grid 형성 |
+| **CV Rules** | **img2table** | OpenCV 기반 선(Line) 및 윤곽선 탐지 | 선이 있는 표에서의 압도적 선명함 |
 
 ---
 
-## 🔬 4. 실전 복합 사례 분석 (User-Sample Case Study)
+## 🧪 2. 에러 진단 체계 (Error Taxonomy)
 
-사용자가 제공한 고난도 세미나 일정(Seminar Schedule) 이미지를 바탕으로 실제 데이터 구조를 대조했습니다.
+단순한 정확도를 넘어, 모델의 설계 사상이 유발하는 치명적 에러 3종을 분석합니다.
 
-![User Sample](assets/user_seminar_sample.png)
-
-### ⚠️ 주요 실패 원인 기술 분석
-1. **3단계 헤더 중첩 (Deep Nesting)**: `Seminar` > `Schedule` > `Begin/End`로 이어지는 3단계 계층 구조에서 TATR 모델이 중간 계층을 생략하거나 병합하는 오류 발생.
-2. **이중축 로우 스팬 (Dual-Axis Spans)**: `Monday`, `Tuesday` 셀이 여러 행에 걸쳐 있어 수직 인접 관계를 추출할 때 데이터 밀림(Shift) 현상 발생.
+1.  **Cell Loss (셀 통째 소실)**: 알고리즘이 표의 존재를 무시하거나 특정 영역을 누락하여 데이터가 통째로 증발하는 현상.
+2.  **Row/Col Shift (행/열 어긋남)**: 특정 여백이나 글자 길이에 비정상적으로 반응하여 격자(Grid) 구조가 파편화되고 상하좌우 순서가 꼬이는 현상.
+3.  **Hallucinated Overlap (공간 중첩 환각)**: 물리적 제약 로직의 부재로 인해, 한 영역에 여러 개의 셀 박스가 겹쳐서 도배되는 현상.
 
 ---
 
-## 📂 5. 원본 데이터 구조 (Raw Data Access)
+## 📈 3. 핵심 분석 요약 (Summary Results)
 
-실험에서 도출된 상세 JSON 데이터 구조를 직접 확인하실 수 있습니다.
+실험을 통해 다음과 같은 알고리즘적 Trade-off를 확인했습니다.
 
-- **SciTSR Taxonomy Results**: [`results/taxonomy_analysis/`](results/taxonomy_analysis/)
-- **User Sample GT (Manual Reconstruction)**: [`assets/user_sample_gt.json`](assets/user_sample_gt.json)
-- **User Sample Prediction**: [`assets/user_sample_2_pred.json`](assets/user_sample_2_pred.json)
+| 에러 유형 | 주 발생 모델 | 근본 원인 (Root Cause) |
+| :--- | :--- | :--- |
+| **Cell Loss** | `img2table`, `Tesseract` | 규칙 위반 시(선 부재, 광폭 여백 등) 알고리즘이 탐지를 중단함. |
+| **Shift** | `Tesseract` | 텍스트 간 거리(Proximity)에만 의존하여 전체 비례감을 상실함. |
+| **Overlap** | `TATR` | 픽셀 확률값에만 의존하며 물리적 배타성 규칙(Physics)이 없음. |
 
 ---
 
-## 🔍 6. 검증 방법론 (Relation Comparison)
+## 🚀 4. 시작하기 (Quick Start)
 
-우리는 단순히 좌표가 겹치는지를 보지 않습니다. 모델이 이해한 **표의 논리적 결속성**을 검증합니다.
+본 평가 하네스는 `tsr_eval/run.py`를 통해 단일 명령으로 실행 가능합니다.
 
-```mermaid
-graph TD
-    A[Input Table Image] --> B[OCR Token Extraction]
-    B --> C[TSR Structure Prediction]
-    C --> D[Extract Predicted Relations]
-    E[Ground Truth JSON] --> F[Extract GT Relations]
-    D -- Adjacency Set Intersection -- F
-    F --> G[Precision / Recall / F1 Score]
-    G --> H[Error Attribution & RCA]
+### 설치 (Requirements)
+```bash
+pip install docling img2table paddleocr tesseract-ocr
+# OpenCV contrib 버전 필요 (img2table 구동용)
+pip install opencv-contrib-python-headless==4.10.0.84
 ```
 
-1. 모델이 예측한 모든 셀의 **상/하/좌/우 이웃 관계**를 추출합니다.
-2. 실제 정답(GT)의 관계 세트와 대조하여 **TP(정확), FP(오판), FN(누락)**을 계산합니다.
-3. 이를 통해 **Shift(밀림)**와 **Merge(병합)**를 수학적으로 명확히 구분하여 탐지합니다.
+### 실행 (Execution)
+```bash
+# 4개 모델 전체 평가 및 리포트 생성
+python -m tsr_eval.run --images data/images --models tatr,docling,tesseract,img2table --out runs/final_eval
+```
 
 ---
 
-**Last Updated**: 2026-02-02  
-**Experimental Status**: ✅ Final Analysis Complete | ✅ Repository Synchronized
+## 🔍 5. 향후 과제: 하이브리드 엔진 설계
+실험 결과, 단일 알고리즘으로는 100% 신뢰도를 확보하기 어렵습니다. **Vision DL(TATR/Docling)**로 높은 재현율(Recall)을 확보하여 Cell Loss를 방지하고, **물리적 제약 조율기(Spatial Pruning)**를 후처리로 얹어 Overlap과 Shift를 교정하는 하이브리드 전략이 권장됩니다.
+
+---
+
+**Last Updated**: 2026-02-23  
+**Experimental Status**: ✅ 4-Model Harness Integrated | ✅ Failure Taxonomy Verified
