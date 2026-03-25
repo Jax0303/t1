@@ -91,3 +91,4 @@ Table Transformer(TATR)와 같은 딥러닝 모델은 복잡한 표 구조를 �
 [^6]: arxiv.org - Tab2KG 연구 (표를 지식 그래프로 변환, 도메인별 접근)
 
 
+

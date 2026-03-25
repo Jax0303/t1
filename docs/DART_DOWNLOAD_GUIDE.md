@@ -155,3 +155,4 @@ data/dart_pdfs/
 - [OpenDartReader GitHub](https://github.com/FinanceData/OpenDartReader)
 
 
+

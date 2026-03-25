@@ -89,3 +89,4 @@ def _safe_dataframe_conversion(self, table: List[List]) -> Optional[pd.DataFrame
 
 이러한 경우는 VLM/OCR 기반 추출기(Nougat, TATR)를 사용해야 함.
 
+

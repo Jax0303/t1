@@ -104,3 +104,4 @@ pip install tabula-py
 4. 딥러닝 기반 표 검출 모델 고려 (Table Transformer 등)
 
 
+

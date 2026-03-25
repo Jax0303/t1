@@ -115,3 +115,4 @@ pdfplumber (1,184개) ≈ pymupdf (1,179개) >> pypdf (0개)
 - **GPU 모델**: Nougat, TATR은 GPU 환경에서 테스트 필요
 
 
+

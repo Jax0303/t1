@@ -119,3 +119,4 @@ pip install marker-pdf --upgrade
 4. VLM 추출기 추가 (Nougat, TATR) - GPU 필요
 
 
+
