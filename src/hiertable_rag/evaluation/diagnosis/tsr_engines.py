@@ -674,7 +674,7 @@ class DoclingEngine(BaseTSREngine):
     
     def predict(self, image, ocr_boxes):
         """Predict using Docling"""
-        try:
+        try:    
             import tempfile
             from PIL import Image as PILImage
             from pathlib import Path as PathType

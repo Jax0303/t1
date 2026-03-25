@@ -117,3 +117,4 @@ xet
 # Data
 data/hf/
 *.pth
+experiments/models/

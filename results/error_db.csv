@@ -1,6 +1,0 @@
-table_id,split,primary_type,secondary_types,stage,severity,struct_f1,struct_precision,struct_recall,horizontal_f1,vertical_f1,edge_FP,edge_FN,cer,wer,cer_numeric,cer_alpha,num_pred_cells,num_gt_cells,pred_rows,pred_cols,gt_rows,gt_cols,ocr_impact,tsr_impact,ocr_attribution,tsr_attribution,auto_label,manual_label,verified,notes,timestamp
-1504.01806v1.4,comp,Success,,N/A,0.0,1.0,1.0,1.0,1.0,1.0,0,0,0.0,0.0,0.0,0.0,49,49,9,6,9,6,0.0,0.0,0.0,0.0,Success,,False,,2026-02-01T23:08:13.721226
-1704.01419v1.3,comp,Success,,N/A,0.0,1.0,1.0,1.0,1.0,1.0,0,0,0.0,0.0,0.0,0.0,89,89,9,11,9,11,0.0,0.0,0.0,0.0,Success,,False,,2026-02-01T23:08:13.721620
-1807.01801v1.6,comp,Success,,N/A,0.0,1.0,1.0,1.0,1.0,1.0,0,0,0.0,0.0,0.0,0.0,25,25,5,6,5,6,0.0,0.0,0.0,0.0,Success,,False,,2026-02-01T23:08:13.721969
-1807.10267v3.3,comp,Success,,N/A,0.0,1.0,1.0,1.0,1.0,1.0,0,0,0.0,0.0,0.0,0.0,48,48,10,5,10,5,0.0,0.0,0.0,0.0,Success,,False,,2026-02-01T23:08:13.722319
-1211.1658v1.1,comp,Success,,N/A,0.0,1.0,1.0,1.0,1.0,1.0,0,0,0.0,0.0,0.0,0.0,83,83,11,8,11,8,0.0,0.0,0.0,0.0,Success,,False,,2026-02-01T23:08:13.722678
