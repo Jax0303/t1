@@ -1,7 +1,7 @@
 # 📊 TSR Baseline Evaluation Harness & Failure Taxonomy
 
-> **상태**: ✅ 4개 모델 비교 평가 완료 | 🔬 Detection-based TSR Colspan/Rowspan 한계 실증 완료  
-> **최근 업데이트**: 2026-03-26
+> **상태**: ✅ 4개 모델 비교 평가 완료 | 🔬 Detection-based TSR Colspan/Rowspan 한계 실증 완료 | 🛠️ GSR Loss 구현 완료  
+> **최근 업데이트**: 2026-04-02
 
 이 프로젝트는 표 구조 인식(Table Structure Recognition, TSR) 엔진들의 성능을 정밀 진단하기 위한 전용 평가 파이프라인(Harness)입니다. 딥러닝 기반 모델과 규칙 기반 알고리즘의 상반된 설계적 한계를 비교 분석하여 데이터 추출의 신뢰성을 검증합니다.
 
@@ -90,7 +90,70 @@ python3 experiments/detect_span_errors.py
 
 ---
 
-## 🚀 5. 시작하기 (Quick Start)
+## 🛠️ 5. GSR (Grid Separator Regularization) 실험
+
+"같은 detection 패러다임 내에서 loss만 교체해도 spanning cell 성능이 오른다"는 가설을 검증하기 위한 실험 모듈입니다.
+
+### 비교 모델 구성
+
+| 그룹 | 모델 | 역할 |
+|------|------|------|
+| **Detection baseline** | Cascade R-CNN, TSRDet, Deformable-DETR, TATR | GSR 주장 직접 검증 (Xiao et al. 2023 수치 인용 가능) |
+| **GSR 변형** | Cascade R-CNN + GIoU (spanning) | 본 실험 측정 |
+| **상한선** | TSRFormer DQ-DETR, TFLOP | 다른 패러다임의 현재 상한 |
+
+### 핵심 구성 요소
+
+```
+src/gsr_hooks/
+├── gsr_loss.py              # HardSnappingLoss / SoftSnappingLoss
+├── separator_extractor.py   # detector 출력 → sep Tensor (stop-gradient)
+├── spanning_loss_router.py  # class별 loss 분기 (SpanningCellLossRouter)
+├── spanning_bbox_head.py    # Cascade R-CNN용 커스텀 head
+├── spanning_detr_head.py    # [optional] DETR 계열 GSR 일반화 (미사용)
+└── configs/
+    ├── cascade_rcnn_r50_pubtables_baseline.py   # vanilla SmoothL1
+    ├── cascade_rcnn_r50_pubtables_gsr.py        # spanning → GIoULoss
+    ├── deformable_detr_pubtables_baseline.py    # vanilla L1+GIoU
+    └── tatr_pubtables_baseline.py               # vanilla L1+GIoU
+
+experiments/gsr_results/
+├── baseline_numbers.py      # 결과 테이블 (인용 수치 + 실험 수치)
+└── baseline_numbers.json    # 수치 저장소 (update_result()로 채움)
+```
+
+### GSR Loss 작동 방식
+
+```
+pred_boxes [N,4]
+    │
+    ├─ HardSnappingLoss : argmin(|coord - sep|) → snapped target → L1
+    └─ SoftSnappingLoss : softmax(-|coord - sep|/τ) → expected target → L1
+
+row_separators [R]  ←─ SeparatorExtractor (stop-gradient)
+col_separators [C]  ←─ SeparatorExtractor (stop-gradient)
+```
+
+### 결과 테이블 업데이트
+
+```python
+from experiments.gsr_results.baseline_numbers import update_result, print_table
+
+update_result("Cascade R-CNN + GSR (GIoU)",
+              grits_top=0.9xx, grits_con=0.9xx, grits_loc=0.9xx, ap_span=0.xx)
+print_table()
+```
+
+### 테스트 실행
+
+```bash
+python src/gsr_hooks/gsr_loss.py
+python src/gsr_hooks/separator_extractor.py
+```
+
+---
+
+## 🚀 6. 시작하기 (Quick Start)
 
 본 평가 하네스는 `tsr_eval/run.py`를 통해 단일 명령으로 실행 가능합니다.
 
@@ -109,10 +172,10 @@ python -m tsr_eval.run --images data/images --models tatr,docling,tesseract,img2
 
 ---
 
-## 🔍 6. 향후 과제: 하이브리드 엔진 설계
+## 🔍 7. 향후 과제: 하이브리드 엔진 설계
 실험 결과, 단일 알고리즘으로는 100% 신뢰도를 확보하기 어렵습니다. 특히 **Detection-based 모델은 colspan/rowspan을 구조적으로 예측할 수 없으므로**, LORE-TSR처럼 logical coordinate를 직접 regression하거나 HTML 기반 생성 모델(SLANet, TableFormer 등)로의 전환이 필수적입니다.
 
 ---
 
-**Last Updated**: 2026-03-26  
-**Experimental Status**: ✅ 4-Model Harness Integrated | ✅ Failure Taxonomy Verified | 🔬 Detection TSR Span Limitation Proven
+**Last Updated**: 2026-04-02  
+**Experimental Status**: ✅ 4-Model Harness Integrated | ✅ Failure Taxonomy Verified | 🔬 Detection TSR Span Limitation Proven | 🛠️ GSR Loss Implemented
