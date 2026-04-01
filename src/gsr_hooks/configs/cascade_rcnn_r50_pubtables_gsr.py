@@ -1,59 +1,47 @@
 """
-GSR variant: spanning cell에만 GIoU loss 주입
-=============================================
-"같은 detection 패러다임 내에서 loss만 교체해도 spanning cell 성능이 오른다"
-는 GSR 핵심 주장을 검증하는 config.
+GSR variant: SnapGTBoxesToSeparators + SmoothL1 (Option B)
+===========================================================
+"같은 detection 패러다임 내에서 regression target만 바꿔도
+spanning cell 성능이 오른다"는 GSR 핵심 주장 검증 config.
 
 baseline config 대비 변경사항:
-  - loss_router.span_loss : SmoothL1 → GIoULoss
-  - reg_decoded_bbox=True  (GIoU는 decoded box 입력 필요)
-  - span_loss_weight       : 샘플 불균형 보정 (spanning cell이 소수)
+  - train pipeline에 SnapGTBoxesToSeparators 추가
+    → spanning cell GT bbox가 nearest separator로 교체되어 저장됨
+  - loss는 기존 SmoothL1 그대로 (model 구조 변경 없음)
 
-필요 시 DIoU / CIoU로 교체하려면 span_loss.type만 바꾸면 된다.
+SpanningAwareCascadeBBoxHead / SpanningCellLossRouter는
+향후 loss weighting ablation 시 추가 가능 (현재 미사용).
 """
 
 _base_ = ['cascade_rcnn_r50_pubtables_baseline.py']
 
-NUM_CLASSES = 5
+# ── 데이터 파이프라인: GSR transform 주입 ─────────────────────────────
+# baseline pipeline 끝에 SnapGTBoxesToSeparators를 삽입.
+# PackDetInputs 직전에 위치해야 gt_bboxes가 올바르게 전달됨.
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', with_bbox=True),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='PackDetInputs',
+         meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
+                    'scale_factor', 'flip', 'flip_direction')),
+]
 
-# ── router: spanning → GIoU, non-spanning → SmoothL1 ─────────────────
-_loss_router_gsr = dict(
-    type='SpanningCellLossRouter',
-    spanning_class_ids=[4],
-    span_loss=dict(
-        type='GIoULoss',
-        loss_weight=2.0,            # IoU loss는 보통 SmoothL1보다 크게 세팅
-    ),
-    nonspan_loss=dict(
-        type='SmoothL1Loss',
-        beta=1.0 / 9.0,
-        loss_weight=1.0,
-    ),
-    span_loss_weight=1.5,           # spanning cell 샘플 수가 적으므로 업-웨이트
+# SnapGTBoxesToSeparators를 PackDetInputs 바로 앞에 삽입
+_snap_transform = dict(
+    type='SnapGTBoxesToSeparators',
+    spanning_class_ids=[4],    # table spanning cell
+    row_class_ids=[1, 3],      # table row, table projected row header
+    col_class_ids=[0, 2],      # table column, table column header
+    snap_non_spanning=False,   # spanning cell만 snap
 )
+train_pipeline.insert(-1, _snap_transform)  # PackDetInputs 직전
 
-_bbox_head_gsr = dict(
-    type='SpanningAwareCascadeBBoxHead',
-    num_classes=NUM_CLASSES,
-    loss_router=_loss_router_gsr,
-    in_channels=256,
-    fc_out_channels=1024,
-    roi_feat_size=7,
-    reg_class_agnostic=True,
-    reg_decoded_bbox=True,          # GIoU는 반드시 decoded bbox 필요
-    loss_cls=dict(
-        type='CrossEntropyLoss',
-        use_sigmoid=False,
-        loss_weight=1.0,
-    ),
-)
-
-model = dict(
-    roi_head=dict(
-        bbox_head=[
-            dict(**_bbox_head_gsr),  # stage 1
-            dict(**_bbox_head_gsr),  # stage 2
-            dict(**_bbox_head_gsr),  # stage 3
-        ],
-    ),
+data_root = 'data/pubtables1m/'
+train_dataloader = dict(
+    dataset=dict(
+        ann_file=data_root + 'train.json',
+        data_prefix=dict(img=data_root + 'train/'),
+        pipeline=train_pipeline,
+    )
 )

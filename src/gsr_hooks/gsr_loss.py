@@ -1,20 +1,28 @@
 """
-GSR Snapping Loss
-=================
-Grid Separator Regularization(GSR)의 핵심 loss.
+GSR Snapping Loss — 보조 Regularizer (선택적 사용)
+===================================================
+주의: GSR의 핵심 메커니즘은 이 파일이 아니라
+      snap_gt_transform.py (데이터 파이프라인 GT 교체)이다.
 
-각 predicted bbox의 좌표를 row/col separator에 "snap"하여
-그리드 정합성을 강제한다.
+이 파일의 역할
+--------------
+추론 시 또는 추가 실험에서 예측 좌표를 separator 쪽으로
+"밀어주는" 보조 regularization 항으로 사용 가능하다.
+메인 loss (L1/SmoothL1)에 더하는 optional 항이며,
+단독으로 GSR 효과를 대체하지 않는다.
 
-두 가지 변형
-------------
-HardSnappingLoss : argmin으로 가장 가까운 separator 선택 → L1
-SoftSnappingLoss : distance-weighted softmax로 기댓값 계산 → L1
-                  temperature τ : 크면 분산(soft), 작으면 sharp(→ hard)
+GSR 학습 흐름 (Option B)
+-------------------------
+  1. SnapGTBoxesToSeparators (transform) → GT snap
+  2. 표준 SmoothL1(pred, snapped_gt)    → 메인 loss
+  3. [선택] HardSnappingLoss / SoftSnappingLoss → 보조 regularizer
+
+HardSnappingLoss : pred를 현재 위치에서 nearest sep으로 push
+SoftSnappingLoss : temperature τ로 soft-push (τ 크면 분산, 작으면 sharp)
 
 입력 좌표 규약
 --------------
-pred_boxes      : Tensor[N, 4]  (x1, y1, x2, y2), pixel 또는 normalized
+pred_boxes      : Tensor[N, 4]  (x1, y1, x2, y2)
 row_separators  : Tensor[R]     y좌표, 오름차순 정렬, stop-gradient
 col_separators  : Tensor[C]     x좌표, 오름차순 정렬, stop-gradient
 """
