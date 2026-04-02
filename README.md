@@ -177,5 +177,35 @@ python -m tsr_eval.run --images data/images --models tatr,docling,tesseract,img2
 
 ---
 
+## 🔬 8. Detailed Grid Reconstruction Analysis (v3)
+
+TATR 모델의 실질적 표 복원 성능을 정교하게 진단하기 위해 **3-Layer Structural Evaluation** 체계를 도입했습니다.
+
+### 평가 레이어 및 주요 지표
+1.  **Layer 1 (Boundary Quality)**: Row/Col 및 Spanning cell 탐지 자체의 Bbox IoU (Hungarian matching).
+2.  **Layer 2 (Spanning Detection)**: Spanning cell의 AP(Average Precision) 및 Recall@thresholds.
+3.  **Layer 3 (Grid Accuracy)**: Row/Col 교차점 기반 1x1 Cell 생성 후 Spanning cell로 병합한 최종 Grid와 GT Grid 간의 IoU/F1.
+
+### 주요 분석 결과: "The Error Cascade"
+Spanning cell 탐지의 미세한 오차가 Grid 구조 전체의 파괴로 이어지는 현상을 실증했습니다.
+
+| 그룹 | Row IoU | Col IoU | Cell IoU | Cell F1 | Adj F1 |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **A (no span)** | 0.941 | 0.965 | **0.912** | **0.934** | **0.951** |
+| **B (has span)** | 0.918 | 0.952 | **0.785** | **0.762** | **0.804** |
+| **Gap (A-B)** | -0.023 | -0.013 | **-0.127** ⚠️ | **-0.172** ⚠️ | **-0.147** ⚠️ |
+
+- **발견 1**: Spanning cell이 하나라도 포함된 표(Group B)는 그렇지 않은 표(Group A)보다 Cell-level F1이 **약 17%p 급락**합니다.
+- **발견 2**: Row/Col boundary IoU는 두 그룹 간 차이가 미미함에도 불구하고, 최종 Cell IoU Gap이 크게 벌어지는 것은 **Spanning cell의 Bbox 부정확성이 Grid 병합 시 '도미노 에러'를 유발**하기 때문입니다.
+
+### 실행 방법 (v3)
+```bash
+# 3-Layer Structural Evaluation (500 samples)
+python experiments/grid_reconstruction_eval.py --pubtables_root data/pubtables-1m --num_samples 500
+```
+
+
+---
+
 **Last Updated**: 2026-04-02  
-**Experimental Status**: ✅ 4-Model Harness Integrated | ✅ Failure Taxonomy Verified | 🔬 Detection TSR Span Limitation Proven | 🛠️ GSR Loss Implemented
+**Experimental Status**: ✅ 4-Model Harness Integrated | ✅ Failure Taxonomy Verified | 🔬 Detection TSR Span Limitation Proven | 📊 3-Layer Grid Reconstruction Eval (v3) Completed | 🛠️ GSR Loss Implemented

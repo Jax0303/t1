@@ -1,0 +1,54 @@
+{
+  "config": {
+    "num_samples": 500,
+    "seed": 42,
+    "model": "microsoft/table-transformer-structure-recognition-v1.1-all",
+    "confidence": 0.5,
+    "device": "cpu"
+  },
+  "counts": {
+    "total": 500,
+    "group_a": 285,
+    "group_b": 215
+  },
+  "layer1_row_col": {
+    "a_row_iou": 0.9164930234917948,
+    "a_col_iou": 0.9516886181411435,
+    "b_row_iou": 0.9025706612805158,
+    "b_col_iou": 0.9463294701752292
+  },
+  "layer2_span": {
+    "ap50": 0.8887420380171217,
+    "ap75": 0.8455869645446984,
+    "ap90": 0.5429957116566154
+  },
+  "layer3_cell_grid": {
+    "a_cell_iou": 0.8950993002309834,
+    "b_cell_iou": 0.8623022457000169,
+    "gap_iou": 0.032797054530966485,
+    "a_cell_f1": 0.9596961217626049,
+    "b_cell_f1": 0.9194550319194651,
+    "gap_f1": 0.04024108984313979
+  },
+  "error_cascade": {
+    "B-1": {
+      "n": 59,
+      "cell_iou": 0.8914735669192321
+    },
+    "B-2": {
+      "n": 110,
+      "cell_iou": 0.8674704216716935
+    },
+    "B-3": {
+      "n": 46,
+      "cell_iou": 0.812528173769188
+    }
+  },
+  "statistical_tests": {
+    "welch_t": 4.602152990276115,
+    "p_value": 5.585570756873535e-06,
+    "cohens_d": 0.4211600042924554,
+    "kruskal_h": 20.77933956798188,
+    "kruskal_p": 3.074848651366225e-05
+  }
+}

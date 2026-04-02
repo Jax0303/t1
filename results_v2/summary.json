@@ -1,0 +1,75 @@
+{
+  "total_cells": 35913,
+  "span_cells": 1105,
+  "nonspan_cells": 34808,
+  "mean_iou_all": 0.09774360923442924,
+  "mean_iou_span": 0.7626501528368957,
+  "mean_iou_nonspan": 0.07663576820131254,
+  "iou_gap_label_aware": -0.6860143846355832,
+  "iou_gap_hungarian": -0.7078719030484063,
+  "match_rate_all": 0.049035168323448335,
+  "match_rate_span": 0.848868778280543,
+  "match_rate_nonspan": 0.02364398988738221,
+  "statistical_tests": {
+    "welch_t": {
+      "t_statistic": -74.95506117545011,
+      "p_value": 0.0
+    },
+    "mann_whitney_u": {
+      "u_statistic": 2982435.0,
+      "p_value": 1.0
+    },
+    "cohens_d": -2.889837626323839
+  },
+  "ap_by_threshold": [
+    {
+      "threshold": 0.5,
+      "all": 0.049035168323448335,
+      "nonspan": 0.02364398988738221,
+      "span": 0.848868778280543,
+      "gap": -0.8252247883931607
+    },
+    {
+      "threshold": 0.6,
+      "all": 0.03653273187982068,
+      "nonspan": 0.011204320845782578,
+      "span": 0.8343891402714932,
+      "gap": -0.8231848194257106
+    },
+    {
+      "threshold": 0.7,
+      "all": 0.029989140422688163,
+      "nonspan": 0.005228683061365203,
+      "span": 0.8099547511312217,
+      "gap": -0.8047260680698565
+    },
+    {
+      "threshold": 0.75,
+      "all": 0.027232478489683402,
+      "nonspan": 0.003160193059066881,
+      "span": 0.7855203619909502,
+      "gap": -0.7823601689318833
+    },
+    {
+      "threshold": 0.8,
+      "all": 0.024587196836800045,
+      "nonspan": 0.0017237416685819352,
+      "span": 0.7447963800904978,
+      "gap": -0.7430726384219158
+    },
+    {
+      "threshold": 0.9,
+      "all": 0.014507281485812937,
+      "nonspan": 0.0002585612502872903,
+      "span": 0.4633484162895928,
+      "gap": -0.4630898550393055
+    }
+  ],
+  "confidence_sensitivity": null,
+  "per_image_gap_mean": -0.7225584821058232,
+  "per_image_gap_positive_pct": 3.255813953488372,
+  "model": "microsoft/table-transformer-structure-recognition-v1.1-all",
+  "dataset": "PubTables-1M (test)",
+  "confidence_threshold": 0.5,
+  "iou_match_threshold": 0.5
+}

@@ -2,11 +2,9 @@
 """
 Real Model Inference: Detection-Based TSR Span Error Analysis
 ==============================================================
-실제 TATR(Table Transformer) 모델의 pretrained weights를
+실제 TATR(Table Transformer) 계열 모델들의 pretrained weights를
 SciTSR-COMP 이미지에 직접 돌려서,
-detection-based TSR이 colspan/rowspan을 어떻게 처리하는지 정량 분석한다.
-
-TATR: microsoft/table-transformer-structure-recognition (HuggingFace)
+detection-based TSR이 colspan/rowspan을 어떻게 처리하는지 정량 비교 분석한다.
 """
 
 import json
@@ -40,7 +38,10 @@ N_VISUALIZE = 6
 SEED = 42
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-TATR_MODEL = "microsoft/table-transformer-structure-recognition"
+MODELS = [
+    "microsoft/table-transformer-structure-recognition",
+    "microsoft/table-structure-recognition-v1.1-all"
+]
 TATR_THRESHOLD = 0.5     # detection confidence threshold
 IOU_THRESHOLD = 0.3      # IoU threshold for spanning cell merge
 
@@ -51,7 +52,6 @@ IOU_THRESHOLD = 0.3      # IoU threshold for spanning cell merge
 def load_comp_ids():
     with open(COMP_LIST) as f:
         return [line.strip() for line in f if line.strip()]
-
 
 def load_gt(table_id: str) -> dict:
     """GT structure 로드 및 정규화"""
@@ -78,7 +78,6 @@ def load_gt(table_id: str) -> dict:
     n_cols = max(c['end_col'] for c in cells) + 1 if cells else 0
     return {'cells': cells, 'n_rows': n_rows, 'n_cols': n_cols}
 
-
 def load_image(table_id: str) -> Image.Image:
     for ext in ['.png', '.jpg', '.jpeg']:
         p = IMG_DIR / f"{table_id}{ext}"
@@ -90,15 +89,12 @@ def load_image(table_id: str) -> Image.Image:
 # ─────────────────────────────────────────────
 # TATR Inference
 # ─────────────────────────────────────────────
-def load_tatr():
-    print(f"Loading TATR model: {TATR_MODEL}")
-    print(f"Device: {DEVICE}")
-    processor = AutoImageProcessor.from_pretrained(TATR_MODEL)
-    model = TableTransformerForObjectDetection.from_pretrained(TATR_MODEL)
+def load_tatr(model_name: str):
+    print(f"\n[{model_name}] Loading model...")
+    processor = AutoImageProcessor.from_pretrained(model_name)
+    model = TableTransformerForObjectDetection.from_pretrained(model_name)
     model = model.to(DEVICE).eval()
-    print(f"Model loaded. Labels: {model.config.id2label}")
     return processor, model
-
 
 def bbox_iou(b1, b2):
     x0 = max(b1[0], b2[0]); y0 = max(b1[1], b2[1])
@@ -110,16 +106,14 @@ def bbox_iou(b1, b2):
     union = a1 + a2 - inter
     return inter / union if union > 0 else 0.0
 
-
 def run_tatr(processor, model, image: Image.Image) -> dict:
-    """TATR로 테이블 구조 추론"""
     encoding = processor(images=image, return_tensors="pt")
     encoding = {k: v.to(DEVICE) for k, v in encoding.items()}
     
     with torch.no_grad():
         outputs = model(**encoding)
     
-    target_sizes = torch.tensor([image.size[::-1]])  # (H, W)
+    target_sizes = torch.tensor([image.size[::-1]]) 
     results = processor.post_process_object_detection(
         outputs, threshold=TATR_THRESHOLD, target_sizes=target_sizes
     )[0]
@@ -130,26 +124,23 @@ def run_tatr(processor, model, image: Image.Image) -> dict:
     
     id2label = model.config.id2label
     
-    # Parse detections into rows, columns, spanning cells
     rows, cols, spans = [], [], []
     for box, label_id, score in zip(boxes, labels, scores):
-        label = id2label[label_id]
+        label = id2label[label_id].lower()
         data = {'box': box.tolist(), 'score': float(score), 'label': label}
         
-        if 'row' in label.lower() and 'header' not in label.lower():
-            rows.append(data)
-        elif 'column' in label.lower():
+        if 'column' in label:
             cols.append(data)
-        elif 'spanning' in label.lower():
+        elif 'spanning' in label or 'projected' in label:
             spans.append(data)
+        else: # Treat 'table row', 'table row header' etc as rows
+            rows.append(data)
     
-    # Sort
     rows.sort(key=lambda r: (r['box'][1] + r['box'][3]) / 2)
     cols.sort(key=lambda c: (c['box'][0] + c['box'][2]) / 2)
     
     n_rows, n_cols = len(rows), len(cols)
     
-    # Build cells from row-col intersections
     cells = []
     for ri, rdata in enumerate(rows):
         for ci, cdata in enumerate(cols):
@@ -161,11 +152,10 @@ def run_tatr(processor, model, image: Image.Image) -> dict:
                     'start_row': ri, 'end_row': ri,
                     'start_col': ci, 'end_col': ci,
                     'row_span': 1, 'col_span': 1,
-                    'box': [x0, y0, x1, y1],
+                    'box': [float(x0), float(y0), float(x1), float(y1)],
                     'confidence': (rdata['score'] + cdata['score']) / 2,
                 })
     
-    # Try to merge spanning cells
     if spans:
         merged_idx = set()
         merged_cells = []
@@ -187,7 +177,7 @@ def run_tatr(processor, model, image: Image.Image) -> dict:
                     'start_row': r0, 'end_row': r1,
                     'start_col': c0, 'end_col': c1,
                     'row_span': r1 - r0 + 1, 'col_span': c1 - c0 + 1,
-                    'box': sbox,
+                    'box': [float(v) for v in sbox],
                     'confidence': sdata['score'],
                 })
                 for idx, _ in overlaps:
@@ -218,7 +208,6 @@ def analyze(gt: dict, pred: dict) -> dict:
     pred_cells = pred['cells']
     spanning = [c for c in gt_cells if c['row_span'] > 1 or c['col_span'] > 1]
     
-    # Check how many GT spanning cells were recovered
     recovered = 0
     for sc in spanning:
         for pc in pred_cells:
@@ -250,23 +239,22 @@ def analyze(gt: dict, pred: dict) -> dict:
 # ─────────────────────────────────────────────
 # Visualization
 # ─────────────────────────────────────────────
-def visualize(table_id: str, image: Image.Image, gt: dict, pred: dict, stats: dict, save_path: str):
+def visualize(model_name: str, table_id: str, image: Image.Image, gt: dict, pred: dict, stats: dict, save_path: str):
     fig, axes = plt.subplots(1, 3, figsize=(20, max(5, gt['n_rows'] * 0.6)))
+    short_model = model_name.split('/')[-1]
     fig.suptitle(
-        f"TATR Real Inference | Table: {table_id}\n"
-        f"GT: {stats['gt_cells']} cells ({stats['gt_spanning']} spanning, {stats['gt_rows']}×{stats['gt_cols']}) | "
-        f"Pred: {stats['pred_cells']} cells ({stats['pred_rows']}×{stats['pred_cols']}, "
+        f"{short_model} | Table: {table_id}\\n"
+        f"GT: {stats['gt_cells']} cells ({stats['gt_spanning']} spanning, {stats['gt_rows']}x{stats['gt_cols']}) | "
+        f"Pred: {stats['pred_cells']} cells ({stats['pred_rows']}x{stats['pred_cols']}, "
         f"{stats['pred_spans_detected']} spanning detected) | "
         f"Recovery: {stats['span_recovery_rate']:.0%}",
         fontsize=9, fontweight='bold'
     )
     
-    # (1) Original image
     axes[0].imshow(image)
     axes[0].set_title("Original Image", fontsize=9)
     axes[0].axis('off')
     
-    # (2) GT grid
     ax = axes[1]
     nr, nc = gt['n_rows'], gt['n_cols']
     ax.set_xlim(-0.3, nc + 0.3); ax.set_ylim(nr + 0.3, -0.3)
@@ -286,16 +274,15 @@ def visualize(table_id: str, image: Image.Image, gt: dict, pred: dict, stats: di
                                        facecolor=color, alpha=alpha)
         ax.add_patch(rect)
         if is_sp:
-            ax.text(sc_+cs/2, sr+rs/2, f'{rs}×{cs}', ha='center', va='center',
+            ax.text(sc_+cs/2, sr+rs/2, f'{rs}x{cs}', ha='center', va='center',
                     fontsize=7, color='white', fontweight='bold')
     ax.set_xticks(range(nc)); ax.set_yticks(range(nr)); ax.tick_params(labelsize=5)
     
-    # (3) TATR prediction grid
     ax = axes[2]
     pr, pc = pred['n_rows'], pred['n_cols']
     ax.set_xlim(-0.3, max(pc, nc) + 0.3); ax.set_ylim(max(pr, nr) + 0.3, -0.3)
     ax.set_aspect('equal')
-    ax.set_title(f"TATR Prediction ({stats['pred_spans_detected']} spanning detected)", fontsize=9, fontweight='bold')
+    ax.set_title(f"Prediction ({stats['pred_spans_detected']} spanning detected)", fontsize=9, fontweight='bold')
     for r in range(max(pr, nr)+1): ax.axhline(y=r, color='#BDBDBD', lw=0.3)
     for c in range(max(pc, nc)+1): ax.axvline(x=c, color='#BDBDBD', lw=0.3)
     for cell in pred['cells']:
@@ -310,7 +297,7 @@ def visualize(table_id: str, image: Image.Image, gt: dict, pred: dict, stats: di
                                        facecolor=color, alpha=alpha)
         ax.add_patch(rect)
         if is_sp:
-            ax.text(sc_+cs/2, sr+rs/2, f'{rs}×{cs}', ha='center', va='center',
+            ax.text(sc_+cs/2, sr+rs/2, f'{rs}x{cs}', ha='center', va='center',
                     fontsize=7, color='white', fontweight='bold')
     ax.set_xticks(range(max(pc, nc))); ax.set_yticks(range(max(pr, nr))); ax.tick_params(labelsize=5)
     
@@ -319,55 +306,74 @@ def visualize(table_id: str, image: Image.Image, gt: dict, pred: dict, stats: di
     plt.close(fig)
 
 
-def make_summary(all_stats: list, save_path: str):
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-    fig.suptitle("TATR Real Inference: Span Error Analysis on SciTSR-COMP", fontsize=12, fontweight='bold')
+def make_summary(all_stats_by_model: dict, save_path: str):
+    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+    fig.suptitle("Detection-Based TSR Models: Span Error Analysis on SciTSR-COMP", fontsize=16, fontweight='bold')
     
-    # (a) Over-seg ratio
-    ratios = [s['over_seg_ratio'] for s in all_stats]
-    colors = ['#F44336' if r > 1.3 else '#FF9800' if r > 1.0 else '#4CAF50' if r > 0.8 else '#2196F3'
-              for r in ratios]
-    axes[0, 0].barh(range(len(ratios)), ratios, color=colors, height=0.7)
-    axes[0, 0].axvline(x=1.0, color='green', ls='--', alpha=0.5, label='1.0 (perfect)')
-    axes[0, 0].set_xlabel('Over-segmentation Ratio')
-    axes[0, 0].set_title('(a) Per-Table Over-seg Ratio', fontweight='bold')
-    axes[0, 0].set_yticks(range(len(ratios)))
-    axes[0, 0].set_yticklabels([s['table_id'][:15] for s in all_stats], fontsize=5)
-    axes[0, 0].legend(fontsize=7)
+    models = list(all_stats_by_model.keys())
+    model_labels = [m.split('/')[-1] for m in models]
+    n_models = len(models)
     
-    # (b) Span recovery rate
-    recovs = [s['span_recovery_rate'] * 100 for s in all_stats]
-    axes[0, 1].bar(range(len(recovs)), recovs, color='#F44336', alpha=0.8)
-    axes[0, 1].set_xlabel('Table Index')
-    axes[0, 1].set_ylabel('Span Recovery Rate (%)')
-    axes[0, 1].set_title('(b) Spanning Cell Recovery', fontweight='bold')
-    axes[0, 1].set_ylim(0, 110)
-    avg_rec = np.mean(recovs)
-    axes[0, 1].axhline(y=avg_rec, color='red', ls='--', label=f'Avg: {avg_rec:.1f}%')
-    axes[0, 1].legend()
+    stats0 = all_stats_by_model[models[0]]
+    n_tables = len(stats0)
+    tids = [s['table_id'][:15] for s in stats0]
+    indices = np.arange(n_tables)
+    bar_width = 0.8 / n_models
     
-    # (c) Row/Col detection accuracy
-    row_err = [s['row_error'] for s in all_stats]
-    col_err = [s['col_error'] for s in all_stats]
-    x = np.arange(len(all_stats))
+    colors = plt.cm.tab10(np.linspace(0, 1, max(10, n_models)))
+    
+    # (a) Over-seg ratio (Average bar chart instead of per-table because it's too cluttered)
+    ax = axes[0, 0]
+    avg_over_segs = [np.mean([s['over_seg_ratio'] for s in all_stats_by_model[m]]) for m in models]
+    ax.bar(model_labels, avg_over_segs, color=colors[:n_models], alpha=0.8)
+    ax.axhline(y=1.0, color='green', ls='--', label='1.0 (perfect)')
+    ax.set_ylabel('Avg Over-segmentation Ratio')
+    ax.set_title('(a) Average Over-segmentation Ratio', fontweight='bold')
+    ax.tick_params(axis='x', rotation=15)
+    ax.legend()
+    
+    # (b) Span recovery rate (Total recovery rate bar chart)
+    ax = axes[0, 1]
+    total_spans = sum(s['gt_spanning'] for s in stats0)
+    recovered_rates = []
+    for m in models:
+        total_rec = sum(s['spans_recovered'] for s in all_stats_by_model[m])
+        recovered_rates.append(total_rec / total_spans * 100 if total_spans > 0 else 100)
+    ax.bar(model_labels, recovered_rates, color=colors[:n_models], alpha=0.8)
+    ax.set_ylabel('Span Recovery Rate (%)')
+    ax.set_title(f'(b) Global Spanning Cell Recovery\\n(Total spanning targets: {total_spans})', fontweight='bold')
+    ax.set_ylim(0, 100)
+    ax.tick_params(axis='x', rotation=15)
+    
+    # (c) Row/Col detection error (Average over tables)
+    ax = axes[1, 0]
+    x = np.arange(n_models)
     w = 0.35
-    axes[1, 0].bar(x - w/2, row_err, w, label='Row Error', color='#E91E63', alpha=0.8)
-    axes[1, 0].bar(x + w/2, col_err, w, label='Col Error', color='#9C27B0', alpha=0.8)
-    axes[1, 0].set_xlabel('Table Index')
-    axes[1, 0].set_ylabel('|GT - Pred|')
-    axes[1, 0].set_title('(c) Row/Col Detection Error', fontweight='bold')
-    axes[1, 0].legend()
+    avg_row_err = [np.mean([s['row_error'] for s in all_stats_by_model[m]]) for m in models]
+    avg_col_err = [np.mean([s['col_error'] for s in all_stats_by_model[m]]) for m in models]
     
-    # (d) GT cells vs Pred cells
-    gt_ns = [s['gt_cells'] for s in all_stats]
-    pr_ns = [s['pred_cells'] for s in all_stats]
-    axes[1, 1].scatter(gt_ns, pr_ns, c='#FF5722', alpha=0.7, s=40)
-    max_n = max(max(gt_ns), max(pr_ns)) + 5
-    axes[1, 1].plot([0, max_n], [0, max_n], 'g--', alpha=0.5, label='y=x (perfect)')
-    axes[1, 1].set_xlabel('GT Cell Count')
-    axes[1, 1].set_ylabel('TATR Pred Cell Count')
-    axes[1, 1].set_title('(d) GT vs Predicted Cell Count', fontweight='bold')
-    axes[1, 1].legend()
+    ax.bar(x - w/2, avg_row_err, w, label='Row Error', color='#E91E63', alpha=0.8)
+    ax.bar(x + w/2, avg_col_err, w, label='Col Error', color='#9C27B0', alpha=0.8)
+    ax.set_xticks(x)
+    ax.set_xticklabels(model_labels, rotation=15)
+    ax.set_ylabel('|GT - Pred|')
+    ax.set_title('(c) Average Row/Col Detection Error', fontweight='bold')
+    ax.legend()
+    
+    # (d) GT cells vs Pred cells scatter
+    ax = axes[1, 1]
+    max_val = 0
+    for i, m in enumerate(models):
+        gt_ns = [s['gt_cells'] for s in all_stats_by_model[m]]
+        pr_ns = [s['pred_cells'] for s in all_stats_by_model[m]]
+        ax.scatter(gt_ns, pr_ns, label=model_labels[i], color=colors[i], alpha=0.6, s=30)
+        max_val = max(max_val, max(max(gt_ns) if gt_ns else 0, max(pr_ns) if pr_ns else 0))
+    
+    ax.plot([0, max_val+5], [0, max_val+5], 'g--', alpha=0.5, label='y=x (perfect)')
+    ax.set_xlabel('GT Cell Count')
+    ax.set_ylabel('Pred Cell Count')
+    ax.set_title('(d) GT vs Predicted Cell Count', fontweight='bold')
+    ax.legend()
     
     plt.tight_layout()
     fig.savefig(save_path, dpi=150, bbox_inches='tight', facecolor='white')
@@ -378,123 +384,97 @@ def make_summary(all_stats: list, save_path: str):
 # Main
 # ─────────────────────────────────────────────
 def main():
-    print("=" * 65)
-    print("TATR Real Inference: Colspan/Rowspan Error Analysis")
-    print("=" * 65)
+    print("=" * 70)
+    print("Multiple Detection-Based TSR: Span Error Analysis")
+    print("=" * 70)
     
     os.makedirs(RESULTS_DIR, exist_ok=True)
     
-    # 1. Load model
-    processor, model = load_tatr()
-    
-    # 2. Sample tables
+    # Sample tables
     comp_ids = load_comp_ids()
     valid_ids = [tid for tid in comp_ids if (STRUCT_DIR / f"{tid}.json").exists()
                  and any((IMG_DIR / f"{tid}{ext}").exists() for ext in ['.png', '.jpg'])]
     rng = random.Random(SEED)
     sample_ids = rng.sample(valid_ids, min(N_SAMPLE, len(valid_ids)))
-    print(f"\n📂 SciTSR-COMP: {len(comp_ids)} tables, valid={len(valid_ids)}, sampled={len(sample_ids)}")
+    print(f"\\n📂 SciTSR-COMP: {len(comp_ids)} tables, valid={len(valid_ids)}, sampled={len(sample_ids)}")
     
-    # 3. Run inference
-    all_stats = []
-    for i, tid in enumerate(sample_ids):
-        gt = load_gt(tid)
-        image = load_image(tid)
+    all_stats_by_model = {}
+    aggregate_results = {}
+    
+    for model_name in MODELS:
+        processor, model_obj = load_tatr(model_name)
+        model_stats = []
         
-        t0 = time.time()
-        pred = run_tatr(processor, model, image)
-        dt = time.time() - t0
+        for i, tid in enumerate(sample_ids):
+            gt = load_gt(tid)
+            image = load_image(tid)
+            
+            t0 = time.time()
+            pred = run_tatr(processor, model_obj, image)
+            dt = time.time() - t0
+            
+            stats = analyze(gt, pred)
+            stats['table_id'] = tid
+            stats['inference_time'] = round(dt, 3)
+            model_stats.append(stats)
+            
+            if i < N_VISUALIZE:
+                short_model = model_name.split('/')[-1]
+                save_path = RESULTS_DIR / f"{short_model}_real_{i+1}_{tid.replace('/', '_')}.png"
+                visualize(model_name, tid, image, gt, pred, stats, str(save_path))
         
-        stats = analyze(gt, pred)
-        stats['table_id'] = tid
-        stats['inference_time'] = round(dt, 3)
-        all_stats.append(stats)
+        all_stats_by_model[model_name] = model_stats
         
-        status = "✅" if stats['span_recovery_rate'] > 0.5 else "⚠️" if stats['span_recovery_rate'] > 0 else "❌"
-        print(f"  [{i+1:2d}/{len(sample_ids)}] {tid:<25} "
-              f"GT={stats['gt_cells']:>3}({stats['gt_spanning']}sp) "
-              f"Pred={stats['pred_cells']:>3} "
-              f"SpanDet={stats['pred_spans_detected']} "
-              f"Recovery={stats['span_recovery_rate']:.0%} {status} "
-              f"({dt:.2f}s)")
+        # Aggregate
+        total_gt = sum(s['gt_cells'] for s in model_stats)
+        total_span = sum(s['gt_spanning'] for s in model_stats)
+        total_pred = sum(s['pred_cells'] for s in model_stats)
+        total_spans_det = sum(s['pred_spans_detected'] for s in model_stats)
+        total_recovered = sum(s['spans_recovered'] for s in model_stats)
+        avg_ratio = np.mean([s['over_seg_ratio'] for s in model_stats])
+        avg_recovery = np.mean([s['span_recovery_rate'] for s in model_stats])
+        avg_time = np.mean([s['inference_time'] for s in model_stats])
+        avg_row_err = np.mean([s['row_error'] for s in model_stats])
+        avg_col_err = np.mean([s['col_error'] for s in model_stats])
         
-        if i < N_VISUALIZE:
-            save_path = RESULTS_DIR / f"tatr_real_{i+1}_{tid.replace('/', '_')}.png"
-            visualize(tid, image, gt, pred, stats, str(save_path))
-    
-    # 4. Aggregate
-    print(f"\n{'=' * 65}")
-    print("AGGREGATE RESULTS (TATR Real Inference)")
-    print(f"{'=' * 65}")
-    
-    total_gt = sum(s['gt_cells'] for s in all_stats)
-    total_span = sum(s['gt_spanning'] for s in all_stats)
-    total_pred = sum(s['pred_cells'] for s in all_stats)
-    total_spans_det = sum(s['pred_spans_detected'] for s in all_stats)
-    total_recovered = sum(s['spans_recovered'] for s in all_stats)
-    avg_ratio = np.mean([s['over_seg_ratio'] for s in all_stats])
-    avg_recovery = np.mean([s['span_recovery_rate'] for s in all_stats])
-    avg_time = np.mean([s['inference_time'] for s in all_stats])
-    avg_row_err = np.mean([s['row_error'] for s in all_stats])
-    avg_col_err = np.mean([s['col_error'] for s in all_stats])
-    
-    print(f"\n  Tables analyzed:             {len(all_stats)}")
-    print(f"  Avg inference time:          {avg_time:.3f}s")
-    print(f"  Total GT cells:              {total_gt}")
-    print(f"  Total GT spanning cells:     {total_span} ({total_span/total_gt*100:.1f}%)")
-    print(f"  Total Pred cells:            {total_pred}")
-    print(f"  'Spanning' labels detected:  {total_spans_det}")
-    print(f"  Spans actually recovered:    {total_recovered}/{total_span} ({total_recovered/total_span*100:.1f}%)")
-    print(f"  Avg over-seg ratio:          {avg_ratio:.2f}x")
-    print(f"  Avg span recovery rate:      {avg_recovery:.0%}")
-    print(f"  Avg row detection error:     {avg_row_err:.1f}")
-    print(f"  Avg col detection error:     {avg_col_err:.1f}")
-    
-    print(f"\n{'=' * 65}")
-    print("CONCLUSION")
-    print(f"{'=' * 65}")
-    print(f"""
-  실제 TATR 모델(microsoft/table-transformer-structure-recognition)을
-  SciTSR-COMP {len(all_stats)}개 테이블에 직접 inference한 결과:
+        aggregate_results[model_name] = {
+            'tables': len(model_stats),
+            'total_gt_cells': total_gt,
+            'total_gt_spanning': total_span,
+            'total_pred_cells': total_pred,
+            'total_spans_detected': total_spans_det,
+            'total_spans_recovered': total_recovered,
+            'avg_over_seg_ratio': round(avg_ratio, 4),
+            'avg_span_recovery_rate': round(avg_recovery, 4),
+            'avg_row_error': round(avg_row_err, 2),
+            'avg_col_error': round(avg_col_err, 2),
+            'avg_inference_time': round(avg_time, 4),
+        }
+        
+        print(f"\\n[{model_name}] COMPLETED")
+        print(f"  Avg inference time: {avg_time:.3f}s")
+        print(f"  Spans recovered:    {total_recovered}/{total_span} ({total_recovered/total_span*100:.1f}%)")
+        print(f"  Avg row error:      {avg_row_err:.1f}")
+        print(f"  Avg col error:      {avg_col_err:.1f}")
 
-  • Spanning cell recovery rate: {avg_recovery:.0%}
-  • 'Spanning' label이 detect되더라도 IoU 기반 merge가 부정확하여
-    실제로 복원되는 spanning cell은 매우 적음
-  • Row/Col detection 자체도 GT와 차이 발생 (avg row err: {avg_row_err:.1f}, col err: {avg_col_err:.1f})
-  • Detection-based TSR의 구조적 한계가 실제 모델에서도 확인됨
-""")
+    # Summary charts
+    chart_path = RESULTS_DIR / "detection_models_summary.png"
+    make_summary(all_stats_by_model, str(chart_path))
+    print(f"\\n📊 Comparative charts saved: {chart_path}")
     
-    # 5. Summary charts
-    chart_path = RESULTS_DIR / "tatr_real_summary.png"
-    make_summary(all_stats, str(chart_path))
-    print(f"  Charts saved: {chart_path}")
-    
-    # 6. Save JSON
-    out_path = RESULTS_DIR / "tatr_real_results.json"
+    # Save JSON
+    out_path = RESULTS_DIR / "detection_models_results.json"
     with open(out_path, 'w') as f:
         json.dump({
-            'model': TATR_MODEL,
+            'models': MODELS,
             'device': DEVICE,
             'threshold': TATR_THRESHOLD,
             'config': {'n_sample': N_SAMPLE, 'seed': SEED},
-            'aggregate': {
-                'tables': len(all_stats),
-                'total_gt_cells': total_gt,
-                'total_gt_spanning': total_span,
-                'total_pred_cells': total_pred,
-                'total_spans_detected': total_spans_det,
-                'total_spans_recovered': total_recovered,
-                'avg_over_seg_ratio': round(avg_ratio, 4),
-                'avg_span_recovery_rate': round(avg_recovery, 4),
-                'avg_row_error': round(avg_row_err, 2),
-                'avg_col_error': round(avg_col_err, 2),
-                'avg_inference_time': round(avg_time, 4),
-            },
-            'per_table': all_stats,
+            'aggregate': aggregate_results,
+            'per_table': all_stats_by_model,
         }, f, indent=2, ensure_ascii=False)
-    print(f"  Results saved: {out_path}")
-    print(f"\n✅ TATR real inference analysis complete.")
-
+    print(f"💾 Results saved: {out_path}")
+    print(f"\\n✅ All detection-based models analysis complete.")
 
 if __name__ == "__main__":
     main()
