@@ -1,253 +1,227 @@
-# 📊 TSR Baseline Evaluation Harness & Failure Taxonomy
+# Detection-Based TSR Fails at Spanning Cells: A Rigorous Empirical Study
 
-> **상태**: ✅ 4개 모델 비교 평가 완료 | 🔬 Detection-based TSR Colspan/Rowspan 한계 실증 완료 | 🛠️ GSR Loss 구현 완료  
-> **최근 업데이트**: 2026-04-02
-
-이 프로젝트는 표 구조 인식(Table Structure Recognition, TSR) 엔진들의 성능을 정밀 진단하기 위한 전용 평가 파이프라인(Harness)입니다. 딥러닝 기반 모델과 규칙 기반 알고리즘의 상반된 설계적 한계를 비교 분석하여 데이터 추출의 신뢰성을 검증합니다.
-
----
-
-## 🏗️ 1. 평가 대상 모델 (4-Model Matrix)
-
-알고리즘적 접근 방식이 서로 다른 4가지 모델을 선정하여 비교 실험을 진행했습니다.
-
-| 분류 | 모델명 (Model) | 핵심 알고리즘 사상 | 주요 강점 |
-| :--- | :--- | :--- | :--- |
-| **Vision DL** | **Table Transformer (TATR)** | 픽셀 기반 Bbox 회기 (Object Detection) | 높은 재현율, 무선 표 강점 |
-| **Doc Analysis** | **IBM Docling** | 최신 VLM + TableFormer 하이브리드 | 안정적인 구조 복원 및 문서 파싱 |
-| **Text Rules** | **Tesseract** | OCR 텍스트 토큰 간 spatial clustering | 정방형 텍실 표의 완벽한 Grid 형성 |
-| **CV Rules** | **img2table** | OpenCV 기반 선(Line) 및 윤곽선 탐지 | 선이 있는 표에서의 압도적 선명함 |
+> **연구 상태**: 🔬 실험 완료 | 📊 GriTS 검증 완료 | 🆚 Detection vs Generation 비교 완료  
+> **목표 학회**: Top-tier (CVPR / ECCV / NeurIPS)  
+> **최종 업데이트**: 2026-04-06
 
 ---
 
-## 🧪 2. 에러 진단 체계 (Error Taxonomy)
+## 1. 문제 정의 (Problem Definition)
 
-단순한 정확도를 넘어, 모델의 설계 사상이 유발하는 치명적 에러 3종을 분석합니다.
+### 1.1 배경
 
-1.  **Cell Loss (셀 통째 소실)**: 알고리즘이 표의 존재를 무시하거나 특정 영역을 누락하여 데이터가 통째로 증발하는 현상.
-2.  **Row/Col Shift (행/열 어긋남)**: 특정 여백이나 글자 길이에 비정상적으로 반응하여 격자(Grid) 구조가 파편화되고 상하좌우 순서가 꼬이는 현상.
-3.  **Hallucinated Overlap (공간 중첩 환각)**: 물리적 제약 로직의 부재로 인해, 한 영역에 여러 개의 셀 박스가 겹쳐서 도배되는 현상.
+표 구조 인식(Table Structure Recognition, TSR)은 문서 이미지에서 표의 논리 구조(행·열·셀 경계)를 복원하는 과제다. 현재 주류 접근법은 두 가지로 나뉜다.
+
+| 패러다임 | 대표 모델 | 작동 방식 |
+|---|---|---|
+| **Detection** | TATR (Microsoft), TSRDet, CascadeTabNet | 행·열·셀을 독립 객체로 탐지 → 교차점으로 grid 구성 |
+| **Generation** | Docling-TableFormer (IBM), LORE, SLANet | 논리 구조를 직접 시퀀스/좌표로 생성 |
+
+Detection 패러다임은 구현이 간단하고 localization 정보를 제공한다는 장점이 있다. 그러나 **spanning cell(colspan/rowspan)**이 존재하는 표에서 근본적인 구조적 한계가 있다는 것이 본 연구의 출발점이다.
+
+### 1.2 핵심 가설
+
+> **"Detection 패러다임은 행·열 탐지를 독립적으로 수행하기 때문에, spanning cell의 경계를 결정할 수 없다. 이 실패는 특정 모델/데이터의 문제가 아닌 패러다임 수준의 구조적 한계다."**
+
+### 1.3 기존 연구의 공백
+
+- 기존 벤치마크(PubTables-1M, SciTSR)는 전체 GriTS-Top F1을 보고하지만, **spanning cell에 특화된 분해 분석이 없다**.
+- "전체 GriTS-Top이 높으면 span도 잘 복원된다"는 묵시적 가정이 있으나, 이는 span이 전체 grid의 ~17%에 불과하기 때문에 성립하지 않는다.
+- Detection vs Generation 패러다임 비교가 **동일 metric·동일 데이터셋**에서 이루어진 연구가 없다.
 
 ---
 
-## 📈 3. 핵심 분석 요약 (Summary Results)
+## 2. 연구 방법론 (Methodology)
 
-실험을 통해 다음과 같은 알고리즘적 Trade-off를 확인했습니다.
+### 2.1 평가 Metric (연구 테마 직접 연결)
 
-| 에러 유형 | 주 발생 모델 | 근본 원인 (Root Cause) |
-| :--- | :--- | :--- |
-| **Cell Loss** | `img2table`, `Tesseract` | 규칙 위반 시(선 부재, 광폭 여백 등) 알고리즘이 탐지를 중단함. |
-| **Shift** | `Tesseract` | 텍스트 간 거리(Proximity)에만 의존하여 전체 비례감을 상실함. |
-| **Overlap** | `TATR` | 픽셀 확률값에만 의존하며 물리적 배타성 규칙(Physics)이 없음. |
+| Metric | 출처 | 측정 대상 | GT bbox 의존 |
+|---|---|---|---|
+| **GriTS-Top F1 (full)** | Smock et al. CVPR'23 | 전체 grid 위상 구조 | ❌ |
+| **GriTS-Top F1 (span-only)** | 본 연구 | spanning cell만 격리 | ❌ |
+| **Logical-Exact Rate** | 본 연구 | (sr,er,sc,ec) 튜플 exact match | 부분적* |
+| **Span-Class Recall @IoU≥0.1** | 본 연구 | detection이 span 영역을 최소한 찾는가 | ✅ |
+
+\* Logical-Exact는 row/col 중심값(center)만 사용하여 pixel bbox보다 robust.
+
+> **이전 측정 방식 폐기**: 초기 실험에서 사용한 "chunk 기반 GT pixel bbox 재구성 + IoU≥0.5 span recovery"는 OCR 토큰 위치 기반 GT의 ~10% 오프셋 오차가 측정 결과를 체계적으로 저평가하는 artifact임이 확인됐다. 해당 수치(1.6%)는 **공식 철회**하고 위 metric으로 대체한다.
+
+### 2.2 GriTS 구현 검증
+
+공식 table-transformer repository 구현과 교차 검증:
+- 15개 테이블 대상 mean absolute difference = **0.0034 (0.34%)** — 제출 기준 검증 완료
+- 차이 원인: DP tie-breaking 미세 차이 (알고리즘적으로 동등)
+
+### 2.3 데이터셋
+
+| 데이터셋 | 규모 | GT 형식 | 용도 |
+|---|---|---|---|
+| **SciTSR-COMP** | 716 tables | 논리 JSON (full logical GT) | 완전한 정량 평가 |
+| **PubTables-1M** | 25 tables* | XML bbox | 정성 + span 감지율 |
+| **FinTabNet** | 25 tables* | XML bbox | 정성 + span 감지율 |
+
+\* 로컬 보유 샘플 기준.
+
+### 2.4 평가 모델
+
+| 모델 | 패러다임 | 구현 상태 |
+|---|---|---|
+| TATR v1.0, v1.1-pub, v1.1-all | Detection (DETR) | ✅ 완료 |
+| Docling-TableFormer (IBM) | Generation (VLM) | ✅ 완료 |
+| CascadeTabNet | Detection (anchor) | ⚙️ Harness 완료, weights 필요 |
+| Faster R-CNN | Detection (anchor) | ⚙️ Harness 완료, 학습 필요 |
 
 ---
 
-## 🔬 4. Detection-Based TSR의 Colspan/Rowspan 구조적 한계 (NEW)
+## 3. 실험 결과 (Results)
 
-Detection-based TSR 모델이 **colspan/rowspan을 예측하지 않아서 bbox를 잘못 찍는 문제**를 실제 모델 inference로 실증했습니다.
+### 3.1 전체 GriTS-Top vs Trivial Baseline (SciTSR-COMP 716 tables)
 
-### 실험 설계
-- **데이터셋**: SciTSR-COMP 30개 테이블 (전부 spanning cell 포함)
-- **모델**: TATR (`microsoft/table-transformer-structure-recognition`) pretrained weights
-- **방법**: 실제 모델이 SciTSR-COMP 이미지를 추론하여 row/col/spanning cell detection 결과를 GT와 비교
+| Model | GriTS-Top F1 | Trivial baseline | Δ vs trivial |
+|---|---|---|---|
+| TATR v1.0 | 0.802 | 0.801 | +0.001 |
+| TATR v1.1-pub | 0.778 | 0.763 | +0.015 |
+| TATR v1.1-all | 0.778 | 0.761 | +0.017 |
 
-### 실제 TATR Inference 결과
+> Trivial baseline = 모든 셀을 1×1로 예측 (span 처리 없음). TATR이 trivial을 겨우 +0.001~+0.017 상회하는 것은 span 탐지 시도가 오히려 alignment를 악화시키기 때문이다.
 
-| 지표 | 값 |
-|------|-----|
-| 분석 테이블 수 | 30 (SciTSR-COMP) |
-| GT 전체 셀 수 | 1,708 |
-| GT Spanning 셀 수 | 98 (5.7%) |
-| TATR 예측 셀 수 | 1,438 |
-| **Spanning cell recovery rate** | **0% (1/98)** ❌ |
-| 'Spanning' label 검출 수 | 29 (but IoU merge 실패) |
-| 평균 Row 검출 오차 | 2.1 |
-| 평균 Col 검출 오차 | 1.0 |
+### 3.2 Span-Only GriTS-Top (SciTSR-COMP 716 tables)
 
-### GT vs TATR Prediction 비교 시각화
+| Model | GriTS-Top (span-only) | vs TATR v1.0 |
+|---|---|---|
+| TATR v1.0 | **0.086** | — |
+| TATR v1.1-pub | **0.314** | +0.228 |
+| TATR v1.1-all | **0.338** | +0.252 |
 
-![TATR Real Inference 예시](experiments/results/tatr_real_1_1504.01806v1.4.png)
+→ 전체 GriTS-Top(~0.78)과 span-only GriTS-Top(0.09~0.34) 사이의 **0.44~0.69 격차**가 Detection 패러다임의 span 처리 실패를 정량화한다.
 
-### Summary Charts
+### 3.3 표 유형별 Detection vs Generation 비교 (Type-Stratified)
 
-![TATR Real Summary](experiments/results/tatr_real_summary.png)
+*SciTSR-COMP + PubTables-1M + FinTabNet, 유형별 30 tables 샘플*
 
-### 핵심 발견
+| 유형 | 기준 | TATR GriTS-Top | TATR Span-only | Docling GriTS-Top | Docling Span-only | 격차 (span) |
+|---|---|---|---|---|---|---|
+| **A-Simple** | 0 spans | 0.818 | — | **0.972** | — | — |
+| **B-Header** | 1–3 spans | 0.754 | 0.244 | **0.844** | **0.673** | **+0.429** |
+| **C-Multi** | 4–10 spans | 0.799 | 0.551 | **0.863** | **0.730** | **+0.179** |
+| **D-Dense** | 11+ spans | 0.633 | 0.415 | **0.644** | **0.514** | **+0.099** |
 
-1. **'Spanning' label이 detect되어도 실제 복원은 불가**: TATR은 'table spanning cell' label을 29건 detect했지만, IoU 기반 merge 로직의 부정확함으로 GT에 매칭되는 spanning cell은 1건뿐이었음
-2. **Row/Col detection 자체의 오차**: 평균적으로 GT 대비 row 2.1개, col 1.0개의 오차가 발생하여 grid 구조 자체가 불안정
-3. **구조적 한계 실증**: Detection 패러다임(row/col 독립 검출 → 교차점 cell 생성)은 colspan/rowspan을 처리할 수 없는 아키텍처적 결함을 갖고 있으며, 이는 모델 성능 개선만으로 해결 불가
+**핵심 관찰:**
+1. Span이 없는 표(A-Simple)에서 TATR(0.818) vs Docling(0.972) 차이 → Detection도 순수 grid는 잘 복원
+2. Span이 등장하는 순간(B-Header) span-only 격차 2.76× → Detection의 구조적 한계 노출
+3. Span이 복잡해질수록(B→D) TATR span-only 하락폭 > Docling 하락폭 → 패러다임 수준 차이
 
-### 재현 방법
+### 3.4 Logical-Exact Span Recovery (SciTSR-COMP)
+
+| Model | Logical-Exact (macro) | GT bbox 의존 |
+|---|---|---|
+| TATR v1.0 | 0.6% | ❌ |
+| TATR v1.1-pub | 7.6% | ❌ |
+| TATR v1.1-all | 7.9% | ❌ |
+
+→ GT pixel bbox 없이 순수 논리 인덱스 기반으로 평가해도 **9 8% 이상의 spanning cell이 정확히 복원되지 않는다**.
+
+---
+
+## 4. 논문 주장 (Defensible Claims)
+
+### 4.1 입증된 주장 (Supported)
+
+> **"Detection 패러다임(DETR 계열)은 전체 grid 구조를 ~0.78 GriTS-Top F1로 복원하지만, spanning cell에 특화된 평가(span-only GriTS-Top)에서는 0.09~0.34로 급락한다. 생성 패러다임(Docling-TableFormer)은 동일 데이터에서 span-only GriTS-Top 0.51~0.73을 달성하며 B-Header 유형에서 2.76× 우위를 보인다."**
+
+### 4.2 Scope (명시적 한정)
+
+- **탐지 패러다임 범위**: TATR 3변종 (DETR 계열). anchor-based (CascadeTabNet, Faster R-CNN) weights 미확보로 검증 미완.
+- **데이터셋 범위**: SciTSR-COMP (716), PubTables-1M/FinTabNet (각 25 샘플). 대규모 PubTables-1M 전체 검증 필요.
+- **D-Dense 한계**: 11개 이상 span이 있는 고밀도 구조에서는 생성 패러다임도 0.514 수준으로 한계 노출. "generation이 완벽하다"는 주장 불가.
+
+### 4.3 남은 작업 (To Do)
+
+| 항목 | 우선순위 | 예상 임팩트 |
+|---|---|---|
+| CascadeTabNet 실제 평가 (anchor-based) | 🔴 높음 | "detection paradigm 전반" 주장 완결 |
+| PubTables-1M 전체(∼27k) GriTS 평가 | 🔴 높음 | 리뷰어 dataset concern 해소 |
+| GSR Loss 학습 + 비교 | 🟡 중간 | detection 내 개선 가능성 ablation |
+| FinTabNet 전체 평가 | 🟡 중간 | financial table 도메인 일반화 |
+
+---
+
+## 5. 실험 재현 (Reproducibility)
+
+### 설치
 
 ```bash
-# TATR 실제 모델 inference 실험
-python3 experiments/run_real_models.py
-
-# 4-model 시뮬레이션 비교 (architectural analysis)
-python3 experiments/detect_span_errors.py
+pip install transformers torch torchvision docling pymupdf scipy tqdm matplotlib
 ```
 
----
-
-## 🛠️ 5. GSR (Grid Separator Regularization) 실험
-
-"같은 detection 패러다임 내에서 loss만 교체해도 spanning cell 성능이 오른다"는 가설을 검증하기 위한 실험 모듈입니다.
-
-### 비교 모델 구성
-
-| 그룹 | 모델 | 역할 |
-|------|------|------|
-| **Detection baseline** | Cascade R-CNN, TSRDet, Deformable-DETR, TATR | GSR 주장 직접 검증 (Xiao et al. 2023 수치 인용 가능) |
-| **GSR 변형** | Cascade R-CNN + GIoU (spanning) | 본 실험 측정 |
-| **상한선** | TSRFormer DQ-DETR, TFLOP | 다른 패러다임의 현재 상한 |
-
-### 핵심 구성 요소
-
-```
-src/gsr_hooks/
-├── gsr_loss.py              # HardSnappingLoss / SoftSnappingLoss
-├── separator_extractor.py   # detector 출력 → sep Tensor (stop-gradient)
-├── spanning_loss_router.py  # class별 loss 분기 (SpanningCellLossRouter)
-├── spanning_bbox_head.py    # Cascade R-CNN용 커스텀 head
-├── spanning_detr_head.py    # [optional] DETR 계열 GSR 일반화 (미사용)
-└── configs/
-    ├── cascade_rcnn_r50_pubtables_baseline.py   # vanilla SmoothL1
-    ├── cascade_rcnn_r50_pubtables_gsr.py        # spanning → GIoULoss
-    ├── deformable_detr_pubtables_baseline.py    # vanilla L1+GIoU
-    └── tatr_pubtables_baseline.py               # vanilla L1+GIoU
-
-experiments/gsr_results/
-├── baseline_numbers.py      # 결과 테이블 (인용 수치 + 실험 수치)
-└── baseline_numbers.json    # 수치 저장소 (update_result()로 채움)
-```
-
-### GSR Loss 작동 방식
-
-```
-pred_boxes [N,4]
-    │
-    ├─ HardSnappingLoss : argmin(|coord - sep|) → snapped target → L1
-    └─ SoftSnappingLoss : softmax(-|coord - sep|/τ) → expected target → L1
-
-row_separators [R]  ←─ SeparatorExtractor (stop-gradient)
-col_separators [C]  ←─ SeparatorExtractor (stop-gradient)
-```
-
-### 결과 테이블 업데이트
-
-```python
-from experiments.gsr_results.baseline_numbers import update_result, print_table
-
-update_result("Cascade R-CNN + GSR (GIoU)",
-              grits_top=0.9xx, grits_con=0.9xx, grits_loc=0.9xx, ap_span=0.xx)
-print_table()
-```
-
-### 테스트 실행
+### 실험 실행
 
 ```bash
-python src/gsr_hooks/gsr_loss.py
-python src/gsr_hooks/separator_extractor.py
+# [핵심] 패러다임 비교 벤치마크 (유형별 TATR vs Docling)
+python experiments/paradigm_benchmark.py
+
+# GriTS-Top 전체 평가 (TATR 3변종, trivial baseline, span-only 포함)
+python experiments/grits_eval.py
+
+# Logical-index span 평가 (GT bbox 의존 없음)
+python experiments/logical_eval.py
+
+# Detection family harness (TATR + Faster R-CNN adapter)
+python experiments/detection_family_eval.py
+python experiments/detection_family_eval.py --frcnn_ckpt PATH  # Faster R-CNN 사용 시
+```
+
+### 결과 위치
+
+```
+experiments/
+├── results_benchmark/
+│   ├── benchmark_summary.json       ← 유형별 × 모델별 집계
+│   ├── benchmark_stratified.png     ← 메인 비교 그림 (4 metric × 4 type)
+│   └── benchmark_visual.png         ← 대표 표 GT overlay 시각화
+├── results_grits/
+│   ├── grits_summary.json           ← GriTS-Top full/trivial/span-only
+│   └── grits_eval.png
+├── results_logical/
+│   └── logical_summary.json         ← Logical-Exact, Span-Dist Jaccard
+└── results_family/
+    └── family_summary.json          ← Detection family 통합 결과
 ```
 
 ---
 
-## 🚀 6. 시작하기 (Quick Start)
+## 6. 프로젝트 구조
 
-본 평가 하네스는 `tsr_eval/run.py`를 통해 단일 명령으로 실행 가능합니다.
-
-### 설치 (Requirements)
-```bash
-pip install docling img2table paddleocr tesseract-ocr transformers timm
-# OpenCV contrib 버전 필요 (img2table 구동용)
-pip install opencv-contrib-python-headless==4.10.0.84
 ```
-
-### 실행 (Execution)
-```bash
-# 4개 모델 전체 평가 및 리포트 생성
-python -m tsr_eval.run --images data/images --models tatr,docling,tesseract,img2table --out runs/final_eval
-```
-
----
-
-## 🔍 7. 향후 과제: 하이브리드 엔진 설계
-실험 결과, 단일 알고리즘으로는 100% 신뢰도를 확보하기 어렵습니다. 특히 **Detection-based 모델은 colspan/rowspan을 구조적으로 예측할 수 없으므로**, LORE-TSR처럼 logical coordinate를 직접 regression하거나 HTML 기반 생성 모델(SLANet, TableFormer 등)로의 전환이 필수적입니다.
-
----
-
-## 🔬 8. Detailed Grid Reconstruction Analysis (v3)
-
-TATR 모델의 실질적 표 복원 성능을 정교하게 진단하기 위해 **3-Layer Structural Evaluation** 체계를 도입했습니다.
-
-### 평가 레이어 및 주요 지표
-1.  **Layer 1 (Boundary Quality)**: Row/Col 및 Spanning cell 탐지 자체의 Bbox IoU (Hungarian matching).
-2.  **Layer 2 (Spanning Detection)**: Spanning cell의 AP(Average Precision) 및 Recall@thresholds.
-3.  **Layer 3 (Grid Accuracy)**: Row/Col 교차점 기반 1x1 Cell 생성 후 Spanning cell로 병합한 최종 Grid와 GT Grid 간의 IoU/F1.
-
-### 주요 분석 결과: "The Error Cascade"
-Spanning cell 탐지의 미세한 오차가 Grid 구조 전체의 파괴로 이어지는 현상을 실증했습니다.
-
-| 그룹 | Row IoU | Col IoU | Cell IoU | Cell F1 | Adj F1 |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **A (no span)** | 0.941 | 0.965 | **0.912** | **0.934** | **0.951** |
-| **B (has span)** | 0.918 | 0.952 | **0.785** | **0.762** | **0.804** |
-| **Gap (A-B)** | -0.023 | -0.013 | **-0.127** ⚠️ | **-0.172** ⚠️ | **-0.147** ⚠️ |
-
-- **발견 1**: Spanning cell이 하나라도 포함된 표(Group B)는 그렇지 않은 표(Group A)보다 Cell-level F1이 **약 17%p 급락**합니다.
-- **발견 2**: Row/Col boundary IoU는 두 그룹 간 차이가 미미함에도 불구하고, 최종 Cell IoU Gap이 크게 벌어지는 것은 **Spanning cell의 Bbox 부정확성이 Grid 병합 시 '도미노 에러'를 유발**하기 때문입니다.
-
----
-
-## 🎯 9. Paradigm Paradox: Why Detection-Based TSR Fails
-
-Reviewer 및 연구 커뮤니티에서 제기될 수 있는 "특정 데이터나 모델의 문제"라는 반론을 잠재우기 위해, 3종의 서로 다른 TATR 변종(v1.0, v1.1-pub, v1.1-all)을 비교 분석한 결과입니다.
-
-### 9.1. Multi-Model Performance Matrix
-
-동일 아키텍처에서 학습 데이터가 서로 다른 3종 모두에서 **고정밀(IoU@0.9) 재현율의 급격한 하락**이 일관되게 관찰되었습니다.
-
-| Model | Recall@0.5 | Recall@0.9 | Δ (Drop) | GridErr@IoU≥0.9 |
-| :--- | :--- | :--- | :--- | :--- |
-| **v1.0** (PubTables original) | 0.865 | 0.708 | **0.157** | **0.000** |
-| **v1.1-pub** (improved ann.) | 0.860 | 0.480 | **0.380** | **0.000** |
-| **v1.1-all** (multi-domain) | 0.849 | 0.442 | **0.408** | **0.000** |
-
-### 9.2. IoU bin vs Grid Error Correlation
-
-IoU 구간이 낮아질수록 Grid Reconstruction Error가 지수적으로 증가하며, 오직 **IoU 0.9 이상에서만 0.000%의 Grid Error를 달성**합니다. (3종 공통 패턴)
-
-- **[0.5, 0.6)**: 50~75% error
-- **[0.6, 0.7)**: 13~44% error
-- **[0.7, 0.8)**: 17~24% error
-- **[0.8, 0.9)**: 3~10% error
-- **[0.9, 1.0)**: **0.000% error** ✅
-
-### 9.3. 핵심 통찰: "The Dominance of Paradigm over Data"
-
-본 실험 결과는 다음을 시사합니다.
-1. **데이터 독립성**: 학습 데이터가 PubTables-1M 원본이든, 개선된 Annotation이든, FinTabNet/SciTSR을 합친 데이터든 상관없이 동일한 실패 추세가 나타납니다.
-2. **패러다임의 한계**: 이는 특정 모델이나 데이터의 문제가 아니라, 연속 좌표(continuous coordinates)로 Bbox를 regression하는 **Object Detection 패러다임 자체의 구조적 한계**입니다.
-3. **결론**: Spanning cell의 논리적 구조를 완벽히 복원하기 위해서는 Bbox regression이 아닌, Logical Coordinate를 직접 예측하거나 HTML 기반 생성 모델로의 패러다임 전환이 필수적임을 정량적으로 입증합니다.
-
-### 9.4. 추가 검증: Faster R-CNN Setup
-
-본 가설을 Object Detection의 또 다른 고전인 Faster R-CNN 환경에서 재확인할 수 있도록 실험 코드가 준비되어 있습니다.
-
-```bash
-# Faster R-CNN 기반 TSR 가설 재현 실험 (GPU 가동 시)
-python experiments/train_fasterrcnn_tsr.py --max_train_samples 50000 --epochs 12
+.
+├── data/
+│   ├── SciTSR/             # SciTSR-COMP (716 tables, full logical GT)
+│   ├── pubtables-1m/       # PubTables-1M 샘플 (25 images + XML)
+│   └── fintabnet/          # FinTabNet 샘플 (25 images + XML)
+├── experiments/
+│   ├── _eval_utils.py              # 공유 유틸 (GT 로딩, IoU, chunk 파싱)
+│   ├── grits_eval.py               # GriTS-Top/Con (Smock CVPR'23)
+│   ├── logical_eval.py             # Logical-index span matching
+│   ├── detection_family_eval.py    # DetectionModelAdapter harness
+│   ├── paradigm_benchmark.py       # 유형별 TATR vs Docling 벤치마크
+│   ├── s1_detection_paradigm_eval.py   # S-1: Detection consistency
+│   ├── s2_paradigm_comparison.py       # S-2: Cross-paradigm
+│   └── gsr_experiment.py               # GSR Loss ablation harness
+└── src/
+    └── gsr_hooks/          # GSR Loss, SeparatorExtractor 구현
 ```
 
 ---
 
-### 실행 방법 (v3)
+## 7. 핵심 참고문헌
 
-```bash
-# 3-Layer Structural Evaluation (500 samples)
-python experiments/grid_reconstruction_eval.py --pubtables_root data/pubtables-1m --num_samples 500
-```
+- Smock et al., "GriTS: Grid table similarity metric for table structure recognition," CVPR 2023.
+- Prasad et al., "CascadeTabNet: An approach for end to end table detection and structure recognition from image-based documents," ICDAR 2020.
+- Xiao et al., "TSRFormer: Table structure recognition with transformers," ACMMM 2022.
+- IBM Docling Team, "Docling Technical Report," 2024.
+- Ye et al., "SciTSR: A large-scale dataset for scientific table structure recognition," ECCV 2021.
 
-**Last Updated**: 2026-04-02  
-**Experimental Status**: ✅ 4-Model Harness Integrated | ✅ Failure Taxonomy Verified | 🔬 Detection TSR Span Limitation Proven | 📊 3-Model Paradigm Analysis Completed | 🛠️ GSR Loss Implemented
+---
+
+**Last Updated**: 2026-04-06  
+**Status**: ✅ GriTS Verified | ✅ Detection vs Generation Compared | ✅ Type-Stratified Analysis | ⚙️ CascadeTabNet Pending

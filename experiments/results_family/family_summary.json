@@ -1,0 +1,32 @@
+{
+  "TATR v1.0": {
+    "paradigm": "detr",
+    "n_tables": 716,
+    "logical_exact_macro": 0.005925150995081065,
+    "span_dist_jaccard": 0.03537876976257989,
+    "grits_top_f1": 0.800830960181059,
+    "grits_con_f1": 0.03697752772146075,
+    "grits_top_p": 0.8328409218568515,
+    "grits_top_r": 0.7918879077152274
+  },
+  "TATR v1.1-pub": {
+    "paradigm": "detr",
+    "n_tables": 716,
+    "logical_exact_macro": 0.07617095815419837,
+    "span_dist_jaccard": 0.17614736926271596,
+    "grits_top_f1": 0.7774556278764143,
+    "grits_con_f1": 0.03236319306449202,
+    "grits_top_p": 0.7080304164118733,
+    "grits_top_r": 0.8809936857274343
+  },
+  "TATR v1.1-all": {
+    "paradigm": "detr",
+    "n_tables": 716,
+    "logical_exact_macro": 0.07882500801495214,
+    "span_dist_jaccard": 0.18074097598826483,
+    "grits_top_f1": 0.778321692718577,
+    "grits_con_f1": 0.031838968979699775,
+    "grits_top_p": 0.6978605329963472,
+    "grits_top_r": 0.8936755988166734
+  }
+}

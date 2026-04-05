@@ -1,0 +1,35 @@
+{
+  "TATR v1.0": {
+    "n_tables": 715,
+    "grits_top_p": 0.8340057343349729,
+    "grits_top_r": 0.7929954432504934,
+    "grits_top_f1": 0.8019510034820115,
+    "grits_top_f1_trivial": 0.8014119490371505,
+    "grits_top_f1_span_only": 0.08627755937367326,
+    "grits_top_delta_vs_trivial": 0.0005390544448610202,
+    "grits_con_f1": null,
+    "gt_mean_span_fraction": 0.17193999700310503
+  },
+  "TATR v1.1-pub": {
+    "n_tables": 716,
+    "grits_top_p": 0.7080304164118733,
+    "grits_top_r": 0.8809936857274343,
+    "grits_top_f1": 0.7774556278764143,
+    "grits_top_f1_trivial": 0.7632010580535236,
+    "grits_top_f1_span_only": 0.3144217808620115,
+    "grits_top_delta_vs_trivial": 0.01425456982289075,
+    "grits_con_f1": null,
+    "gt_mean_span_fraction": 0.17193999700310503
+  },
+  "TATR v1.1-all": {
+    "n_tables": 716,
+    "grits_top_p": 0.6978605329963472,
+    "grits_top_r": 0.8936755988166734,
+    "grits_top_f1": 0.778321692718577,
+    "grits_top_f1_trivial": 0.7613177827649176,
+    "grits_top_f1_span_only": 0.3380511878022259,
+    "grits_top_delta_vs_trivial": 0.017003909953659413,
+    "grits_con_f1": null,
+    "gt_mean_span_fraction": 0.17193999700310503
+  }
+}

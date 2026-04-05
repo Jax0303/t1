@@ -1,0 +1,2006 @@
+{
+  "TATR v1.1-all": [
+    {
+      "table_id": "ADSK_2008_page_127_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.7941176470588235,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "ADSK_2008_page_133_table_1",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.782608695652174,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "DVA_2006_page_31_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.7862068965517242,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.8333333333333334
+    },
+    {
+      "table_id": "DVA_2007_page_34_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8109161793372319,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "DVA_2012_page_95_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.7828162291169452,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "FLIR_2005_page_42_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.7549668874172186,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "FLIR_2010_page_65_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.7692307692307693,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "HBI_2012_page_78_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8235294117647058,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "JBHT_2010_page_55_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "J_2012_page_80_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.7692307692307693,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "KLAC_2013_page_120_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8481182795698925,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "MCHP_2007_page_43_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8571428571428571,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "MCHP_2011_page_23_table_1",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8333333333333333,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "MCHP_2013_page_105_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.7981859410430839,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.8333333333333334
+    },
+    {
+      "table_id": "MCHP_2014_page_131_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8362919132149901,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "MCHP_2017_page_146_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8301886792452831,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "MMC_2006_page_100_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.893854748603352,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.8571428571428571
+    },
+    {
+      "table_id": "MMC_2006_page_95_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8890880127439267,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.7142857142857143
+    },
+    {
+      "table_id": "MSFT_2014_page_53_table_1",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8311688311688311,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "PNW_2012_page_37_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8486842105263157,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.6923076923076923
+    },
+    {
+      "table_id": "SBUX_2018_page_90_table_1",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9078498293515359,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "TTWO_2019_page_66_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.7909967845659164,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 1.0
+    },
+    {
+      "table_id": "UHS_2013_page_50_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.8080808080808081,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "WMB_2008_page_149_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.797281993204983,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.8181818181818182
+    },
+    {
+      "table_id": "WST_2007_page_48_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.802139037433155,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.75
+    },
+    {
+      "table_id": "1505.06699v3.10",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7999999999999998,
+      "grits_top_span_only": 0.8045977011494252,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1504.07206v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8506775067750677,
+      "grits_top_span_only": 0.27241379310344827,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1611.02862v3.1",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8625792811839323,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1604.05468v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.6206896551724139,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1505.00295v2.4",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.6874999999999999,
+      "grits_top_span_only": 0.05555555555555556,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1710.05956v3.3",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.743859649122807,
+      "grits_top_span_only": 0.7892156862745099,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1605.05401v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7466666666666665,
+      "grits_top_span_only": 0.619047619047619,
+      "logical_exact": 0.3333333333333333,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1704.00045v2.1",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7704918032786886,
+      "grits_top_span_only": 0.17647058823529416,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1705.07755v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8349206349206348,
+      "grits_top_span_only": 0.45098039215686275,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1708.05592v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7914110429447848,
+      "grits_top_span_only": 0.23255813953488372,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1412.7967v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.5,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1409.1055v1.5",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.780740740740741,
+      "grits_top_span_only": 0.03273809523809524,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1612.03328v2.3",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8152610441767069,
+      "grits_top_span_only": 0.45098039215686275,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1806.04856v2.2",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8148148148148148,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1602.03742v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7682119205298011,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1110.1428v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8153153153153154,
+      "grits_top_span_only": 0.2689393939393939,
+      "logical_exact": 0.3333333333333333,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1705.06920v5.9",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.4864864864864864,
+      "grits_top_span_only": 0.29268292682926833,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1504.07339v3.6",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7661691542288558,
+      "grits_top_span_only": 0.7661691542288558,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1310.4822v2.7",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7633587786259541,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1307.7751v3.3",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7506224200206398,
+      "grits_top_span_only": 0.11405882352941174,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1709.06389v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.810344827586207,
+      "grits_top_span_only": 0.251984126984127,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1701.05581v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7894736842105263,
+      "grits_top_span_only": 0.761904761904762,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1503.04260v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7796610169491525,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1006.5827v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.74,
+      "grits_top_span_only": 0.2631578947368421,
+      "logical_exact": 1.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1306.1704v2.2",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7049180327868853,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1803.03004v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8789808917197452,
+      "grits_top_span_only": 0.19999999999999998,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1806.03852v2.6",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7716535433070868,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1708.00710v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7748148148148148,
+      "grits_top_span_only": 0.20202020202020207,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1610.01876v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.631578947368421,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1709.07914v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7627705627705628,
+      "grits_top_span_only": 0.3070707070707071,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1602.01410v2.3",
+      "source": "SciTSR",
+      "n_spans_gt": 6,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.6153846153846153,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1610.09736v3.2",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8829787234042553,
+      "grits_top_span_only": 0.8666666666666666,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1804.06202v1.8",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.765373134328358,
+      "grits_top_span_only": 0.7304615384615386,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1712.03825v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8372093023255813,
+      "grits_top_span_only": 0.9473684210526316,
+      "logical_exact": 0.25,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1701.05013v2.2",
+      "source": "SciTSR",
+      "n_spans_gt": 9,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8155339805825242,
+      "grits_top_span_only": 0.7692307692307693,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1804.06202v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 6,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.6611570247933883,
+      "grits_top_span_only": 0.12244897959183675,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1807.08452v1.5",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8195488721804511,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1602.05901v5.6",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.7032967032967032,
+      "grits_top_span_only": 0.41304347826086957,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "9607014v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.7295918367346937,
+      "grits_top_span_only": 0.7527472527472528,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1410.7534v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8915254237288135,
+      "grits_top_span_only": 0.33333333333333337,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1704.02657v4.2",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8475935828877008,
+      "grits_top_span_only": 0.3788546255506609,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1708.05592v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.6919831223628692,
+      "grits_top_span_only": 0.6919831223628692,
+      "logical_exact": 0.2,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1712.05116v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 8,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8254777070063695,
+      "grits_top_span_only": 0.11864406779661017,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1506.04356v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.6608695652173913,
+      "grits_top_span_only": 0.46002604166666666,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1705.02315v5.19",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.69337822671156,
+      "grits_top_span_only": 0.11304347826086954,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1607.04889v2.3",
+      "source": "SciTSR",
+      "n_spans_gt": 7,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.7987987987987988,
+      "grits_top_span_only": 0.7477477477477478,
+      "logical_exact": 0.14285714285714285,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1804.02698v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.7534246575342466,
+      "grits_top_span_only": 0.7142857142857143,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1309.2328v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.9500000000000001,
+      "grits_top_span_only": 0.9411764705882353,
+      "logical_exact": 0.5,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1705.08942v1.8",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.7571428571428571,
+      "grits_top_span_only": 0.29411764705882354,
+      "logical_exact": 0.2,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1606.08425v3.10",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8717948717948717,
+      "grits_top_span_only": 0.8771929824561403,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1503.05508v1.6",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.6588235294117646,
+      "grits_top_span_only": 0.2948717948717949,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1709.08680v2.3",
+      "source": "SciTSR",
+      "n_spans_gt": 7,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.917917917917918,
+      "grits_top_span_only": 0.896551724137931,
+      "logical_exact": 0.14285714285714285,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1110.0169v1.15",
+      "source": "SciTSR",
+      "n_spans_gt": 10,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.9128132721496647,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1504.07843v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.6884057971014493,
+      "grits_top_span_only": 0.5897435897435898,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1712.09558v2.1",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.889784946236559,
+      "grits_top_span_only": 0.8222222222222222,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1807.03018v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8602150537634409,
+      "grits_top_span_only": 0.8771929824561403,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1710.08177v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.825199001460129,
+      "grits_top_span_only": 0.4382222222222223,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1801.04433v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8744588744588743,
+      "grits_top_span_only": 0.8333333333333333,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1612.01693v3.7",
+      "source": "SciTSR",
+      "n_spans_gt": 10,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8866886688668868,
+      "grits_top_span_only": 0.9523809523809523,
+      "logical_exact": 0.2,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1003.0628v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8883333333333332,
+      "grits_top_span_only": 0.5402298850574713,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1707.00825v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 17,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.6291079812206574,
+      "grits_top_span_only": 0.6029143897996357,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1608.05852v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 12,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.2545454545454546,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1705.03916v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 12,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.7777777777777778,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1311.6079v2.8",
+      "source": "SciTSR",
+      "n_spans_gt": 15,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.906152647975078,
+      "grits_top_span_only": 0.9069314641744551,
+      "logical_exact": 0.06666666666666667,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1509.02094v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 14,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.7759562841530055,
+      "grits_top_span_only": 0.2888888888888889,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1310.4713v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 13,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.5886644219977551,
+      "grits_top_span_only": 0.38271604938271603,
+      "logical_exact": 0.23076923076923078,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1303.0045v2.2",
+      "source": "SciTSR",
+      "n_spans_gt": 12,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.7072463768115941,
+      "grits_top_span_only": 0.7294469357249626,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1706.07960v2.1",
+      "source": "SciTSR",
+      "n_spans_gt": 11,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.3626373626373626,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1504.06654v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 15,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.5277777777777777,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1612.00940v2.2",
+      "source": "SciTSR",
+      "n_spans_gt": 11,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.78716744913928,
+      "grits_top_span_only": 0.78716744913928,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1709.03480v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 14,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.5135135135135136,
+      "grits_top_span_only": 0.49275362318840576,
+      "logical_exact": 0.2857142857142857,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1802.00332v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 13,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.6746666666666667,
+      "grits_top_span_only": 0.5545171339563862,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1407.8394v2.6",
+      "source": "SciTSR",
+      "n_spans_gt": 15,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.7972813238770685,
+      "grits_top_span_only": 0.7972813238770685,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1604.04725v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 15,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.7206666666666667,
+      "grits_top_span_only": 0.6843501326259948,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "0807.4368v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 34,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.46706586826347307,
+      "grits_top_span_only": 0.0,
+      "logical_exact": 0.0,
+      "span_class_recall": null
+    }
+  ],
+  "Docling-TableFormer": [
+    {
+      "table_id": "ADSK_2008_page_127_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9907407407407407,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "ADSK_2008_page_133_table_1",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": null,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "DVA_2006_page_31_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9639639639639639,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "DVA_2007_page_34_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9903846153846154,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "DVA_2012_page_95_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9753086419753086,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "FLIR_2005_page_42_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9912280701754386,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "FLIR_2010_page_65_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": null,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "HBI_2012_page_78_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9897959183673469,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "JBHT_2010_page_55_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9888888888888889,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "J_2012_page_80_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": null,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "KLAC_2013_page_120_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9444444444444444,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "MCHP_2007_page_43_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.7462686567164178,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "MCHP_2011_page_23_table_1",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": null,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "MCHP_2013_page_105_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9886363636363636,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "MCHP_2014_page_131_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9905660377358491,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "MCHP_2017_page_146_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.990909090909091,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "MMC_2006_page_100_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.98125,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "MMC_2006_page_95_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9534883720930233,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "MSFT_2014_page_53_table_1",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "PNW_2012_page_37_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9803921568627451,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "SBUX_2018_page_90_table_1",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "TTWO_2019_page_66_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.991869918699187,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "UHS_2013_page_50_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.98989898989899,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "WMB_2008_page_149_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9829545454545454,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "WST_2007_page_48_table_0",
+      "source": "FinTabNet",
+      "n_spans_gt": 0,
+      "table_type": "A-Simple",
+      "grits_top_f1": 0.9727891156462586,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": 0.0
+    },
+    {
+      "table_id": "1505.06699v3.10",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1504.07206v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.809880239520958,
+      "grits_top_span_only": 0.7777777777777778,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1611.02862v3.1",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.3846153846153846,
+      "grits_top_span_only": 0.5,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1604.05468v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1505.00295v2.4",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.9411764705882353,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1710.05956v3.3",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.6181818181818183,
+      "grits_top_span_only": 0.5909090909090908,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1605.05401v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.9,
+      "grits_top_span_only": 0.33333333333333337,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1704.00045v2.1",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": null,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1705.07755v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1708.05592v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.5882352941176471,
+      "grits_top_span_only": 0.2857142857142857,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1412.7967v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.5,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1409.1055v1.5",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.9166666666666665,
+      "grits_top_span_only": 0.8166666666666667,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1612.03328v2.3",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1806.04856v2.2",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1602.03742v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1110.1428v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.9583333333333334,
+      "grits_top_span_only": 0.5833333333333334,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1705.06920v5.9",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.5,
+      "grits_top_span_only": 0.1818181818181818,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1504.07339v3.6",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.3636363636363636,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1310.4822v2.7",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8333333333333333,
+      "grits_top_span_only": 0.7777777777777778,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1307.7751v3.3",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8058823529411765,
+      "grits_top_span_only": 0.6823529411764706,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1709.06389v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1701.05581v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1503.04260v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.7897435897435897,
+      "grits_top_span_only": 0.5333333333333333,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1006.5827v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1306.1704v2.2",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1803.03004v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1806.03852v2.6",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8582995951417006,
+      "grits_top_span_only": 0.6896551724137931,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1708.00710v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 1,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.8930976430976432,
+      "grits_top_span_only": 0.33862433862433866,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1610.01876v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 3,
+      "table_type": "B-Header",
+      "grits_top_f1": null,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1709.07914v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 2,
+      "table_type": "B-Header",
+      "grits_top_f1": 0.9583333333333333,
+      "grits_top_span_only": 0.761904761904762,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1602.01410v2.3",
+      "source": "SciTSR",
+      "n_spans_gt": 6,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.304,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1610.09736v3.2",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.9761904761904762,
+      "grits_top_span_only": 0.8571428571428571,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1804.06202v1.8",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8624458874458875,
+      "grits_top_span_only": 0.8588578088578088,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1712.03825v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1701.05013v2.2",
+      "source": "SciTSR",
+      "n_spans_gt": 9,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.9487500000000001,
+      "grits_top_span_only": 0.945,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1804.06202v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 6,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.7444444444444446,
+      "grits_top_span_only": 0.7599999999999999,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1807.08452v1.5",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.972972972972973,
+      "grits_top_span_only": 0.9655172413793104,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1602.05901v5.6",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.9333333333333333,
+      "grits_top_span_only": 0.9166666666666666,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "9607014v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1410.7534v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1704.02657v4.2",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1708.05592v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8703703703703703,
+      "grits_top_span_only": 0.5714285714285715,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1712.05116v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 8,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.7287081339712919,
+      "grits_top_span_only": 0.04669603524229074,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1506.04356v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1705.02315v5.19",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8970588235294119,
+      "grits_top_span_only": 0.8907563025210085,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1607.04889v2.3",
+      "source": "SciTSR",
+      "n_spans_gt": 7,
+      "table_type": "C-Multi",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1804.02698v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": null,
+      "grits_top_span_only": null,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1309.2328v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.5517241379310345,
+      "grits_top_span_only": 0.56,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1705.08942v1.8",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.5606060606060606,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1606.08425v3.10",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1503.05508v1.6",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.9444444444444444,
+      "grits_top_span_only": 0.8888888888888888,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1709.08680v2.3",
+      "source": "SciTSR",
+      "n_spans_gt": 7,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.9285714285714286,
+      "grits_top_span_only": 0.9285714285714286,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1110.0169v1.15",
+      "source": "SciTSR",
+      "n_spans_gt": 10,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.7795473595976531,
+      "grits_top_span_only": 0.7894736842105263,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1504.07843v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.6666666666666667,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1712.09558v2.1",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.9821428571428571,
+      "grits_top_span_only": 0.3076923076923077,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1807.03018v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1710.08177v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 5,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.8975376475376475,
+      "grits_top_span_only": 0.8975376475376475,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1801.04433v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 0.4842105263157894,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1612.01693v3.7",
+      "source": "SciTSR",
+      "n_spans_gt": 10,
+      "table_type": "C-Multi",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1003.0628v1.3",
+      "source": "SciTSR",
+      "n_spans_gt": 4,
+      "table_type": "C-Multi",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1707.00825v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 17,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.5061728395061729,
+      "grits_top_span_only": 0.34074074074074073,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1608.05852v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 12,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.2181818181818182,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1705.03916v1.4",
+      "source": "SciTSR",
+      "n_spans_gt": 12,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.631578947368421,
+      "grits_top_span_only": 0.47058823529411764,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1311.6079v2.8",
+      "source": "SciTSR",
+      "n_spans_gt": 15,
+      "table_type": "D-Dense",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1509.02094v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 14,
+      "table_type": "D-Dense",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1310.4713v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 13,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.5,
+      "grits_top_span_only": 0.5,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1303.0045v2.2",
+      "source": "SciTSR",
+      "n_spans_gt": 12,
+      "table_type": "D-Dense",
+      "grits_top_f1": 1.0,
+      "grits_top_span_only": 1.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1706.07960v2.1",
+      "source": "SciTSR",
+      "n_spans_gt": 11,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.37499999999999994,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1504.06654v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 15,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.13953488372093023,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1612.00940v2.2",
+      "source": "SciTSR",
+      "n_spans_gt": 11,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.9895833333333334,
+      "grits_top_span_only": 0.9895833333333334,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1709.03480v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 14,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.7741935483870968,
+      "grits_top_span_only": 0.7586206896551725,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1802.00332v1.2",
+      "source": "SciTSR",
+      "n_spans_gt": 13,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.40215053763440867,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1407.8394v2.6",
+      "source": "SciTSR",
+      "n_spans_gt": 15,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.9203042328042328,
+      "grits_top_span_only": 0.9203042328042328,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "1604.04725v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 15,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.7586206896551725,
+      "grits_top_span_only": 0.7272727272727273,
+      "logical_exact": null,
+      "span_class_recall": null
+    },
+    {
+      "table_id": "0807.4368v1.1",
+      "source": "SciTSR",
+      "n_spans_gt": 34,
+      "table_type": "D-Dense",
+      "grits_top_f1": 0.4473684210526316,
+      "grits_top_span_only": 0.0,
+      "logical_exact": null,
+      "span_class_recall": null
+    }
+  ]
+}
