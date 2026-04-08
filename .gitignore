@@ -118,3 +118,9 @@ xet
 data/hf/
 *.pth
 experiments/models/
+
+# SciTSR raw data files (chunk/gt/pdf — large, not needed in repo)
+data/SciTSR/test/chunk/
+data/SciTSR/test/gt/
+data/SciTSR/test/pdf/
+data/SciTSR/train/

@@ -1,0 +1,15 @@
+{
+  "dataset": "SciTSR-COMP",
+  "n_tables": 300,
+  "n_gt_spans": 970,
+  "n_detected_50": 21,
+  "n_detected_75": 2,
+  "n_detected_90": 0,
+  "recall_50": 0.021649484536082474,
+  "recall_75": 0.002061855670103093,
+  "recall_90": 0.0,
+  "n_matched_iou50": 21,
+  "n_matched_iou90": 0,
+  "grid_err_rate_all_detected": 0.42857142857142855,
+  "grid_err_rate_iou_90plus": 0.0
+}

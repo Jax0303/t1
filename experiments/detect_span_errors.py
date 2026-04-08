@@ -32,16 +32,21 @@ COMP_LIST = DATA_ROOT / "SciTSR-COMP.list"
 STRUCT_DIR = DATA_ROOT / "test" / "structure"
 RESULTS_DIR = Path(__file__).parent / "results"
 
-N_SAMPLE = 30
+# [M-3] 0 = 전체 유효 테이블 사용 (시뮬레이션이므로 GPU 불필요, 전수 가능)
+# 주의: 이 파일은 실제 모델 inference가 아닌 아키텍처 특성 시뮬레이션이다.
+#       시뮬레이터들이 GT 좌표계 내에서 동작하므로 logical coord 비교는 유효함.
+#       단, 시뮬레이션 성공률(50%, 30% 등)은 실측값이 아닌 가정값이며
+#       논문에서 실제 모델 성능으로 직접 인용할 수 없다.
+N_SAMPLE = 0
 N_VISUALIZE = 5
 SEED = 42
 
-MODEL_NAMES = ["TATR", "LGPMA", "Cycle-CenterNet", "LORE-TSR"]
+MODEL_NAMES = ["TATR", "LGPMA", "Cycle-CenterNet", "Oracle UB"]
 MODEL_COLORS = {
     "TATR": "#F44336",
     "LGPMA": "#FF9800",
     "Cycle-CenterNet": "#2196F3",
-    "LORE-TSR": "#4CAF50",
+    "Oracle UB": "#9E9E9E",  # 회색: 실제 모델이 아닌 참조선
 }
 
 
@@ -225,13 +230,17 @@ def simulate_cycle_centernet(gt: dict, rng: random.Random) -> dict:
 
 def simulate_lore(gt: dict, rng: random.Random) -> dict:
     """
-    LORE-TSR (LOgical location REgression)
-    ───────────────────────────────────────
-    각 셀의 (start_row, end_row, start_col, end_col)을 직접 regression.
-    colspan/rowspan을 구조적으로(네이티브하게) 예측 가능.
-    
-    이상적 상한선으로 GT span을 그대로 사용.
-    (실제 LORE도 regression 오차가 있지만, 아키텍처 자체는 span 지원)
+    Oracle Upper Bound (GT copy)
+    ─────────────────────────────
+    [경고] 이 함수는 실제 LORE-TSR 모델의 inference가 아니라
+    GT 구조를 그대로 복사하는 아키텍처 상한선(oracle)이다.
+    실제 LORE-TSR 모델의 성능 수치로 직접 인용하면 안 된다.
+
+    용도: "논리 좌표 직접 regression이 가능하다면 span recovery=100%"
+    라는 아키텍처 이론적 상한을 보이기 위한 참조선으로만 사용.
+
+    실제 LORE-TSR 성능을 포함하려면
+      experiments/run_real_models.py 에서 pretrained weight로 inference 필요.
     """
     det_cells = [{**cell} for cell in gt['cells']]
     return {'cells': det_cells, 'n_rows': gt['n_rows'], 'n_cols': gt['n_cols']}
@@ -241,7 +250,7 @@ SIMULATORS = {
     "TATR": simulate_tatr,
     "LGPMA": simulate_lgpma,
     "Cycle-CenterNet": simulate_cycle_centernet,
-    "LORE-TSR": simulate_lore,
+    "Oracle UB": simulate_lore,  # GT copy — 아키텍처 상한선 참조용
 }
 
 
@@ -410,8 +419,11 @@ def main():
     comp_ids = load_comp_ids()
     valid_ids = [tid for tid in comp_ids if (STRUCT_DIR / f"{tid}.json").exists()]
     rng = random.Random(SEED)
-    sample_ids = rng.sample(valid_ids, min(N_SAMPLE, len(valid_ids)))
-    print(f"\n📂 SciTSR-COMP: {len(comp_ids)} tables, sampled {len(sample_ids)}")
+    if N_SAMPLE > 0:
+        sample_ids = rng.sample(valid_ids, min(N_SAMPLE, len(valid_ids)))
+    else:
+        sample_ids = valid_ids  # 전체 사용
+    print(f"\n📂 SciTSR-COMP: {len(comp_ids)} tables, valid={len(valid_ids)}, using={len(sample_ids)}")
 
     # 2. Run all simulations
     all_results = []
@@ -495,20 +507,29 @@ def main():
     print(f"""
   Detection-based TSR 모델들의 colspan/rowspan 처리 능력 비교:
 
-  ❌ TATR: Row/Col grid intersection → span 완전 불가
-     → {model_agg['TATR']['avg_over_seg']:.2f}x over-seg, 0% recovery
+  ❌ TATR: Row/Col grid intersection → span 구조 소실
+     → span recovery {model_agg['TATR']['avg_span_recovery']:.0%}
+     [주의] 실제 inference에서는 row/col을 miss하여 전체 셀 수가 줄어드는
+     under-segmentation 발생. 이 시뮬레이션은 TATR 아키텍처 특성
+     (span을 1×1로 처리)을 보이기 위한 logical-level 분석이다.
 
   ⚠️ LGPMA: Heuristic empty-cell merge → 부분 성공
-     → {model_agg['LGPMA']['avg_over_seg']:.2f}x over-seg, {model_agg['LGPMA']['avg_span_recovery']:.0%} recovery
+     → span recovery {model_agg['LGPMA']['avg_span_recovery']:.0%}
+     (확률값 50%/20%/10%는 논문에서 직접 인용한 값이 아닌 추정치)
 
   ⚠️ Cycle-CenterNet: Edge merging → LGPMA보다 양호하나 대형 span 취약
-     → {model_agg['Cycle-CenterNet']['avg_over_seg']:.2f}x over-seg, {model_agg['Cycle-CenterNet']['avg_span_recovery']:.0%} recovery
+     → span recovery {model_agg['Cycle-CenterNet']['avg_span_recovery']:.0%}
+     (확률값 70%/30%/10%는 논문에서 직접 인용한 값이 아닌 추정치)
 
-  ✅ LORE-TSR: Direct logical coord regression → 아키텍처적으로 span 지원
-     → {model_agg['LORE-TSR']['avg_over_seg']:.2f}x over-seg, {model_agg['LORE-TSR']['avg_span_recovery']:.0%} recovery
+  ─ Oracle UB (GT copy): 아키텍처 이론적 상한선 — 실제 모델 수치 아님
+     → span recovery {model_agg['Oracle UB']['avg_span_recovery']:.0%}
+     (논리 좌표 직접 예측이 가능할 경우의 상한)
 
-  결론: Detection paradigm만으로는 spanning cell 문제를 해결할 수 없으며,
-  LORE-TSR처럼 logical coordinate를 직접 regression하는 접근이 필요하다.
+  결론 (이 시뮬레이션 범위 내):
+  Detection paradigm의 row/col 교차 방식은 spanning cell의 논리 구조를
+  구조적으로 표현할 수 없다. 실제 실험 결과(GriTS-Top span-only)에서
+  TATR v1.1-all = 0.086, Docling-TableFormer = 0.673 (B-Header 유형)으로
+  측정된 gap을 참조할 것.
 """)
 
     # 6. Summary charts

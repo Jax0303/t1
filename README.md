@@ -1,8 +1,8 @@
 # Detection-Based TSR Fails at Spanning Cells: A Rigorous Empirical Study
 
-> **연구 상태**: 🔬 실험 완료 | 📊 GriTS 검증 완료 | 🆚 Detection vs Generation 비교 완료  
+> **연구 상태**: 🔬 실험 완료 | 📊 GriTS 검증 완료 | 🆚 Detection vs Generation 비교 완료 | 🖼️ PPT 시각화 완료  
 > **목표 학회**: Top-tier (CVPR / ECCV / NeurIPS)  
-> **최종 업데이트**: 2026-04-06
+> **최종 업데이트**: 2026-04-09
 
 ---
 
@@ -172,12 +172,30 @@ python experiments/logical_eval.py
 # Detection family harness (TATR + Faster R-CNN adapter)
 python experiments/detection_family_eval.py
 python experiments/detection_family_eval.py --frcnn_ckpt PATH  # Faster R-CNN 사용 시
+
+# Cross-paradigm comparison (TATR vs Docling, GriTS-Top + span-only)
+python experiments/s2_paradigm_comparison.py
+
+# 4-model span error simulation (TATR / LGPMA / Cycle-CenterNet / Oracle UB)
+python experiments/detect_span_errors.py
+
+# Boundary precision analysis (SciTSR-COMP based)
+python experiments/boundary_scitsr.py
+
+# PPT-quality figure generation (requires result JSONs above)
+python experiments/ppt_figures.py
 ```
 
 ### 결과 위치
 
 ```
 experiments/
+├── results_ppt/                     ← PPT 발표용 고품질 그림 (5개)
+│   ├── fig1_problem_definition.png  ← GriTS trivial vs model + span-only (문제 정의)
+│   ├── fig2_span_only_grits.png     ← TATR vs Docling: full/span-only GriTS 비교
+│   ├── fig3_boundary_analysis.png   ← Recall@0.5/0.75/0.9 + grid error rate
+│   ├── fig4_type_stratified.png     ← 복잡도별 성능 + gap 차트
+│   └── fig5_summary.png             ← 6-panel 종합 증거
 ├── results_benchmark/
 │   ├── benchmark_summary.json       ← 유형별 × 모델별 집계
 │   ├── benchmark_stratified.png     ← 메인 비교 그림 (4 metric × 4 type)
@@ -185,6 +203,14 @@ experiments/
 ├── results_grits/
 │   ├── grits_summary.json           ← GriTS-Top full/trivial/span-only
 │   └── grits_eval.png
+├── results_s2/
+│   ├── s2_summary.json              ← Cross-paradigm GriTS 비교 (TATR vs Docling)
+│   └── s2_paradigm_comparison.png
+├── results/
+│   ├── 4model_span_analysis.json    ← 4-model span 시뮬레이션 결과
+│   ├── 4model_summary.png           ← 4-model 집계 시각화
+│   ├── boundary_summary.json        ← Boundary precision (PubTables-1M)
+│   └── boundary_scitsr_summary.json ← Boundary precision (SciTSR-COMP)
 ├── results_logical/
 │   └── logical_summary.json         ← Logical-Exact, Span-Dist Jaccard
 └── results_family/
@@ -208,7 +234,10 @@ experiments/
 │   ├── detection_family_eval.py    # DetectionModelAdapter harness
 │   ├── paradigm_benchmark.py       # 유형별 TATR vs Docling 벤치마크
 │   ├── s1_detection_paradigm_eval.py   # S-1: Detection consistency
-│   ├── s2_paradigm_comparison.py       # S-2: Cross-paradigm
+│   ├── s2_paradigm_comparison.py       # S-2: Cross-paradigm (GriTS-Top + span-only)
+│   ├── detect_span_errors.py           # 4-model span 시뮬레이션 (Oracle UB 포함)
+│   ├── boundary_scitsr.py              # Boundary precision (SciTSR-COMP)
+│   ├── ppt_figures.py                  # PPT 발표용 그림 생성 (fig1-5)
 │   └── gsr_experiment.py               # GSR Loss ablation harness
 └── src/
     └── gsr_hooks/          # GSR Loss, SeparatorExtractor 구현
@@ -226,5 +255,5 @@ experiments/
 
 ---
 
-**Last Updated**: 2026-04-06  
-**Status**: ✅ GriTS Verified | ✅ Detection vs Generation Compared | ✅ Type-Stratified Analysis | ⚙️ CascadeTabNet Pending
+**Last Updated**: 2026-04-09  
+**Status**: ✅ GriTS Verified | ✅ Detection vs Generation Compared | ✅ Type-Stratified Analysis | ✅ PPT Figures Generated | ⚙️ CascadeTabNet Pending
