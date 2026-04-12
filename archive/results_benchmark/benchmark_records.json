@@ -1,0 +1,90 @@
+{
+  "TATR v1.0": [
+    {
+      "table_id": "PMC6179995_table_0",
+      "dataset": "pubtables",
+      "table_type": "complex",
+      "span_fraction": 1.0,
+      "n_spanning": 2,
+      "grits_top_f1": 0.8114718614718613,
+      "grits_top_span_only": 0.025089605734767026,
+      "delta_vs_trivial": -0.07135642135642162,
+      "span_det_rate": 1.0,
+      "has_gt_span": true
+    },
+    {
+      "table_id": "PMC3192737_table_1",
+      "dataset": "pubtables",
+      "table_type": "complex",
+      "span_fraction": 1.0,
+      "n_spanning": 1,
+      "grits_top_f1": 0.979746835443038,
+      "grits_top_span_only": 0.04,
+      "delta_vs_trivial": -0.0025316455696202667,
+      "span_det_rate": 1.0,
+      "has_gt_span": true
+    },
+    {
+      "table_id": "WST_2007_page_48_table_0",
+      "dataset": "fintabnet",
+      "table_type": "complex",
+      "span_fraction": 1.0,
+      "n_spanning": 1,
+      "grits_top_f1": 0.7913333333333333,
+      "grits_top_span_only": 0.024390243902439022,
+      "delta_vs_trivial": -0.004666666666666708,
+      "span_det_rate": 1.0,
+      "has_gt_span": true
+    },
+    {
+      "table_id": "FLIR_2010_page_65_table_0",
+      "dataset": "fintabnet",
+      "table_type": "complex",
+      "span_fraction": 1.0,
+      "n_spanning": 1,
+      "grits_top_f1": 0.8000000000000002,
+      "grits_top_span_only": 0.0,
+      "delta_vs_trivial": 0.0,
+      "span_det_rate": 0.0,
+      "has_gt_span": true
+    }
+  ],
+  "Docling-TableFormer": [
+    {
+      "table_id": "PMC6179995_table_0",
+      "dataset": "pubtables",
+      "table_type": "complex",
+      "span_fraction": 1.0,
+      "n_spanning": 2,
+      "grits_top_f1": 0.877104377104377,
+      "grits_top_span_only": 0.3125,
+      "delta_vs_trivial": -0.0092592592592593,
+      "span_det_rate": 1.0,
+      "has_gt_span": true
+    },
+    {
+      "table_id": "PMC3192737_table_1",
+      "dataset": "pubtables",
+      "table_type": "complex",
+      "span_fraction": 1.0,
+      "n_spanning": 1,
+      "grits_top_f1": 0.886039886039886,
+      "grits_top_span_only": 0.0,
+      "delta_vs_trivial": 0.0,
+      "span_det_rate": 0.0,
+      "has_gt_span": true
+    },
+    {
+      "table_id": "WST_2007_page_48_table_0",
+      "dataset": "fintabnet",
+      "table_type": "complex",
+      "span_fraction": 1.0,
+      "n_spanning": 1,
+      "grits_top_f1": 0.8313953488372092,
+      "grits_top_span_only": 0.25,
+      "delta_vs_trivial": -0.005813953488372103,
+      "span_det_rate": 1.0,
+      "has_gt_span": true
+    }
+  ]
+}

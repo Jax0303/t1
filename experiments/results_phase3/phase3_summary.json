@@ -1,0 +1,74 @@
+{
+  "SciTSR/Baseline": {
+    "n": 716,
+    "grits_top_f1": 0.7732586544669854,
+    "grits_top_f1_std": 0.09835593742295047,
+    "trivial_delta": 0.011940871702067611,
+    "grits_top_span_only": 0.3292518884946393,
+    "logical_exact": 0.08765034623973171,
+    "logical_exact_std": 0.18649606553632728
+  },
+  "SciTSR/SAGR-Con": {
+    "n": 716,
+    "grits_top_f1": 0.7568861677077621,
+    "grits_top_f1_std": 0.11264264704510647,
+    "trivial_delta": -0.004431615057155519,
+    "grits_top_span_only": 0.3290301521887915,
+    "logical_exact": 0.08578814884680805,
+    "logical_exact_std": 0.18317185376892137
+  },
+  "SciTSR/SAGR-Cov": {
+    "n": 716,
+    "grits_top_f1": 0.7135702484877547,
+    "grits_top_f1_std": 0.10177461978192341,
+    "trivial_delta": -0.04774753427716291,
+    "grits_top_span_only": 0.10640096324637688,
+    "logical_exact": 0.0,
+    "logical_exact_std": 0.0
+  },
+  "SciTSR/SAGR-Full": {
+    "n": 716,
+    "grits_top_f1": 0.4780897301460636,
+    "grits_top_f1_std": 0.15033594159207023,
+    "trivial_delta": -0.2832280526188541,
+    "grits_top_span_only": 0.10171637822903547,
+    "logical_exact": 0.0,
+    "logical_exact_std": 0.0
+  },
+  "FinTabNet/Baseline": {
+    "n": 68,
+    "grits_top_f1": 0.8287742584029598,
+    "grits_top_f1_std": 0.050194664903471964,
+    "trivial_delta": 0.009014675972637741,
+    "grits_top_span_only": 0.4560269691364642,
+    "logical_exact": 0.18953081232493,
+    "logical_exact_std": 0.3377506281450443
+  },
+  "FinTabNet/SAGR-Con": {
+    "n": 68,
+    "grits_top_f1": 0.8059488546515396,
+    "grits_top_f1_std": 0.05925134118500023,
+    "trivial_delta": -0.013810727778782507,
+    "grits_top_span_only": 0.45255647359953366,
+    "logical_exact": 0.1778361344537815,
+    "logical_exact_std": 0.33356141090474095
+  },
+  "FinTabNet/SAGR-Cov": {
+    "n": 68,
+    "grits_top_f1": 0.6862905673792773,
+    "grits_top_f1_std": 0.0860250219189554,
+    "trivial_delta": -0.13346901505104491,
+    "grits_top_span_only": 0.048808085526875045,
+    "logical_exact": 0.0,
+    "logical_exact_std": 0.0
+  },
+  "FinTabNet/SAGR-Full": {
+    "n": 68,
+    "grits_top_f1": 0.274505833433276,
+    "grits_top_f1_std": 0.17479540723125164,
+    "trivial_delta": -0.545253748997046,
+    "grits_top_span_only": 0.04703824498545729,
+    "logical_exact": 0.0,
+    "logical_exact_std": 0.0
+  }
+}

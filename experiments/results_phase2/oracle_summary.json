@@ -1,0 +1,83 @@
+{
+  "exp_A": {
+    "n": 68,
+    "grits_top_f1": 0.8295305523474306,
+    "grits_top_span_only": 0.45017983321193106,
+    "logical_exact": 0.18953081232493,
+    "logical_exact_std": 0.3377506281450443
+  },
+  "exp_B_sigma0": {
+    "n": 68,
+    "grits_top_f1": 0.9925670790953997,
+    "grits_top_span_only": 0.7315127474992119,
+    "logical_exact": 0.41043735676088616,
+    "logical_exact_std": 0.4171000508326954
+  },
+  "exp_C": {
+    "n": 68,
+    "grits_top_f1": 1.0,
+    "grits_top_span_only": 1.0,
+    "logical_exact": 0.5311868278780044,
+    "logical_exact_std": 0.41972239403512035
+  },
+  "exp_D": {
+    "n": 68,
+    "grits_top_f1": 0.8313264585527578,
+    "grits_top_span_only": 0.6018846118514802,
+    "logical_exact": 0.18637281835811248,
+    "logical_exact_std": 0.3343662511469116
+  },
+  "exp_noise": {
+    "0": {
+      "n": 68,
+      "grits_top_f1": 0.9925670790953997,
+      "grits_top_span_only": 0.7315127474992119,
+      "logical_exact": 0.41043735676088616,
+      "logical_exact_std": 0.4171000508326954
+    },
+    "5": {
+      "n": 68,
+      "grits_top_f1": 0.9773938423729518,
+      "grits_top_span_only": 0.18194179123627288,
+      "logical_exact": 0.06173605805958746,
+      "logical_exact_std": 0.14001760572709063
+    },
+    "10": {
+      "n": 68,
+      "grits_top_f1": 0.9736945545903476,
+      "grits_top_span_only": 0.178232762371765,
+      "logical_exact": 0.019082633053221287,
+      "logical_exact_std": 0.07804177288586675
+    },
+    "15": {
+      "n": 68,
+      "grits_top_f1": 0.9733648966568884,
+      "grits_top_span_only": 0.07926848930016793,
+      "logical_exact": 0.0,
+      "logical_exact_std": 0.0
+    },
+    "20": {
+      "n": 68,
+      "grits_top_f1": 0.9738507287987249,
+      "grits_top_span_only": 0.09615539868784134,
+      "logical_exact": 0.007352941176470588,
+      "logical_exact_std": 0.06018641744023862
+    },
+    "30": {
+      "n": 68,
+      "grits_top_f1": 0.9735385373614631,
+      "grits_top_span_only": 0.08143780604852759,
+      "logical_exact": 0.0024509803921568627,
+      "logical_exact_std": 0.020062139146746195
+    }
+  },
+  "scitsr_logical_exact": 0.08952418236636114,
+  "bottleneck_summary": {
+    "A_logical_exact": 0.18953081232493,
+    "B_logical_exact": 0.41043735676088616,
+    "C_logical_exact": 0.5311868278780044,
+    "D_logical_exact": 0.18637281835811248,
+    "B_vs_A_improvement": 0.22090654443595617,
+    "C_vs_A_improvement": 0.34165601555307445
+  }
+}
