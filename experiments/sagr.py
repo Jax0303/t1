@@ -40,20 +40,23 @@ import numpy as np
 def _interval_coverage(s0: float, s1: float,
                         r0: float, r1: float) -> float:
     """
-    1D coverage: overlap / min(span_length, range_length).
+    1D coverage: overlap / max(span_length, range_length).
     "span [s0,s1]가 구간 [r0,r1]을 얼마나 커버하는가"의 양방향 척도.
 
-    min()을 분모로 쓰는 이유:
-      - span이 row보다 작아도 row가 span보다 작아도 동일하게 동작
-      - 두 구간 중 짧은 쪽이 긴 쪽에 많이 겹칠수록 높은 값
-      → off-by-1 문제: 인접 행에 span이 2~3px 걸려도 min_len은 그 행의 높이
-                      → coverage 비율이 매우 낮아져 threshold 통과 안 됨
+    max()을 분모로 쓰는 이유:
+      - N-row span이면 각 row의 coverage = row_h / span_h = 1/N
+        → threshold < 1/N인 경우만 해당 row 포함
+        → over-sized bbox (N이 크면 coverage 낮아짐) 자동 필터링
+      - 반면 min()은 span이 row를 완전히 포함하면 항상 coverage=1.0
+        → threshold 무관하게 모든 row 포함 → 그리드 파괴
+      → off-by-1 문제: 인접 행에 span이 2~3px 걸려도
+                      coverage = 2 / max(span_h, row_h) → 매우 낮음
     """
     inter = max(0.0, min(s1, r1) - max(s0, r0))
-    min_len = min(s1 - s0, r1 - r0)
-    if min_len <= 0:
+    max_len = max(s1 - s0, r1 - r0)
+    if max_len <= 0:
         return 0.0
-    return inter / min_len
+    return inter / max_len
 
 
 def _bbox_iou(a: list, b: list) -> float:
@@ -96,12 +99,14 @@ class SpanAwareGridReconstruction:
                  enforce_contiguous: bool = True,
                  use_coverage: bool = True,
                  iou_thresh: float = 0.3,
-                 min_span_cells: int = 2):
+                 min_span_cells: int = 2,
+                 max_span_frac: float = 0.85):
         self.coverage_thresh   = coverage_thresh
         self.enforce_contiguous = enforce_contiguous
         self.use_coverage      = use_coverage
         self.iou_thresh        = iou_thresh
         self.min_span_cells    = min_span_cells
+        self.max_span_frac     = max_span_frac  # 전체 row/col의 이 비율 초과 포함 시 거부
 
     # ── Public API ──────────────────────────────
     def reconstruct(self,
@@ -175,6 +180,12 @@ class SpanAwareGridReconstruction:
             n_cols_span = max(col_ids) - min(col_ids) + 1
             if n_rows_span < self.min_span_cells and n_cols_span < self.min_span_cells:
                 continue  # 1×1 → spanning 아님
+
+            # 과도한 span 거부: 전체 row/col을 거의 다 포함하면 TATR 오검출로 판단
+            row_frac = len(row_ids) / len(rows_bbox)
+            col_frac = len(col_ids) / len(cols_bbox)
+            if row_frac > self.max_span_frac and col_frac > self.max_span_frac:
+                continue  # 테이블 대부분을 덮는 span → 거부
 
             r0, r1 = min(row_ids), max(row_ids)
             c0, c1 = min(col_ids), max(col_ids)
@@ -252,6 +263,7 @@ def make_sagr_cov(coverage_thresh: float = 0.3) -> SpanAwareGridReconstruction:
         enforce_contiguous=False,
         coverage_thresh=coverage_thresh,
         min_span_cells=2,
+        max_span_frac=0.85,
     )
 
 
@@ -262,6 +274,7 @@ def make_sagr_con(iou_thresh: float = 0.3) -> SpanAwareGridReconstruction:
         enforce_contiguous=True,
         iou_thresh=iou_thresh,
         min_span_cells=2,
+        max_span_frac=0.85,
     )
 
 
@@ -272,6 +285,7 @@ def make_sagr_full(coverage_thresh: float = 0.3) -> SpanAwareGridReconstruction:
         enforce_contiguous=True,
         coverage_thresh=coverage_thresh,
         min_span_cells=2,
+        max_span_frac=0.85,
     )
 
 

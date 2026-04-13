@@ -417,28 +417,40 @@ def run():
     fintab_items = load_fintabnet_complex()
     print(f"  Loaded: {len(fintab_items)}")
 
-    # TATR 로드
-    proc, mdl = load_tatr(MODEL_ID)
-
     # ── Step 1: TATR inference 캐싱 (재사용) ─────
-    print("\n[Cache] Running TATR inference on all tables...")
-    scitsr_cache, fintab_cache = [], []
+    import pickle
+    _DISK_CACHE = RESULTS_DIR / "tatr_inference_cache.pkl"
 
-    for item in tqdm(scitsr_items, desc="SciTSR TATR"):
-        try:
-            raw = run_tatr_raw(proc, mdl, item["image"])
-            scitsr_cache.append((raw, item))
-        except Exception:
-            continue
+    if _DISK_CACHE.exists():
+        print(f"\n[Cache] Loading TATR inference from disk: {_DISK_CACHE}")
+        with open(_DISK_CACHE, "rb") as f:
+            scitsr_cache, fintab_cache = pickle.load(f)
+        print(f"  Loaded: SciTSR={len(scitsr_cache)}, FinTabNet={len(fintab_cache)}")
+    else:
+        proc, mdl = load_tatr(MODEL_ID)
+        print("\n[Cache] Running TATR inference on all tables...")
+        scitsr_cache, fintab_cache = [], []
 
-    for item in tqdm(fintab_items, desc="FinTabNet TATR"):
-        try:
-            raw = run_tatr_raw(proc, mdl, item["image"])
-            fintab_cache.append((raw, item))
-        except Exception:
-            continue
+        for item in tqdm(scitsr_items, desc="SciTSR TATR"):
+            try:
+                raw = run_tatr_raw(proc, mdl, item["image"])
+                scitsr_cache.append((raw, item))
+            except Exception:
+                continue
 
-    print(f"  Cached: SciTSR={len(scitsr_cache)}, FinTabNet={len(fintab_cache)}")
+        for item in tqdm(fintab_items, desc="FinTabNet TATR"):
+            try:
+                raw = run_tatr_raw(proc, mdl, item["image"])
+                fintab_cache.append((raw, item))
+            except Exception:
+                continue
+
+        print(f"  Cached: SciTSR={len(scitsr_cache)}, FinTabNet={len(fintab_cache)}")
+        with open(_DISK_CACHE, "wb") as f:
+            pickle.dump((scitsr_cache, fintab_cache), f)
+        print(f"  Saved to disk: {_DISK_CACHE}")
+        del proc, mdl
+        torch.cuda.empty_cache()
 
     # ── Step 2: Ablation — 4 variants ────────────
     print("\n[Ablation] Evaluating 4 SAGR variants...")
@@ -465,6 +477,10 @@ def run():
             key = f"{ds_name}/{vname}"
             summary[key] = agg_r
 
+            if agg_r.get("n", 0) == 0:
+                print(f"  {ds_name}/{vname:12s}: n=0 (skipped)")
+                continue
+
             le  = agg_r.get("logical_exact")
             spn = agg_r.get("grits_top_span_only")
             print(f"  {ds_name}/{vname:12s}: "
@@ -489,6 +505,9 @@ def run():
                 if r: recs.append(r)
             agg_r = agg(recs)
             thresh_results[ds_name][thresh] = agg_r
+            if agg_r.get("n", 0) == 0:
+                print(f"  {ds_name} thresh={thresh:.1f}: n=0 (skipped)")
+                continue
             le = agg_r.get("logical_exact")
             print(f"  {ds_name} thresh={thresh:.1f}: "
                   f"F1={agg_r['grits_top_f1']:.4f}, "
@@ -520,7 +539,8 @@ def run():
     fig11_per_table_scatter(per_table_records["SciTSR"],
                             per_table_records["FinTabNet"])
 
-    del proc, mdl
+    if "proc" in locals() and proc is not None:
+        del proc, mdl
     torch.cuda.empty_cache()
 
     # 최종 수치 출력
