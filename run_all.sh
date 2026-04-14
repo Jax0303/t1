@@ -15,9 +15,17 @@ set -euo pipefail
 
 DATA_ROOT="${1:-/mnt/d/pubtables1m/PubTables-1M-Structure}"
 OUTPUT_DIR="${2:-outputs/ablation}"
-CONFIG="tatr_base/src/structure_config.json"
-TRAIN_SCRIPT="tatr_base/src/main.py"
-EVAL_SCRIPT="tatr_base/src/eval_by_complexity.py"
+
+# main.py uses sys.path.append("../detr") which resolves relative to CWD.
+# It MUST be run with CWD=tatr_base/src so that ../detr → tatr_base/detr.
+SRC_DIR="$(cd "$(dirname "$0")/tatr_base/src" && pwd)"
+CONFIG="${SRC_DIR}/structure_config.json"
+TRAIN_SCRIPT="${SRC_DIR}/main.py"
+EVAL_SCRIPT="${SRC_DIR}/eval_by_complexity.py"
+
+# Convert OUTPUT_DIR and DATA_ROOT to absolute paths before cd'ing into SRC_DIR
+OUTPUT_DIR="$(mkdir -p "${OUTPUT_DIR}" && cd "${OUTPUT_DIR}" && pwd)"
+DATA_ROOT="$(cd "${DATA_ROOT}" && pwd)"
 
 SEEDS=(42 43 44)
 EPOCHS=20
@@ -51,7 +59,8 @@ run_one() {
     echo "  OUT: ${out_dir}"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-    python "${TRAIN_SCRIPT}" \
+    # Run from SRC_DIR so that sys.path.append("../detr") resolves correctly
+    (cd "${SRC_DIR}" && python "${TRAIN_SCRIPT}" \
         --data_root_dir  "${DATA_ROOT}" \
         --config_file    "${CONFIG}" \
         --backbone       "${BACKBONE}" \
@@ -64,7 +73,7 @@ run_one() {
         --seed           "${seed}" \
         --num_workers    2 \
         "${extra_args[@]}" \
-        2>&1 | tee "${log_file}"
+        2>&1 | tee "${log_file}")
 
     echo "[done] ${exp_id} seed=${seed} → ${log_file}"
 }
@@ -104,13 +113,16 @@ echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  Aggregating results..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-python tatr_base/src/eval_by_complexity.py \
+(cd "${SRC_DIR}" && python "${EVAL_SCRIPT}" \
     --results_dir "${OUTPUT_DIR}" \
     --data_root   "${DATA_ROOT}" \
     --xml_subdir  test \
-    --output_csv  "${OUTPUT_DIR}/results_by_complexity.csv"
+    --output_csv  "${OUTPUT_DIR}/results_by_complexity.csv")
 
-python aggregate_results.py \
+# aggregate_results.py lives in repo root — run from there
+REPO_ROOT="$(dirname "${SRC_DIR}")"
+REPO_ROOT="$(dirname "${REPO_ROOT}")"
+python "${REPO_ROOT}/aggregate_results.py" \
     --results_dir "${OUTPUT_DIR}" \
     --output_csv  "${OUTPUT_DIR}/summary_results.csv"
 
