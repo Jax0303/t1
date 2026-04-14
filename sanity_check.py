@@ -299,6 +299,66 @@ def check_grid_snapping():
 
 
 # ════════════════════════════════════════════════════════════
+# CHECK 7 — E3 grid-snapping wired into criterion
+# ════════════════════════════════════════════════════════════
+def check_snap_criterion():
+    """Verify SetCriterion uses loss_boxes_with_snapping after warmup in E3 mode."""
+    from models import build_model
+
+    args = make_args(no_span_branch=False, span_loss_coef=0.5)
+    args.grid_snapping = "soft"
+    args.n_warm        = 5
+    args.no_grid_snapping = False   # not used by build(), but harmless
+
+    model, criterion, _ = build_model(args)
+    model.train()
+    criterion.train()
+
+    samples, targets = make_fake_batch()
+
+    # Enrich targets with row/col boxes so separator build works
+    for t in targets:
+        n = t["boxes"].shape[0]
+        # Add synthetic row boxes (label=2) and col boxes (label=1)
+        row_boxes = torch.tensor([[0.5, 0.2, 0.9, 0.1],
+                                  [0.5, 0.5, 0.9, 0.1],
+                                  [0.5, 0.8, 0.9, 0.1]])
+        col_boxes = torch.tensor([[0.2, 0.5, 0.1, 0.9],
+                                  [0.6, 0.5, 0.1, 0.9]])
+        row_lbls = torch.full((3,), 2, dtype=torch.long)
+        col_lbls = torch.full((2,), 1, dtype=torch.long)
+        t["boxes"]  = torch.cat([t["boxes"],  row_boxes, col_boxes])
+        t["labels"] = torch.cat([t["labels"], row_lbls,  col_lbls])
+        t["rowspans"] = torch.cat([t["rowspans"], torch.ones(5, dtype=torch.long)])
+        t["colspans"] = torch.cat([t["colspans"], torch.ones(5, dtype=torch.long)])
+
+    # --- Before warmup: standard GIoU (epoch=4 < n_warm=5) ---
+    criterion.set_epoch(4)
+    out = model(samples)
+    losses_before = criterion(out, targets)
+    assert "loss_bbox" in losses_before and "loss_giou" in losses_before, \
+        "Missing bbox/giou losses before warmup"
+
+    # --- After warmup: snapping activates (epoch=5 >= n_warm=5) ---
+    criterion.set_epoch(5)
+    out = model(samples)
+    losses_after = criterion(out, targets)
+    assert "loss_bbox" in losses_after and "loss_giou" in losses_after, \
+        "Missing bbox/giou losses after warmup"
+    assert "loss_span" in losses_after, "Missing span loss in E3"
+
+    # Verify no NaN
+    for k, v in losses_after.items():
+        val = v.item()
+        assert val == val, f"NaN in {k} after snap warmup"
+
+    print(f"{PASS} CHECK 7 — E3 grid-snapping criterion integration OK")
+    print(f"        loss_giou before warmup: {losses_before['loss_giou'].item():.4f}")
+    print(f"        loss_giou after  warmup: {losses_after['loss_giou'].item():.4f}")
+    return True
+
+
+# ════════════════════════════════════════════════════════════
 # Main
 # ════════════════════════════════════════════════════════════
 if __name__ == "__main__":
@@ -314,6 +374,7 @@ if __name__ == "__main__":
         ("CHECK 4 — Backward pass",                   check_backward),
         ("CHECK 5 — XML rowspan/colspan parsing",      check_xml_parsing),
         ("CHECK 6 — Grid snapping",                   check_grid_snapping),
+        ("CHECK 7 — E3 snap criterion wiring",         check_snap_criterion),
     ]:
         print(f"\n── {name} ──")
         try:
