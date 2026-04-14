@@ -124,3 +124,6 @@ data/SciTSR/test/chunk/
 data/SciTSR/test/gt/
 data/SciTSR/test/pdf/
 data/SciTSR/train/
+
+# PubTables-1M local data (large dataset, not tracked in repo)
+data/pubtables-1m/
