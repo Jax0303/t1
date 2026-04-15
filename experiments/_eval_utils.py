@@ -76,6 +76,7 @@ def load_gt(table_id: str) -> dict:
         cells.append({
             "start_row": sr, "end_row": er,
             "start_col": sc, "end_col": ec,
+            "row_idx": sr, "col_idx": sc,
             "row_span": er - sr + 1,
             "col_span": ec - sc + 1,
             "text": " ".join(c.get("content", [])),
@@ -154,6 +155,7 @@ def load_fintabnet_gt(xml_path: Path) -> Optional[dict]:
                 cells.append({
                     "start_row": ri, "end_row": ri,
                     "start_col": ci, "end_col": ci,
+                    "row_idx": ri, "col_idx": ci,
                     "row_span": 1, "col_span": 1,
                     "bbox": [x0, y0, x1, y1], "text": "",
                 })

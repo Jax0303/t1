@@ -127,3 +127,14 @@ data/SciTSR/train/
 
 # PubTables-1M local data (large dataset, not tracked in repo)
 data/pubtables-1m/
+
+# FinTabNet data (large, local only)
+data/fintabnet/
+
+# SciTSR images
+data/SciTSR/test/img/
+
+# Checkpoints / outputs
+checkpoints/
+outputs/
+predictions/

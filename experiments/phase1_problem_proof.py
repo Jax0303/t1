@@ -164,12 +164,46 @@ def trivial_grits_top(gt_cells, nr_g, nc_g, nr_p, nc_p) -> float:
 # TATR inference
 # ─────────────────────────────────────────────
 def load_tatr(model_id: str):
+    import os
+    import json
+    import tempfile
+    from huggingface_hub import hf_hub_download
+    from transformers import AutoImageProcessor, TableTransformerForObjectDetection, TableTransformerConfig
+
     proc = AutoImageProcessor.from_pretrained(model_id)
-    if hasattr(proc, "size") and isinstance(proc.size, dict):
-        if "longest_edge" in proc.size and "shortest_edge" not in proc.size:
+    # [FIX] HuggingFace image processor size validation
+    if hasattr(proc, "size"):
+        # Force both edges to be present if one is found
+        if "longest_edge" in proc.size and ("shortest_edge" not in proc.size or proc.size["shortest_edge"] is None):
             le = proc.size["longest_edge"]
-            proc.size = {"shortest_edge": le, "longest_edge": le}
-    mdl = TableTransformerForObjectDetection.from_pretrained(model_id).to(DEVICE).eval()
+            proc.size["shortest_edge"] = le
+            proc.size["longest_edge"] = le
+        elif "shortest_edge" in proc.size and ("longest_edge" not in proc.size or proc.size["longest_edge"] is None):
+            se = proc.size["shortest_edge"]
+            proc.size["shortest_edge"] = se
+            proc.size["longest_edge"] = se
+    
+    # [FIX] HuggingFace dilation validation error
+    try:
+        mdl = TableTransformerForObjectDetection.from_pretrained(model_id).to(DEVICE).eval()
+    except Exception:
+        # Manual Patch: download config.json, fix dilation, save to temp dir
+        config_file = hf_hub_download(repo_id=model_id, filename="config.json")
+        with open(config_file, "r") as f:
+            config_dict = json.load(f)
+        
+        if "backbone_config" in config_dict and config_dict["backbone_config"] is not None:
+             if config_dict["backbone_config"].get("dilation") is None:
+                 config_dict["backbone_config"]["dilation"] = False
+        if config_dict.get("dilation") is None:
+            config_dict["dilation"] = False
+
+        tmp_dir = tempfile.mkdtemp()
+        with open(os.path.join(tmp_dir, "config.json"), "w") as f:
+            json.dump(config_dict, f)
+        
+        mdl = TableTransformerForObjectDetection.from_pretrained(model_id, config=tmp_dir).to(DEVICE).eval()
+        
     return proc, mdl
 
 

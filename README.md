@@ -1,178 +1,113 @@
-# SAGR: Span-Aware Grid Reconstruction for Robust TSR
+# Detection-based TSR의 행 검출 오류 분석 및 Row-NMS 후처리
 
-> **연구 상태**: ✅ Phase 1-3 완료 | ✅ STEP 1-6 + TASK 1-7 구현 완료 | 🔲 Colab GPU 학습 진행 중
-> **목표 학회**: Top-tier Computer Vision Conference (CVPR / ICCV)
-> **최종 업데이트**: 2026-04-14
+> **연구 상태**: ✅ 문제 증명 완료 | ✅ Row-NMS 평가 완료
+> **최종 업데이트**: 2026-04-16
 
 ---
 
 ## 1. 연구 개요
 
-기존 탐지 기반 TSR(Table Structure Recognition) 모델(TATR 등)의 두 가지 병목을 해결:
+Detection-based TSR(Table Structure Recognition) 모델 **TATR**의 성능 저하 원인을 분석하고, 단순한 후처리로 개선 가능함을 증명합니다.
 
-1. **Stage 2 병목**: 격자 재구성 단계에서 spanning cell bbox 1~2픽셀 오차로 할당 실패
-2. **학습 수준 한계**: spanning cell 속성(rowspan/colspan)을 학습에 활용하지 않음
+### 핵심 발견
 
-**해결책**: SAGR 알고리즘(Stage 2 개선) + TATR-Span 학습 개선(E0~E3 ablation)
+**"Spanning cell 복원 실패의 근본 원인은 span detection이 아니라 row detection의 중복 검출이다."**
+
+이를 3단계 논리 체인으로 증명:
+
+1. **Oracle Decomposition** (FinTabNet n=68): GT row/col로 교체하면 F1 0.830→0.993 (+0.163), GT span으로 교체하면 0.831 (+0.001) → **병목은 row/col, span 아님**
+2. **Count Diagnostic** (양 데이터셋): Col 정확도 85~99%, Row 정확도 0~10% → **병목은 row 단독**
+3. **Error Mode** (SciTSR n=716): 76.5%가 정확히 +1 행 초과검출, 100%에서 y-overlap>0.5 → **중복 행 검출, 기하학적으로 탐지 가능**
+
+### 제안: Row-NMS 후처리
+
+y축 1D overlap > threshold τ인 행 쌍을 union merge하는 단순 후처리 블록.
+TATR 아키텍처 변경 없이, row bbox 분기에서 그리드 재구성 직전에 삽입.
 
 ---
 
-## 2. Phase 1-3 결과 (SciTSR-COMP, 716 complex tables)
+## 2. 주요 결과
 
-| 지표 | Baseline | SAGR-Con | SAGR-Cov | SAGR-Full |
-|------|----------|----------|----------|-----------|
-| GriTS-Top F1 | 0.7737 | 0.7605 | **0.7760** | 0.7734 |
-| Span-Only F1 | 0.2977 | 0.2972 | **0.3369** | **0.3367** |
-| Logical-Exact | 0.0727 | 0.0722 | **0.0809** | **0.0805** |
+### Row-NMS (τ=0.5, complex tables)
+
+| 데이터셋 | Metric | Baseline | +Row-NMS | Δ |
+|---------|--------|----------|----------|---|
+| SciTSR | GriTS-Top F1 | 0.8247 | **0.8634** | **+3.9%p** |
+| FinTabNet | GriTS-Top F1 | 0.9196 | **0.9463** | **+2.7%p** |
 
 ---
 
-## 3. TATR-base Ablation Study (E0~E3)
+## 3. 실험 재현
 
-### 3.1 실험 설계
+### 사전 요건
+- Python 3.10+, CUDA GPU (추론용)
+- `pip install -r requirements.txt`
+- SciTSR / FinTabNet 데이터셋 (`data/` 디렉토리)
 
-| ID | 설명 | 핵심 옵션 |
-|----|------|-----------|
-| **E0** | Baseline TATR 원본 재현 | `--no_span_branch --no_grid_snapping` |
-| **E1** | + Span Attribute Branch | ordinal regression head (K=8) |
-| **E2** | + Span Loss + Hard Grid-Snapping | curriculum warmup 5 epochs |
-| **E3** | + Span Loss + Soft Grid-Snapping | curriculum warmup 5 epochs |
-
-3 seeds (42/43/44) × 4 실험 = **12회 학습**, 20 epochs each
-
-### 3.2 수정된 파일 (STEP 1-6)
-
-| 파일 | 수정 내용 |
-|------|-----------|
-| `tatr_base/detr/models/detr.py` | span_embed 헤드, loss_span, loss_boxes with snapping, set_epoch() |
-| `tatr_base/detr/models/matcher.py` | C_span Hungarian cost |
-| `tatr_base/detr/models/grid_snapping.py` | compute_snapping_target, curriculum_warmup, loss_boxes_with_snapping |
-| `tatr_base/src/table_datasets.py` | rowspan/colspan XML 파싱, target dict 추가 |
-| `tatr_base/src/main.py` | CLI args, criterion.set_epoch() 호출 |
-| `tatr_base/src/eval_by_complexity.py` | simple/complex/k_bin 복잡도별 평가 |
-
-### 3.3 Sanity Check (7/7 pass)
+### 실행 순서
 
 ```bash
-python sanity_check.py
-```
+# 1. Phase 1: Simple vs Complex gap 증명
+python experiments/phase1_problem_proof.py
 
-| # | 검증 항목 |
-|---|----------|
-| 1 | E1 forward: pred_spans [B, Q, 16] |
-| 2 | E0 backward compat: pred_spans 없음 |
-| 3 | Loss NaN/폭발 없음 |
-| 4 | span_embed gradient 정상 |
-| 5 | XML rowspan/colspan 파싱 |
-| 6 | Grid snapping consecutive 제약 |
-| 7 | E3 criterion warmup 전후 전환 |
+# 2. Phase 2: Oracle decomposition (FinTabNet)
+python experiments/phase2_oracle_decomposition.py
 
-### 3.4 실행
+# 3. Count diagnostic: Row/Col 개수 불일치 분석
+python experiments/diag_rowcol_bottleneck.py
 
-```bash
-# 전체 12회 ablation (로컬, GPU 필요)
-bash run_all.sh /path/to/PubTables-1M-Structure outputs/ablation
+# 4. Row-NMS 평가 + figure 생성
+python experiments/row_nms_eval.py
 
-# 결과 집계
-python aggregate_results.py \
-    --results_dir outputs/ablation \
-    --output_csv  outputs/ablation/summary_results.csv
+# 5. PPT용 figure 생성
+python experiments/make_ppt_figures.py
+
+# 6. Row 중복 검출 시각화
+python experiments/visualize_row_duplicates.py
 ```
 
 ---
 
-## 4. Colab T4 GPU 학습 (`colab_ablation.ipynb`)
-
-로컬 GPU 없이 Google Colab T4로 실험 실행.
-
-### 4.1 데이터 준비
-
-D드라이브 → Drive 업로드 불필요. **Colab에서 HuggingFace 직접 다운로드.**
-
-```python
-# bsmock/pubtables-1m 에서 자동 다운로드 + 올바른 서브폴더로 압축 해제
-# tar 내부가 flat이므로 각 tar를 지정 폴더에 추출:
-#   Annotations_Train → DATA_ROOT/train/
-#   Annotations_Val   → DATA_ROOT/val/
-#   Annotations_Test  → DATA_ROOT/test/
-#   Images_*          → DATA_ROOT/images/
-```
-
-### 4.2 노트북 실행 순서
-
-| 섹션 | 내용 | 예상 시간 |
-|------|------|----------|
-| 0 | GPU / 디스크 확인 | 10초 |
-| 1 | pycocotools 설치, git clone | 1~2분 |
-| 2 | 경로 설정 + HF 데이터 다운로드 | ~수분 |
-| 3 | sanity_check.py 7/7 확인 | 1~2분 |
-| 4 | E0 → E1 → E2 → E3 학습 | 10분/실험 (subset) |
-| 5 | eval_by_complexity | 수분 |
-| 6 | aggregate_results | 수분 |
-| 7 | 시각화 | 수분 |
-| 8 | Drive 백업 | 수분 |
-
-### 4.3 모드 설정
-
-```python
-SUBSET_MODE = True   # 500샘플/3epoch — smoke test (~10분/실험)
-SUBSET_MODE = False  # 86K샘플/20epoch — 실제 학습 (~3~4시간/실험)
-```
-
-### 4.4 알려진 이슈 및 수정 이력
-
-| 이슈 | 원인 | 수정 |
-|------|------|------|
-| `sys.path ../detr` 오류 | CWD가 repo root일 때 경로 불일치 | subprocess `cwd=SRC_DIR` 지정 |
-| 데이터 MISSING 오류 | tar가 flat — 한 폴더에 다 풀림 | 각 tar를 지정 서브폴더에 추출 |
-
----
-
-## 5. 디렉토리 구조
+## 4. 디렉토리 구조
 
 ```
 t1/
-├── tatr_base/                   # microsoft/table-transformer (수정본, 자체 git)
-│   ├── detr/models/
-│   │   ├── detr.py              # Span head + grid-snapping loss
-│   │   ├── matcher.py           # C_span Hungarian cost
-│   │   └── grid_snapping.py     # snapping 유틸리티
-│   └── src/
-│       ├── main.py              # CLI + set_epoch()
-│       ├── table_datasets.py    # rowspan/colspan 파싱
-│       └── eval_by_complexity.py
-├── tatr_span/                   # DETRSpan 학습 패키지
-├── baselines/                   # Deformable-DETR, TSRDet
-├── experiments/                 # Phase 1-3 스크립트 + 시각화
-│   ├── sagr.py
-│   ├── phase1~3_*.py
-│   └── results_*/
-├── sanity_check.py              # 7-check CPU 검증
-├── run_all.sh                   # 12회 ablation 실행기
-├── aggregate_results.py         # 결과 집계 (Table A/B)
-└── colab_ablation.ipynb         # Colab T4 실행 노트북
+├── experiments/
+│   ├── _eval_utils.py                 ← 데이터 로더, bbox 유틸
+│   ├── phase1_problem_proof.py        ← Simple vs Complex gap 증명
+│   ├── phase2_oracle_decomposition.py ← Oracle 분해 — row/col 병목 증명
+│   ├── diag_rowcol_bottleneck.py      ← Row/Col count mismatch 진단
+│   ├── row_nms_eval.py                ← Row-NMS 평가 + threshold sweep
+│   ├── grid_reconstruct.py            ← Baseline 격자 재구성 모듈
+│   ├── make_ppt_figures.py            ← PPT용 figure 생성
+│   ├── visualize_row_duplicates.py    ← Row 중복 검출 정성 평가
+│   ├── results_phase1/                ← Phase 1 결과
+│   ├── results_phase2/                ← Oracle 결과 + oracle_summary.json
+│   ├── results_diag/                  ← Count diagnostic 결과
+│   ├── results_rownms/                ← Row-NMS 결과 + 모든 figure
+│   └── results_phase3/
+│       └── tatr_inference_cache.pkl   ← TATR 추론 캐시 (456MB, 재사용)
+├── data/                              ← SciTSR, FinTabNet 데이터
+├── config.yaml
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## 6. 앞으로 할 일 (Todo)
+## 5. 생성되는 Figure 목록
 
-### 즉시 (Colab 실험)
-- [ ] `SUBSET_MODE=True` smoke test 완료 확인
-- [ ] `SUBSET_MODE=False` 전체 학습 실행 (E0 → E1 → E2 → E3)
-- [ ] 실험 결과 Drive 백업
-
-### 학습 완료 후
-- [ ] `training_log.json` 구현: 매 epoch val GriTS_Loc 기록 → best checkpoint 저장
-- [ ] E0~E3 결과 Table A/B 정리 (simple/complex, k_bin 분해)
-- [ ] E3 vs E0 delta 분석 (spanning cell 복잡도별 개선폭)
-
-### 논문 작성
-- [ ] Phase 1-3 + Ablation 결과 통합
-- [ ] SAGR 알고리즘 + Grid-Snapping 정식 기술
-- [ ] FinTabNet.c cross-dataset 일반화 검증
+| Figure | 위치 | 설명 |
+|--------|------|------|
+| `fig_pipeline.png` | `results_rownms/` | 데이터 흐름도: Row-NMS 삽입 위치 |
+| `fig_evidence_chain.png` | `results_rownms/` | 3단계 논리 체인 (Oracle → Count → Error mode) |
+| `fig_axes_guide.png` | `results_rownms/` | 모든 figure의 x/y축 의미 정리 |
+| `fig_main.png` | `results_rownms/` | Baseline vs Row-NMS 주요 비교 |
+| `fig_dr_before_after.png` | `results_rownms/` | Δrow 히스토그램 전/후 비교 |
+| `fig_f1_sweep.png` | `results_rownms/` | Threshold τ 강건성 분석 |
+| `fig_scatter.png` | `results_rownms/` | 테이블별 F1 산점도 |
+| `fig_qualitative_rows.png` | `results_rownms/` | Row 중복 검출 시각화 |
 
 ---
 
-**Last Updated**: 2026-04-14
-**Status**: ✅ Phase 1-3 완료 | ✅ STEP 1-6 구현 완료 | 🔲 Colab 학습 진행 중
+**Last Updated**: 2026-04-16
